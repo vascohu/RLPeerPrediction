@@ -9,7 +9,7 @@ class InferBase(object):
     __metaclass__ = abc.ABCMeta
 
     # Workers states
-    b = None
+    belief = None
 
     # The expected accuracy
     ex_accuracy = 0.0
@@ -18,7 +18,7 @@ class InferBase(object):
     R = 0.0
 
     # The discount of reward
-    eta = 0.1
+    eta = 0.0002
 
     @abc.abstractmethod
     def infer(self, label_mat: np.matrix, true_label: list = None):
@@ -58,9 +58,12 @@ class GibbsSampling(InferBase):
         self.true_label_num = _true_label_num
         self.y_dist = np.zeros(shape=(self.task_num-self.true_label_num, self.class_num))
         self.b = np.zeros(shape=self.alpha.shape)
+        self.belief = np.zeros(2 * self.worker_num)
 
     def calc_prior_dist(self, label_mat: np.matrix = None, true_label: list = None):
         """Calculate the prior distribution"""
+        self.alpha.fill(1.0)
+        self.beta.fill(1.0)
         if self.true_label_num == 0:
             '''If there are no true labels, use optimistic priors.'''
             for wm in self.alpha:
@@ -72,7 +75,8 @@ class GibbsSampling(InferBase):
                 k = true_label[i]-1
                 for j in range(self.worker_num):
                     g = label_mat[i, j]-1
-                    self.alpha[j, k, g] += 1
+                    if g >= 0:
+                        self.alpha[j, k, g] += 1
                 self.beta[k] += 1
 
     def init_y_alpha_beta(self, label_mat: np.matrix):
@@ -101,7 +105,7 @@ class GibbsSampling(InferBase):
             self.beta[yn] += 1
             '''Update the alpha tensor'''
             for j in range(self.worker_num):
-                g = label_mat[i+self.true_label_num, j] - 1
+                g = label_mat[i, j] - 1
                 if g >= 0:
                     self.alpha[j][y0][g] -= 1
                     self.alpha[j][yn][g] += 1
@@ -182,6 +186,7 @@ class GibbsSampling(InferBase):
         '''Generate samples'''
         self.y_dist.fill(0.0)
         self.b.fill(0.0)
+        self.belief.fill(0.0)
         for t in range(self.sample_num):
             '''Take one sample in every interval'''
             for n in range(self.interval):
@@ -193,6 +198,10 @@ class GibbsSampling(InferBase):
             self.b += self.alpha
         self.y_dist /= self.sample_num
         self.b /= self.sample_num
+        '''Calculate the belief about workers'''
+        for j in range(self.worker_num):
+            self.belief[2*j] = self.b[j, 0, 0]/np.sum(self.b[j, 0, :])
+            self.belief[2*j+1] = self.b[j, 1, 1]/np.sum(self.b[j, 1, :])
         '''Calculate the expected accuracy'''
         self.ex_accuracy = 0
         accuracy = 0
@@ -201,9 +210,6 @@ class GibbsSampling(InferBase):
             label = np.argmax(self.y_dist[i, :])
             if label == true_label[i+self.true_label_num]-1:
                 accuracy += 1
-            else:
-                ii = i+self.true_label_num
-                # print(true_label[ii], '\t', label_mat[ii,:])
         self.ex_accuracy /= (self.task_num-self.true_label_num)
         accuracy /= (self.task_num-self.true_label_num)
         return accuracy

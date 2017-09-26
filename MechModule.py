@@ -8,6 +8,9 @@ import numpy as np
 class MechBase(object):
     __metaclass__ = abc.ABCMeta
 
+    # The incentive level
+    B = 1.0
+
     @abc.abstractmethod
     def set(self, parameters: list):
         """Set the mechanism parameters"""
@@ -24,11 +27,9 @@ class MechBase(object):
 class DG13(MechBase):
 
     # The parameter of DG13 mechanism
-    d = 25
+    d = 10
 
     def __init__(self):
-        # The incentive level
-        self.B = 0.0
         # The label mat
         self.label_mat = None
 

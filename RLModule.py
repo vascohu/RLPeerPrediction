@@ -11,7 +11,7 @@ class RLBase(object):
     gamma = 0.8
 
     # The action set (prices goes from the smallest to the largest)
-    ActionSet = [1, 2]
+    ActionSet = [0.1, 0.5, 1.0, 2.0]
 
     @abc.abstractmethod
     def decide(self):
@@ -27,11 +27,12 @@ class RLBase(object):
 # Gaussian Process SARSA
 class GpSarsa(RLBase):
 
-    def __init__(self):
+    def __init__(self, len_state: int):
         # The noisy level of the Gaussian process
         self.sigma = 0.1
         # Observation history
         self.Hist = []  # <State, Action>
+        self.len_state = len_state
         self.rHist = []  # Reward
         # The covariance matrix
         self.Cov = []
@@ -53,7 +54,8 @@ class GpSarsa(RLBase):
             self.gpRegression()
             '''Secondly, compute the prediction of the Gaussian process'''
             q = []
-            z = self.S.copy().append(self.ActionSet[0])
+            z = self.S.copy()
+            z.append(self.ActionSet[0])
             for a in RLBase.ActionSet:
                 z[-1] = a
                 q.append(self.gpPredict(z))
@@ -65,21 +67,28 @@ class GpSarsa(RLBase):
         """Observe the environment change after action a"""
         '''Add the data to the observation history'''
         if len(self.S)>0:
-            self.Hist.append(self.S+[a])
+            self.Hist.append(list(self.S)+[a])
             self.rHist.append(r)
         '''Update the current state'''
-        self.S = s.copy()
+        self.S = list(s.copy())
 
     # noinspection PyUnresolvedReferences
-    @classmethod
-    def kernel(cls, z1: np.array, z2: np.array) -> float:
-        diff = (z1 - z2)**2
-        '''The difference between different workers'''
-        distW = np.exp(-1.0*(diff[0:-1:2]+diff[1:-1:2]))
-        '''The difference between actions'''
-        distA = np.exp(-0.01*diff[-1])
+    def kernel(self, z1: np.array, z2: np.array) -> float:
+        x1 = np.mean(z1[0: self.len_state: 2])
+        x2 = np.mean(z1[1: self.len_state: 2])
+        x3 = np.mean(z2[0: self.len_state: 2])
+        x4 = np.mean(z2[1: self.len_state: 2])
+        dist_w = np.exp(-1.0*((x1 - x3)**2 + (x2 - x4)**2)) # Here, 4 = 2^2
+        x5 = z1[self.len_state] - z2[self.len_state]
+        dist_A = np.exp(-1.0*(x5**2)) # Here, 0.25 = 0.5^2
+        return dist_A*dist_w
+        # diff = (z1 - z2)**2
+        # '''The difference between different workers'''
+        # distW = np.exp(-4*(diff[0:-1:2]+diff[1:-1:2]))
+        # '''The difference between actions'''
+        # distA = np.exp(-0.01*diff[-1])
         # noinspection PyTypeChecker
-        return np.sum(distW)*distA
+        # return np.sum(distW)*distA
         #return np.exp(-0.5*np.sum(np.abs(diff)))
 
     def gpRegression(self):
