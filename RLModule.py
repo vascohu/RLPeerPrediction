@@ -29,7 +29,7 @@ class GpSarsa(RLBase):
 
     def __init__(self, len_state: int):
         # The noisy level of the Gaussian process
-        self.sigma = 0.1
+        self.sigma = 0.02
         # Observation history
         self.Hist = []  # <State, Action>
         self.len_state = len_state

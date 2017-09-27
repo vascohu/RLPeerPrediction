@@ -8,7 +8,7 @@ import CrowdModule
 task_num = 100
 worker_num = 10
 num_true_label = 0
-T = 10
+T = 100
 
 # The incentive mechanism
 mech = MechModule.DG13()
