@@ -1,8 +1,20 @@
 # Inference module is responsible to infer the state of workers and calculate rewards
 import abc
 import numpy as np
-from scipy.special import gammaln
+import InferModuleX
+#from scipy.special import gammaln
+#import time
 
+def random_sample(start: int, p: np.array):
+    r = np.random.rand()
+    i = 0
+    for pr in range(p.shape[0]):
+        if r < pr:
+            break
+        else:
+            r -= p[i]
+            i += 1
+    return (i+start)
 
 # The base class of inference
 class InferBase(object):
@@ -21,7 +33,7 @@ class InferBase(object):
     eta = 0.0002
 
     @abc.abstractmethod
-    def infer(self, label_mat: np.matrix, true_label: list = None):
+    def infer(self, label_mat: np.matrix, true_label: list):
         """Infer the states and expected accuracy"""
         return
 
@@ -35,7 +47,42 @@ class InferBase(object):
 
 
 class GibbsSampling(InferBase):
+    def __init__(self, _task_num: int, _worker_num: int, _class_num: int, _true_label_num: int = 0):
+        self.task_num = _task_num
+        self.worker_num = _worker_num
+        self.class_num = _class_num
+        self.true_label_num = _true_label_num
+        self.sample = np.zeros(shape=self.task_num, dtype=int)
+        self.alpha = np.ones(shape=(self.worker_num, self.class_num, self.class_num))
+        self.beta = np.ones(shape=self.class_num)
+        self.y_dist = np.zeros(shape=(self.task_num-self.true_label_num, self.class_num))
+        self.b = np.zeros(shape=self.alpha.shape)
+        self.belief = np.zeros(2 * self.worker_num)
+        InferModuleX.init_classX(self.task_num, self.worker_num, self.class_num, self.true_label_num,
+                                self.sample, self.alpha, self.beta, self.y_dist, self.b)
 
+    def infer(self, label_mat: np.matrix, true_label: list):
+        InferModuleX.infer(label_mat, np.asarray(true_label))
+
+    def test(self, label_mat: np.matrix, true_label: list):
+        InferModuleX.inferX(label_mat, np.asarray(true_label))
+        '''Calculate the belief about workers'''
+        for j in range(self.worker_num):
+            self.belief[2*j] = self.b[j, 0, 0]/np.sum(self.b[j, 0, :])
+            self.belief[2*j+1] = self.b[j, 1, 1]/np.sum(self.b[j, 1, :])
+        '''Calculate the expected accuracy'''
+        self.ex_accuracy = 0
+        accuracy = 0
+        for i in range(self.task_num-self.true_label_num):
+            self.ex_accuracy += np.max(self.y_dist[i, :])
+            label = np.argmax(self.y_dist[i, :])
+            if label == true_label[i+self.true_label_num]-1:
+                accuracy += 1
+        self.ex_accuracy /= (self.task_num-self.true_label_num)
+        accuracy /= (self.task_num-self.true_label_num)
+        return accuracy
+
+"""
     # Number of samples
     sample_num = 100
 
@@ -61,7 +108,7 @@ class GibbsSampling(InferBase):
         self.belief = np.zeros(2 * self.worker_num)
 
     def calc_prior_dist(self, label_mat: np.matrix = None, true_label: list = None):
-        """Calculate the prior distribution"""
+        '''Calculate the prior distribution'''
         self.alpha.fill(1.0)
         self.beta.fill(1.0)
         if self.true_label_num == 0:
@@ -80,7 +127,7 @@ class GibbsSampling(InferBase):
                 self.beta[k] += 1
 
     def init_y_alpha_beta(self, label_mat: np.matrix):
-        """Calculate the initial values"""
+        '''Calculate the initial values'''
         for i in np.arange(self.true_label_num, self.task_num):
             '''Majority voting to compute the probability'''
             votes = np.zeros(self.class_num)
@@ -88,7 +135,8 @@ class GibbsSampling(InferBase):
                 votes[label-1] += 1
             p = votes/np.sum(votes)
             '''Generate the label and Initialize'''
-            label = np.random.choice(np.arange(0, self.class_num), p=p)
+            #label = np.random.choice(np.arange(0, self.class_num), p=p)
+            label = random_sample(0, p)
             self.sample[i] = label
             self.beta[label] += 1
             for j in range(self.worker_num):
@@ -97,7 +145,7 @@ class GibbsSampling(InferBase):
                     self.alpha[j, label, g] += 1
 
     def update_alpha_beta_y(self, label_mat: np.matrix, i: int, yn: int):
-        """Update the alpha tensor, beta vector with new yn for task i"""
+        '''Update the alpha tensor, beta vector with new yn for task i'''
         y0 = self.sample[i]
         if y0 != yn:
             '''Update the beta vector'''
@@ -114,7 +162,7 @@ class GibbsSampling(InferBase):
 
     @classmethod
     def log_m_beta(cls, x: np.array) -> float:
-        """The Log Beta function"""
+        '''The Log Beta function'''
         log_prob = 0
         sum_x = 0
         for i in range(x.shape[0]):
@@ -124,7 +172,7 @@ class GibbsSampling(InferBase):
         return log_prob
 
     def generate_one_label(self, label_mat: np.matrix, i: int):
-        """Generate one label as the Gibbs sampling"""
+        '''Generate one label as the Gibbs sampling'''
         '''Calculate the conditional probability'''
         log_prob = np.zeros(self.class_num)
         for k in range(self.class_num):
@@ -138,18 +186,19 @@ class GibbsSampling(InferBase):
         prob = np.exp(log_prob)
         prob /= np.sum(prob)
         '''Generate a new label'''
-        label = np.random.choice(np.arange(self.class_num), p=prob)
+        label = random_sample(0, prob)
+        # np.random.choice(np.arange(self.class_num), p=prob)
         self.update_alpha_beta_y(label_mat, i, label)
 
     def gs_burn_in(self, label_mat: np.matrix):
-        """The burn-in process in Gibbs sampling"""
+        '''The burn-in process in Gibbs sampling'''
         self.init_y_alpha_beta(label_mat)
         for t in range(self.burn_num):
             for i in np.arange(self.true_label_num, self.task_num):
                 self.generate_one_label(label_mat, i)
 
     def infer(self, label_mat: np.matrix, true_label: list = None):
-        """Infer the states and expected accuracy"""
+        '''Infer the states and expected accuracy'''
         '''Compute the prior distribution'''
         if true_label is None:
             self.calc_prior_dist()
@@ -178,7 +227,7 @@ class GibbsSampling(InferBase):
         self.ex_accuracy /= (self.task_num-self.true_label_num)
 
     def test(self, label_mat: np.matrix, true_label: list):
-        """Test the inference results and return the real accuracy"""
+        '''Test the inference results and return the real accuracy'''
         '''Compute the prior distribution'''
         self.calc_prior_dist(label_mat, true_label)
         '''Burn In'''
@@ -188,6 +237,7 @@ class GibbsSampling(InferBase):
         self.b.fill(0.0)
         self.belief.fill(0.0)
         for t in range(self.sample_num):
+            start = time.time()
             '''Take one sample in every interval'''
             for n in range(self.interval):
                 for i in np.arange(self.true_label_num, self.task_num):
@@ -196,6 +246,8 @@ class GibbsSampling(InferBase):
             for i in np.arange(self.true_label_num, self.task_num):
                 self.y_dist[i-self.true_label_num, self.sample[i]] += 1.0
             self.b += self.alpha
+            end = time.time()
+            print(start - end)
         self.y_dist /= self.sample_num
         self.b /= self.sample_num
         '''Calculate the belief about workers'''
@@ -213,3 +265,4 @@ class GibbsSampling(InferBase):
         self.ex_accuracy /= (self.task_num-self.true_label_num)
         accuracy /= (self.task_num-self.true_label_num)
         return accuracy
+"""

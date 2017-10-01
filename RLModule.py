@@ -8,7 +8,7 @@ class RLBase(object):
     __metaclass__ = abc.ABCMeta
 
     # The discount factor
-    gamma = 0.8
+    gamma = 0.0
 
     # The action set (prices goes from the smallest to the largest)
     ActionSet = [0.1, 0.5, 1.0, 2.0]
@@ -29,7 +29,7 @@ class GpSarsa(RLBase):
 
     def __init__(self, len_state: int):
         # The noisy level of the Gaussian process
-        self.sigma = 0.02
+        self.sigma = 0.01
         # Observation history
         self.Hist = []  # <State, Action>
         self.len_state = len_state
