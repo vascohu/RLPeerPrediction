@@ -28,7 +28,6 @@ infer = InferModule.GibbsSampling(task_num, worker_num, 2, num_true_label)
 rl = RLModule.GpSarsa(2*worker_num)
 
 
-
 for i in range(T):
     # Get the action
     a = rl.decide()
