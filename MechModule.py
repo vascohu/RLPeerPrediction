@@ -37,23 +37,27 @@ class DG13(MechBase):
         self.B = parameters[0]
 
     def pay(self, label_mat: np.matrix):
-        """Compute the reward vector"""
-        reward_vec = []
+        """Compute the total reward and the detailed rewards for each task"""
+        p = 0
+        reward_mat = []
         self.label_mat = label_mat
         for i in range(label_mat.shape[1] - 1):
-            reward_vec.append(self.reward_a_agent(i) * self.B)
-        return reward_vec
+            p += np.sum(self.reward_a_agent(i))
+            reward_mat.append(self.reward_a_agent(i))
+        return (p, reward_mat)
 
     def reward_a_agent(self, agent_id: int):
         """Compute the reward for one agent"""
-        reward = 0
+        reward_vec = []
         for i in range(self.label_mat.shape[0]):
+            reward = 0
             if self.label_mat[i, agent_id] != 0:
                 ref_agent_id = self.ref_agent(agent_id, i)
                 if self.label_mat[i, agent_id] == self.label_mat[i, ref_agent_id]:
                     reward += 1
                 reward -= self.non_overlapping_set(i, agent_id, ref_agent_id)
-        return reward
+            reward_vec.append(reward*self.B)
+        return reward_vec
 
     def ref_agent(self, agent_id: int, task_id: int):
         """Randomly select the reference agent"""

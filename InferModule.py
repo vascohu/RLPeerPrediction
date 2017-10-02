@@ -30,7 +30,7 @@ class InferBase(object):
     R = 0.0
 
     # The discount of reward
-    eta = 0.0002
+    eta = 0.0
 
     @abc.abstractmethod
     def infer(self, label_mat: np.matrix, true_label: list):
@@ -38,7 +38,7 @@ class InferBase(object):
         return
 
     def reward(self, payment: float):
-        return self.ex_accuracy - self.eta*payment - 0.5
+        return (self.ex_accuracy)**10 - self.eta*payment
 
     @abc.abstractmethod
     def test(self, label_mat: np.matrix, true_label: list):

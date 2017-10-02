@@ -8,18 +8,18 @@ class RLBase(object):
     __metaclass__ = abc.ABCMeta
 
     # The discount factor
-    gamma = 0.0
+    gamma = 0.99
 
     # The action set (prices goes from the smallest to the largest)
-    ActionSet = [0.1, 0.5, 1.0, 2.0]
+    ActionSet = [1, 10]
 
     @abc.abstractmethod
-    def decide(self):
+    def decide(self, start = False):
         """Decide the action a_t"""
         return
 
     @abc.abstractmethod
-    def observe(self, a, r, s):
+    def observe(self, a, r, s, start = False, terminal = False):
         """Observe <reward_t, state_t+1> """
         return
 
@@ -29,7 +29,7 @@ class GpSarsa(RLBase):
 
     def __init__(self, len_state: int):
         # The noisy level of the Gaussian process
-        self.sigma = 0.01
+        self.sigma = 0.02
         # Observation history
         self.Hist = []  # <State, Action>
         self.len_state = len_state
@@ -63,7 +63,7 @@ class GpSarsa(RLBase):
             pos = q.index(max(q))
             return RLBase.ActionSet[pos]
 
-    def observe(self, a, r, s):
+    def observe(self, a, r, s, start = False, terminal = False):
         """Observe the environment change after action a"""
         '''Add the data to the observation history'''
         if len(self.S)>0:
@@ -122,4 +122,100 @@ class GpSarsa(RLBase):
         meanVal = vec_k_cov.dot(self.Alpha)
         varVal = k0 - vec_k_cov.dot(np.dot(self.C,vec_k_cov))
         '''Generate a sample from the prediction'''
+        return np.random.normal(meanVal, np.sqrt(varVal))
+
+
+# Gaussian Process SARSA
+class EpGpSarsa(RLBase):
+    def __init__(self):
+        # The noisy level of the Gaussian process
+        self.sigma = 1.0
+        self.kernel_sigma = np.array([5.0,5.0,0.1,0.1])
+        # Observation history
+        self.Hist = []  # <State, Action, Action>
+        self.R = []  # Reward
+        # The covariance matrix
+        self.Cov = []
+        # Current State
+        self.z = None
+        # H matrix
+        self.H = []
+        # Gaussian Process Parameters
+        self.A = None
+        self.C = None
+
+
+    def kernel(self, z1: np.array, z2: np.array) -> float:
+        d = np.dot(self.kernel_sigma, z1-z2)
+        dd = np.sum(d**2)
+        return np.exp(-1.0*dd)
+
+    def observe(self, a, r, s, start = False, terminal = False):
+        # Add to the history
+        if start is False:
+            self.Hist.append(list(self.z) + [a])
+            self.R.append(r)
+
+        # Update Current State
+        if terminal is False:
+            self.z = list(s.copy()) + [a]
+        else:
+            self.z.clear()
+        # Update the H mat
+        if start is True:
+            for row in self.H:
+                row.append(0)
+        else:
+            self.H.append([0]*len(self.H)+[1])
+            self.gpRegression()
+            if terminal is False:
+                for row in self.H[0:-1]:
+                    row.append(0)
+                self.H[-1].append(-self.gamma)
+
+    def gpRegression(self):
+        """Compute the Gaussian Process model"""
+        # Compute the covariance between new observation and old ones
+        k_cov = [self.kernel(np.asarray(self.Hist[-1]), np.asarray(z)) for z in self.Hist]
+        # Add these data to the covariance table
+        for (c1, c2) in zip(self.Cov, k_cov):
+            c1.append(c2)
+        self.Cov.append(k_cov)
+        # Compute the inverse of the covariance
+        T = len(self.H)
+        K = np.asmatrix(self.Cov)
+        '''Compute alpha and C matrix'''
+        HH = np.asmatrix(self.H)
+        Temp = HH.T * np.linalg.inv(HH * K * HH.T + HH * HH.T * self.sigma * self.sigma)
+        r = np.asmatrix(self.R)
+        self.A = Temp * r.T
+        self.C = Temp * HH
+
+    def decide(self, start = False):
+        """We use Thompson sampling to decide the next-step action."""
+        # At the first step, choose the lowest price
+        if len(self.H) == 0:
+            return RLBase.ActionSet[0]
+        if start is True:
+            self.z = [0.5, 0.5, RLBase.ActionSet[0]]
+        # Calculate the prediction
+        q = np.zeros(len(RLBase.ActionSet))
+        x = self.z.copy() + [0]
+        for i in range(len(RLBase.ActionSet)):
+            x[-1] = RLBase.ActionSet[i]
+            q[i] = self.gpPredict(x)
+        pos = np.argmax(q)
+        print("z= ",self.z)
+        print("q= ", q)
+        return RLBase.ActionSet[pos]
+
+    def gpPredict(self, z):
+        """Use the Gaussian Process model to predict Q(z=<s,a>)"""
+        # Compute the mean value and variance
+        k_cov = [self.kernel(np.asarray(z), np.asarray(el)) for el in self.Hist]
+        vec_k_cov = np.asmatrix(k_cov)
+        k0 = self.kernel(np.asarray(z), np.asarray(z))
+        meanVal = vec_k_cov * self.A
+        varVal = k0 - vec_k_cov * self.C * vec_k_cov.T
+        # Generate a sample from the prediction
         return np.random.normal(meanVal, np.sqrt(varVal))

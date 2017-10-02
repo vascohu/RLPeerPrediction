@@ -12,7 +12,8 @@ import time
 task_num = 100
 worker_num = 10
 num_true_label = 0
-T = 100
+T = 20
+EP = 20
 
 
 # The incentive mechanism
@@ -25,28 +26,53 @@ mkt = CrowdModule.CrowdMarket(task_num, worker_num, mech)
 infer = InferModule.GibbsSampling(task_num, worker_num, 2, num_true_label)
 
 # The RL module
-rl = RLModule.GpSarsa(2*worker_num)
+rl = RLModule.EpGpSarsa()
 
+a = 0
+s = [0, 0]
+
+'''
+mech.set([10])
+label_mat = mkt.get_label_mat(num_true_label)
+(pay, reward_mat) = mech.pay(label_mat)
+mkt.evolve(reward_mat)
+'''
 
 for i in range(T):
-    # Get the action
-    a = rl.decide()
-    # Set the mechanism
-    mech.set([a])
-    # Collect the label matrix
-    label_mat = mkt.get_label_mat(num_true_label)
-    true_label = mkt.get_true_label()
-    # Decide the payment
-    reward_vec = mech.pay(label_mat)
-    pay = np.sum(reward_vec)
-    # Inference
-    acc = infer.test(label_mat, list(true_label))
-    r = infer.reward(pay)
-    s = infer.belief
-    print("Action: ", a, "\t Reward: ", r)
-    print(acc, '\t', infer.ex_accuracy)
-    # Observation
-    rl.observe(a, r, s)
+    print(">>>>>>>>>>>>Round: \n", i)
+    mkt.worker_init()
+    accR = 0
+    for t in range(EP):
+        print("Step: ", t+1)
+        # Get the action
+        if t==0:
+            a = rl.decide(start=True)
+        else:
+            a = rl.decide(start=False)
+        # Set the mechanism
+        mech.set([a])
+        # Collect the label matrix
+        label_mat = mkt.get_label_mat(num_true_label)
+        true_label = mkt.get_true_label()
+        # Decide the payment
+        (pay, reward_mat) = mech.pay(label_mat)
+        mkt.evolve(reward_mat)
+        # Inference
+        acc = infer.test(label_mat, list(true_label))
+        r = infer.reward(pay)
+        accR += r
+        s[0] = np.mean(infer.belief[0::2])
+        s[1] = np.mean(infer.belief[1::2])
+        print("Action: ", a, "\t Reward: ", r)
+        print(acc, '\t', infer.ex_accuracy)
+        # Observation
+        if t==0:
+            rl.observe(a, r, s, start=True)
+        elif t==EP-1:
+            rl.observe(a, r, s, terminal=True)
+        else:
+            rl.observe(a, r, s)
+    print("The reward is ", accR, "\n\n")
 
 """
 # Change the incentive level
