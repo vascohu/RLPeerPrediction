@@ -118,7 +118,10 @@ class MWUA_Worker(Worker):
             u[s].append(rewards[id])
         uu = np.zeros(self.strategy.shape[0])
         for j in range(self.strategy.shape[0]):
-            uu[j] = np.mean(u[j])
+            if len(u[j]) == 0:
+                uu[j] = 0
+            else:
+                uu[j] = np.mean(u[j])
         uu -= np.min(uu)
         for j in range(self.strategy.shape[0]):
             self.strategy[j] *= 1 + uu[j]*self.epsilon

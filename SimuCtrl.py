@@ -12,9 +12,10 @@ import time
 task_num = 100
 worker_num = 10
 num_true_label = 0
-T = 20
-EP = 20
+T = 40
+EP = 30
 
+# np.random.seed(0)
 
 # The incentive mechanism
 mech = MechModule.DG13()
@@ -30,6 +31,8 @@ rl = RLModule.EpGpSarsa()
 
 a = 0
 s = [0, 0]
+
+rr = []
 
 '''
 mech.set([10])
@@ -61,10 +64,12 @@ for i in range(T):
         acc = infer.test(label_mat, list(true_label))
         r = infer.reward(pay)
         accR += r
-        s[0] = np.mean(infer.belief[0::2])
-        s[1] = np.mean(infer.belief[1::2])
+        s[0] = (np.mean(infer.belief[0::2])*infer.beta[0]+np.mean(infer.belief[1::2])*infer.beta[1])/np.sum(infer.beta)
+        s[1] = 0
         print("Action: ", a, "\t Reward: ", r)
+        print(pay)
         print(acc, '\t', infer.ex_accuracy)
+        print("State ", s[0])
         # Observation
         if t==0:
             rl.observe(a, r, s, start=True)
@@ -72,7 +77,13 @@ for i in range(T):
             rl.observe(a, r, s, terminal=True)
         else:
             rl.observe(a, r, s)
-    print("The reward is ", accR, "\n\n")
+    print(accR)
+    rr.append(accR)
+    # for (h,r) in zip(rl.Hist, rl.R):
+    #    print(h, "  >>>  ",r )
+
+    #print("The reward is ", accR, "\n\n")
+print(rr)
 
 """
 # Change the incentive level

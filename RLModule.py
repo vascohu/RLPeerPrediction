@@ -8,7 +8,7 @@ class RLBase(object):
     __metaclass__ = abc.ABCMeta
 
     # The discount factor
-    gamma = 0.99
+    gamma = 0.9
 
     # The action set (prices goes from the smallest to the largest)
     ActionSet = [1, 10]
@@ -129,8 +129,9 @@ class GpSarsa(RLBase):
 class EpGpSarsa(RLBase):
     def __init__(self):
         # The noisy level of the Gaussian process
-        self.sigma = 1.0
-        self.kernel_sigma = np.array([5.0,5.0,0.1,0.1])
+        self.sigma = 0.1
+        self.kernel_sigma = np.array([1.0,1.0,0.1,0.1])
+        self.explore_prob = 1.0
         # Observation history
         self.Hist = []  # <State, Action, Action>
         self.R = []  # Reward
@@ -146,7 +147,7 @@ class EpGpSarsa(RLBase):
 
 
     def kernel(self, z1: np.array, z2: np.array) -> float:
-        d = np.dot(self.kernel_sigma, z1-z2)
+        d = self.kernel_sigma * (z1-z2)
         dd = np.sum(d**2)
         return np.exp(-1.0*dd)
 
@@ -194,20 +195,22 @@ class EpGpSarsa(RLBase):
     def decide(self, start = False):
         """We use Thompson sampling to decide the next-step action."""
         # At the first step, choose the lowest price
-        if len(self.H) == 0:
-            return RLBase.ActionSet[0]
-        if start is True:
-            self.z = [0.5, 0.5, RLBase.ActionSet[0]]
-        # Calculate the prediction
-        q = np.zeros(len(RLBase.ActionSet))
-        x = self.z.copy() + [0]
-        for i in range(len(RLBase.ActionSet)):
-            x[-1] = RLBase.ActionSet[i]
-            q[i] = self.gpPredict(x)
-        pos = np.argmax(q)
-        print("z= ",self.z)
-        print("q= ", q)
-        return RLBase.ActionSet[pos]
+        th = np.random.rand()
+        if th<self.explore_prob:
+            return np.random.choice(RLBase.ActionSet)
+        else:
+            if len(self.H) == 0:
+                return RLBase.ActionSet[0]
+            if start is True:
+                self.z = [0.5, 0.0, RLBase.ActionSet[0]]
+            # Calculate the prediction
+            q = np.zeros(len(RLBase.ActionSet))
+            x = self.z.copy() + [0]
+            for i in range(len(RLBase.ActionSet)):
+                x[-1] = RLBase.ActionSet[i]
+                q[i] = self.gpPredict(x)
+            pos = np.argmax(q)
+            return RLBase.ActionSet[pos]
 
     def gpPredict(self, z):
         """Use the Gaussian Process model to predict Q(z=<s,a>)"""
@@ -216,6 +219,8 @@ class EpGpSarsa(RLBase):
         vec_k_cov = np.asmatrix(k_cov)
         k0 = self.kernel(np.asarray(z), np.asarray(z))
         meanVal = vec_k_cov * self.A
-        varVal = k0 - vec_k_cov * self.C * vec_k_cov.T
+        # varVal = k0 - vec_k_cov * self.C * vec_k_cov.T
+        # print(meanVal, '\t', varVal)
         # Generate a sample from the prediction
-        return np.random.normal(meanVal, np.sqrt(varVal))
+        # return np.random.normal(meanVal, np.sqrt(varVal))
+        return meanVal
