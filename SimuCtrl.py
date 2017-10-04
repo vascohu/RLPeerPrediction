@@ -12,8 +12,8 @@ import time
 task_num = 100
 worker_num = 10
 num_true_label = 0
-T = 40
-EP = 30
+T = 100
+EP = 10
 
 # np.random.seed(0)
 
@@ -65,11 +65,12 @@ for i in range(T):
         r = infer.reward(pay)
         accR += r
         s[0] = (np.mean(infer.belief[0::2])*infer.beta[0]+np.mean(infer.belief[1::2])*infer.beta[1])/np.sum(infer.beta)
-        s[1] = 0
-        print("Action: ", a, "\t Reward: ", r)
-        print(pay)
-        print(acc, '\t', infer.ex_accuracy)
-        print("State ", s[0])
+        # s[0] = infer.ex_accuracy
+        s[1] = t+1
+        # print("Action: ", a, "\t Reward: ", r)
+        # print(pay)
+        # print(acc, '\t', infer.ex_accuracy)
+        print("State: ", rl.z, "Action: ", a, "Reward: ", r)
         # Observation
         if t==0:
             rl.observe(a, r, s, start=True)

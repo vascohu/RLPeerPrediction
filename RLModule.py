@@ -129,9 +129,9 @@ class GpSarsa(RLBase):
 class EpGpSarsa(RLBase):
     def __init__(self):
         # The noisy level of the Gaussian process
-        self.sigma = 0.1
-        self.kernel_sigma = np.array([1.0,1.0,0.1,0.1])
-        self.explore_prob = 1.0
+        self.sigma = 0.2
+        self.kernel_sigma = np.array([10,0.1,0.05,0.05])
+        self.explore_prob = 0.2
         # Observation history
         self.Hist = []  # <State, Action, Action>
         self.R = []  # Reward
@@ -144,6 +144,8 @@ class EpGpSarsa(RLBase):
         # Gaussian Process Parameters
         self.A = None
         self.C = None
+        # Add r flag
+        r_flag = False
 
 
     def kernel(self, z1: np.array, z2: np.array) -> float:
@@ -209,6 +211,7 @@ class EpGpSarsa(RLBase):
             for i in range(len(RLBase.ActionSet)):
                 x[-1] = RLBase.ActionSet[i]
                 q[i] = self.gpPredict(x)
+            print("Q: ", q)
             pos = np.argmax(q)
             return RLBase.ActionSet[pos]
 
@@ -219,7 +222,7 @@ class EpGpSarsa(RLBase):
         vec_k_cov = np.asmatrix(k_cov)
         k0 = self.kernel(np.asarray(z), np.asarray(z))
         meanVal = vec_k_cov * self.A
-        # varVal = k0 - vec_k_cov * self.C * vec_k_cov.T
+        varVal = k0 - vec_k_cov * self.C * vec_k_cov.T
         # print(meanVal, '\t', varVal)
         # Generate a sample from the prediction
         # return np.random.normal(meanVal, np.sqrt(varVal))
