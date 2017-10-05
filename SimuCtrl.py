@@ -13,7 +13,7 @@ task_num = 100
 worker_num = 10
 num_true_label = 0
 T = 100
-EP = 10
+EP = 20
 
 # np.random.seed(0)
 

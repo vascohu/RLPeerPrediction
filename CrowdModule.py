@@ -100,6 +100,8 @@ class MWUA_Worker(Worker):
         self.s_list = []
         # The labeling strategy
         self.strategy = np.ones(2)*0.5
+        self.strategy[0] = 0.2
+        self.strategy[1] = 0.8
 
     def labeling(self, task: Task):
         self.task_ids.append(task.id)

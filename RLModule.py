@@ -11,7 +11,7 @@ class RLBase(object):
     gamma = 0.9
 
     # The action set (prices goes from the smallest to the largest)
-    ActionSet = [1, 10]
+    ActionSet = [0.1, 1, 5, 10]
 
     @abc.abstractmethod
     def decide(self, start = False):
