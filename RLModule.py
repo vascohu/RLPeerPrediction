@@ -130,7 +130,7 @@ class EpGpSarsa(RLBase):
     def __init__(self):
         # The noisy level of the Gaussian process
         self.sigma = 0.2
-        self.kernel_sigma = np.array([10,0.1,0.05,0.05])
+        self.kernel_sigma = np.array([2,0.1,0.05,0.05])
         self.explore_prob = 0.2
         # Observation history
         self.Hist = []  # <State, Action, Action>
@@ -227,3 +227,111 @@ class EpGpSarsa(RLBase):
         # Generate a sample from the prediction
         # return np.random.normal(meanVal, np.sqrt(varVal))
         return meanVal
+
+
+# True Online SARSA
+class TOSarsa(RLBase):
+
+    # SARSA parameters
+    explore_prob = 0.2
+    p_alpha = 1.0
+    p_lambda = 0.8
+
+    def __init__(self, T: int):
+        # The kernel parameter
+        self.kernel_sigma = np.array([10, 0.5, 0.5, 0.5])
+        # The state space basis
+        state_basis = np.arange(0.5, 1.05, 0.05)
+        # The space basis
+        basis_dim1 = state_basis.shape[0]
+        basis_dim2 = T+1
+        basis_dim3 = len(self.ActionSet)
+        basis_dim4 = len(self.ActionSet)
+        bsize = basis_dim1*basis_dim2*basis_dim3*basis_dim4
+        space_basis_temp = np.zeros(shape=(basis_dim1, basis_dim2, basis_dim3, basis_dim4, 4))
+        for i in range(basis_dim1):
+            for j in range(basis_dim2):
+                for k in range(basis_dim3):
+                    for t in range(basis_dim4):
+                        space_basis_temp[i, j, k, t] = [state_basis[i], j, self.ActionSet[k], self.ActionSet[t]]
+        self.space_basis = space_basis_temp.reshape((bsize,4))
+
+        # The system state < S, a >
+        self.z = np.zeros(4)
+        self.z_p = np.zeros(4)
+        # The system feature vector
+        self.phi = None
+        self.phi_p = None
+        # The action reward
+        self.r = 0
+        # The theta variable
+        self.theta = np.zeros(bsize)
+        # The Q_old
+        self.Q_old = 0.0
+        # The e vector
+        self.e = np.zeros(bsize)
+        # The end point
+        self.end_point = T
+
+    def feature(self, z1: np.array):
+        d = np.multiply(self.kernel_sigma, z1 - self.space_basis)
+        dd = np.sum(np.square(d), axis=1)
+        f = np.exp(-1.0*dd)
+        return f/np.sum(f)
+
+    def decide(self, start = False):
+        """Decide the action a_t"""
+        if start == True:
+            # Initialize the state vector
+            self.z = np.array([0.5, 0, self.ActionSet[0], 0])
+            # Decide the action
+            a = self.action_strategy(self.z)
+            self.z[-1] = a
+            # Update the algorithm parameters
+            self.phi = self.feature(self.z)
+            self.e.fill(0.0)
+            self.Q_old = 0.0
+            return a
+        else:
+            # Decide the action
+            a = self.action_strategy(self.z_p)
+            self.z_p[-1] = a
+            # Update the phi_p
+            if self.z_p[1] < self.end_point:
+                self.phi_p = self.feature(self.z_p)
+            else:
+                self.phi_p = np.zeros(self.phi.shape[0])
+            # Update the Q
+            Q = np.dot(self.theta, self.phi)
+            Q_p = np.dot(self.theta, self.phi_p)
+            delta = self.r + self.gamma*Q_p - Q
+            self.e = self.p_lambda*self.gamma*self.e + self.phi - self.p_alpha*self.gamma*self.p_lambda*np.dot(self.e, self.phi)*self.phi
+            self.theta += self.p_alpha*(delta+Q-self.Q_old)*self.e-self.p_alpha*(Q-self.Q_old)*self.phi
+            # print(delta, '\t', np.sum(self.e), '\t', np.sum(self.theta), '\t', Q_p)
+            self.Q_old = Q_p
+            self.phi = self.phi_p
+            self.z = self.z_p
+            return a
+
+    def observe(self, a, r, s, start = False, terminal = False):
+        """Observe <reward_t, state_t+1> """
+        self.z_p[0:2] = s
+        self.z_p[2] = a
+        self.r = r
+        return
+
+    def action_strategy(self, z):
+        # Decide the action with epsilon-greedy strategy
+        th = np.random.rand()
+        if th<self.explore_prob:
+            print("Exploring")
+            return np.random.choice(RLBase.ActionSet)
+        else:
+            Q = np.zeros(len(self.ActionSet))
+            for i, a in enumerate(self.ActionSet):
+                z[-1] = a
+                phi = self.feature(z)
+                Q[i] = np.dot(self.theta, phi)
+            pos = np.argmax(Q)
+            print(Q)
+            return RLBase.ActionSet[pos]

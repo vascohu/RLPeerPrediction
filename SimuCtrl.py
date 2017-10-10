@@ -27,12 +27,13 @@ mkt = CrowdModule.CrowdMarket(task_num, worker_num, mech)
 infer = InferModule.GibbsSampling(task_num, worker_num, 2, num_true_label)
 
 # The RL module
-rl = RLModule.EpGpSarsa()
+rl = RLModule.TOSarsa(EP)
 
 a = 0
 s = [0, 0]
 
 rr = []
+RR=[]
 
 '''
 mech.set([10])
@@ -41,10 +42,13 @@ label_mat = mkt.get_label_mat(num_true_label)
 mkt.evolve(reward_mat)
 '''
 
+
 for i in range(T):
     print(">>>>>>>>>>>>Round: \n", i)
     mkt.worker_init()
     accR = 0
+    accRR = 0
+    # rl.explore_prob = 0.5 * (0.98**i)
     for t in range(EP):
         print("Step: ", t+1)
         # Get the action
@@ -64,6 +68,7 @@ for i in range(T):
         acc = infer.test(label_mat, list(true_label))
         r = infer.reward(pay)
         accR += r
+        accRR += infer.real_reward(acc, pay)
         s[0] = (np.mean(infer.belief[0::2])*infer.beta[0]+np.mean(infer.belief[1::2])*infer.beta[1])/np.sum(infer.beta)
         # s[0] = infer.ex_accuracy
         s[1] = t+1
@@ -76,15 +81,20 @@ for i in range(T):
             rl.observe(a, r, s, start=True)
         elif t==EP-1:
             rl.observe(a, r, s, terminal=True)
+            rl.decide(start=False)
         else:
             rl.observe(a, r, s)
     print(accR)
+    print(accRR)
     rr.append(accR)
+    RR.append(accRR)
     # for (h,r) in zip(rl.Hist, rl.R):
     #    print(h, "  >>>  ",r )
 
     #print("The reward is ", accR, "\n\n")
 print(rr)
+print(RR)
+
 
 """
 # Change the incentive level

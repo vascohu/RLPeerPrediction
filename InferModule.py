@@ -40,6 +40,9 @@ class InferBase(object):
     def reward(self, payment: float):
         return (self.ex_accuracy)**10 - self.eta*payment
 
+    def real_reward(self, accuracy: float, payment: float):
+        return accuracy**10 - self.eta*payment
+
     @abc.abstractmethod
     def test(self, label_mat: np.matrix, true_label: list):
         """Test the inference module"""
