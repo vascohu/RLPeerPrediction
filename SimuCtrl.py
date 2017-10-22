@@ -12,8 +12,8 @@ import time
 task_num = 100
 worker_num = 10
 num_true_label = 0
-T = 100
-EP = 20
+T = 200
+EP = 25
 
 # np.random.seed(0)
 
@@ -27,7 +27,9 @@ mkt = CrowdModule.CrowdMarket(task_num, worker_num, mech)
 infer = InferModule.GibbsSampling(task_num, worker_num, 2, num_true_label)
 
 # The RL module
-rl = RLModule.TOSarsa(EP)
+# rl = RLModule.TOSarsa(EP)
+# rl = RLModule.EpSGPS(EP)
+rl = RLModule.Simple()
 
 a = 0
 s = [0, 0]
@@ -42,13 +44,16 @@ label_mat = mkt.get_label_mat(num_true_label)
 mkt.evolve(reward_mat)
 '''
 
+rl.explore_prob = 0.2
+
+thefile = open('ResultS3.txt', 'w')
 
 for i in range(T):
     print(">>>>>>>>>>>>Round: \n", i)
     mkt.worker_init()
     accR = 0
     accRR = 0
-    # rl.explore_prob = 0.5 * (0.98**i)
+    rl.explore_prob *= 0.99
     for t in range(EP):
         print("Step: ", t+1)
         # Get the action
@@ -56,6 +61,7 @@ for i in range(T):
             a = rl.decide(start=True)
         else:
             a = rl.decide(start=False)
+
         # Set the mechanism
         mech.set([a])
         # Collect the label matrix
@@ -75,19 +81,21 @@ for i in range(T):
         # print("Action: ", a, "\t Reward: ", r)
         # print(pay)
         # print(acc, '\t', infer.ex_accuracy)
+
         print("State: ", rl.z, "Action: ", a, "Reward: ", r)
         # Observation
-        if t==0:
-            rl.observe(a, r, s, start=True)
-        elif t==EP-1:
+        if t==EP-1:
             rl.observe(a, r, s, terminal=True)
-            rl.decide(start=False)
+        elif t==1:
+            rl.observe(a, r, s, start=True)
+            # rl.decide(start=False)
         else:
             rl.observe(a, r, s)
     print(accR)
     print(accRR)
     rr.append(accR)
     RR.append(accRR)
+    thefile.write("%s\t%s\n" % (accR, accRR))
     # for (h,r) in zip(rl.Hist, rl.R):
     #    print(h, "  >>>  ",r )
 
@@ -95,6 +103,7 @@ for i in range(T):
 print(rr)
 print(RR)
 
+thefile.close()
 
 """
 # Change the incentive level

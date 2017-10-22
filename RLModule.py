@@ -24,6 +24,17 @@ class RLBase(object):
         return
 
 
+# The simple RL module
+class Simple(RLBase):
+    z=[0,0,0,0]
+
+    def decide(self, start = False):
+        return self.ActionSet[1]
+
+    def observe(self, a, r, s, start = False, terminal = False):
+        pass
+
+
 # Gaussian Process SARSA
 class GpSarsa(RLBase):
 
@@ -335,3 +346,178 @@ class TOSarsa(RLBase):
             pos = np.argmax(Q)
             print(Q)
             return RLBase.ActionSet[pos]
+
+
+# Sparse Gaussian Process SARSA
+class EpSGPS(RLBase):
+    def __init__(self, end:int):
+        # The noisy level of the Gaussian process
+        self.sigma = 1.0
+        self.kernel_sigma = np.array([2,0.1,0.1,0.1])
+        self.explore_prob = 0.2
+        self.sparse_th = 0.05
+        self.endT = end
+        # Observation history
+        self.D = []  # <State, Action, Action>
+        # The inverse covariance matrix
+        self.invK = np.asmatrix(np.zeros(1))
+        # The mean and variance matrix
+        self.mu = np.asmatrix(np.zeros((1, 1)))
+        self.CV = np.asmatrix(np.zeros((1, 1)))
+        self.c = np.asmatrix(np.zeros((1, 1)))
+        self.g = np.asmatrix(np.zeros((1, 1)))
+        self.c_p = None
+        self.g_p = None
+        # The algorithm parameters
+        self.d = 0
+        self.re_v = 0
+        # Current belief
+        self.z = None
+
+    def kernel(self, z1: np.array, z2: np.array) -> float:
+        d = self.kernel_sigma * (z1-z2)
+        dd = np.sum(d**2)
+        return np.exp(-1.0*dd)
+
+    def decide(self, start = False):
+        # The beginning of each epi
+        if start is True:
+            self.z = [0.5, 0, self.ActionSet[0], 0]
+            # The starting point
+            if len(self.D) == 0:
+                self.z[-1] = np.random.choice(self.ActionSet)
+                self.D.append(self.z.copy())
+                self.invK[0, 0] = self.kernel(np.asarray(self.D[0]), np.asarray(self.D[0]))
+            else:
+                self.z[-1] = self.strategy(self.z)
+            # Initialize the parameters
+            self.c = np.asmatrix(np.zeros((len(self.D),1)))
+            self.d = 0
+            self.re_v = 0
+            k = self.var_vector(self.z)
+            self.g = self.invK * k
+            delta = float(self.kernel(np.asarray(self.z), np.asarray(self.z)) - k.T * self.g)
+            if delta > self.sparse_th:
+                self.add_one(delta, start=True)
+        return self.z[-1]
+
+    def strategy(self, z):
+        if self.explore_prob < 0.0:
+            q = np.zeros(len(self.ActionSet))
+            for i, a in enumerate(self.ActionSet):
+                z[-1] = a
+                q[i] = self.gp_predict_Thompson(z)
+            print("Q: ", q)
+            pos = np.argmax(q)
+            return RLBase.ActionSet[pos]
+        else:
+            th = np.random.rand()
+            if th < self.explore_prob:
+                q = np.zeros(len(self.ActionSet))
+                for i, a in enumerate(self.ActionSet):
+                    z[-1] = a
+                    q[i] = self.gp_predict(z)
+                print("Exploring Q: ", q)
+                return np.random.choice(RLBase.ActionSet)
+            else:
+                q = np.zeros(len(self.ActionSet))
+                for i, a in enumerate(self.ActionSet):
+                    z[-1] = a
+                    q[i] = self.gp_predict(z)
+                print("Q: ", q)
+                pos = np.argmax(q)
+                return RLBase.ActionSet[pos]
+
+    def gp_predict(self, x):
+        """Use the Gaussian Process model to predict Q(z=<s,a>)"""
+        # Compute the mean value and variance
+        k_cov = self.var_vector(x)
+        mean_val = self.mu.T * k_cov
+        k0 = self.kernel(np.asarray(x), np.asarray(x))
+        varVal = k0 - k_cov.T * self.CV * k_cov
+        print(varVal)
+        # print(meanVal, '\t', varVal)
+        # Generate a sample from the prediction
+        # return np.random.normal(meanVal, np.sqrt(varVal))
+        return mean_val
+
+    def gp_predict_Thompson(self, x):
+        """Use the Gaussian Process model to predict Q(z=<s,a>)"""
+        # Compute the mean value and variance
+        k_cov = self.var_vector(x)
+        mean_val = self.mu.T * k_cov
+        k0 = self.kernel(np.asarray(x), np.asarray(x))
+        varVal = k0 - k_cov.T * self.CV * k_cov
+        print(varVal)
+        # print(meanVal, '\t', varVal)
+        # Generate a sample from the prediction
+        return np.random.normal(mean_val, np.sqrt(varVal))
+
+    def var_vector(self, x):
+        k_cov = [self.kernel(np.asarray(x), np.asarray(el)) for el in self.D]
+        return np.asmatrix(k_cov).T
+
+    def add_one(self, delta, start=False, k=None, k_p=None, delta_k=None):
+        self.D.append(self.z.copy())
+        if start is True:
+            self.invK += 1.0 / delta * self.g * self.g.T
+            temp1 = -1.0 / delta * self.g
+            self.invK = np.hstack((self.invK, temp1))
+            temp2 = np.hstack((temp1.T, [[1.0 / delta]]))
+            self.invK = np.vstack((self.invK, temp2))
+            temp = np.zeros(len(self.D))
+            temp[-1] = 1
+            self.g = np.asmatrix(temp).T
+            self.c = np.vstack((self.c, [0]))
+        else:
+            self.invK += 1.0 / delta * self.g_p * self.g_p.T
+            temp1 = -1.0 / delta * self.g_p
+            self.invK = np.hstack((self.invK, temp1))
+            temp2 = np.hstack((temp1.T, [[1.0 / delta]]))
+            self.invK = np.vstack((self.invK, temp2))
+            temp = np.zeros(len(self.D))
+            temp[-1] = 1
+            self.g_p = np.asmatrix(temp).T
+            h = np.vstack((self.g, [-self.gamma]))
+            delta_ktt = self.g.T * (k - 2*self.gamma*k_p) + self.gamma * self.gamma * self.kernel(np.asarray(self.z), np.asarray(self.z))
+            temp = self.CV * delta_k
+            self.c_p = self.gamma * self.sigma * self.sigma * self.re_v * np.vstack((self.c, [0])) + h - np.vstack((temp, [0]))
+            self.re_v = float(1.0 / ((1+self.gamma*self.gamma)*self.sigma*self.sigma + delta_ktt - delta_k.T * self.CV * delta_k + 2 * self.gamma * self.sigma * self.sigma*self.re_v * self.c.T * delta_k - (self.gamma**2) * (self.sigma**4) * self.re_v))
+        self.mu = np.vstack((self.mu, [0]))
+        self.CV = np.hstack((self.CV, np.zeros((self.CV.shape[0], 1))))
+        self.CV = np.vstack((self.CV, np.zeros((1, self.CV.shape[1]))))
+
+    def observe(self, a, r, s, start=False, terminal=False):
+        # Update the observation
+        delta = 0
+        k = self.var_vector(self.z)
+        k_p = None
+        delta_k = None
+        if terminal is False:
+            self.z[0:2] = s
+            self.z[2] = a
+            self.z[-1] = self.strategy(self.z)
+            k_p = self.var_vector(self.z)
+            self.g_p = self.invK * k_p
+            delta = float(self.kernel(np.asarray(self.z), np.asarray(self.z)) - k_p.T * self.g_p)
+            delta_k = k - self.gamma * k_p
+        else:
+            self.g_p = np.asmatrix(np.zeros((len(self.D), 1)))
+            delta_k = k
+        # Update the r vector
+        self.d = self.gamma * self.sigma * self.sigma * self.d * self.re_v + r - delta_k.T * self.mu
+        # Update the basis
+        if delta > self.sparse_th and terminal is False:
+            self.add_one(delta, start=False, k=k, k_p=k_p, delta_k=delta_k)
+        else:
+            h = self.g - self.gamma * self.g_p
+            self.c_p = self.gamma * self.sigma * self.sigma * self.re_v * self.c + h - self.CV * delta_k
+            if terminal is False:
+                self.re_v = float(1.0 / ((1+self.gamma*self.gamma)*self.sigma*self.sigma + delta_k.T * (self.c_p + self.gamma * self.sigma * self.sigma * self.re_v * self.c) - (self.gamma**2) * (self.sigma**4) * self.re_v))
+            else:
+                self.re_v = float(1.0 / (self.sigma*self.sigma + delta_k.T * (self.c_p + self.gamma * self.sigma * self.sigma * self.re_v * self.c) - (self.gamma**2) * (self.sigma**4) * self.re_v))
+        # Update the mean and variance
+        self.mu += self.c_p * self.d * self.re_v
+        self.CV += self.re_v * self.c_p * self.c_p.T
+        self.c = self.c_p
+        self.g = self.g_p

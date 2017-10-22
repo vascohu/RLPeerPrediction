@@ -43,6 +43,21 @@ class Worker(object):
         """Adapt their strategies according to the rewards"""
         return
 
+class RWorker(Worker):
+    def __init__(self, mech: MechModule.MechBase):
+        # Set the mechanism mirror
+        self.mirror_of_mech = mech
+
+    def labeling(self, task: Task):
+            th = np.random.rand()
+            if th < 0.9:
+                return task.true_label
+            else:
+                return (3 - task.true_label)
+
+    def evolve(self, rewards: list):
+            pass
+
 
 # The quantal response Worker
 class QRWorker(Worker):
@@ -84,7 +99,7 @@ class QRWorker(Worker):
             return np.random.choice([1, 2])
 
     def evolve(self, rewards: list):
-        return
+        pass
 
 # The MWUA Worker
 class MWUA_Worker(Worker):
@@ -164,6 +179,8 @@ class CrowdMarket:
         # Generate workers
         for j in range(worker_number):
             new_worker = MWUA_Worker(mech)
+            # new_worker = RWorker(mech)
+            # new_worker = QRWorker(mech)
             self.worker_list.append(new_worker)
         # Generate the assign table
         self.task_assign_table = self.assign_task()
@@ -173,6 +190,8 @@ class CrowdMarket:
         self.worker_list.clear()
         for j in range(self.n_worker):
             new_worker = MWUA_Worker(self.mech)
+            # new_worker = RWorker(self.mech)
+            # new_worker = QRWorker(self.mech)
             self.worker_list.append(new_worker)
 
     def assign_task(self):
