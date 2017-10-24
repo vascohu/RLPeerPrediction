@@ -1,0 +1,73 @@
+\def\year{2017}\relax
+%File: formatting-instruction.tex
+\documentclass[letterpaper]{article} %DO NOT CHANGE THIS
+\usepackage{aaai17}  %Required
+\usepackage{times}  %Required
+\usepackage{helvet}  %Required
+\usepackage{courier}  %Required
+\usepackage{url}  %Required
+\usepackage{graphicx}  %Required
+\usepackage{bm}
+\frenchspacing  %Required
+\setlength{\pdfpagewidth}{8.5in}  %Required
+\setlength{\pdfpageheight}{11in}  %Required
+\usepackage{amsmath}
+\usepackage{arydshln}
+\usepackage{amsfonts}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{setspace}
+\SetKwComment{Comment}{$\triangleright$\ }{}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage{amsthm}
+\usepackage{multirow}
+\usepackage{footnote}
+\makesavenoteenv{tabular} \makesavenoteenv{table}
+\usepackage[skip=0pt]{caption}
+\usepackage[skip=0pt]{subcaption}
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep, topsep=2pt} \makeatletter
+\newcommand{\removelatexerror}{\let\@latex@error\@gobble}
+\makeatother
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}[section]{Definition}
+\newtheorem{proposition}[theorem]{Proposition}
+\usepackage{color}
+%PDF Info Is Required:
+  \pdfinfo{
+/Title (2017 Formatting Instructions for Authors Using LaTeX)
+/Author (AAAI Press Staff)} \setcounter{secnumdepth}{0}
+ \begin{document}
+% The file aaai.sty is the style file for AAAI Press
+% proceedings, working notes, and technical reports.
+%
+\title{A Reinforcement Learning Framework for Eliciting High Quality Information}
+\author{Zehong Hu, Yang Liu, Yitao Liang and \\
+Association for the Advancement of Artificial Intelligence\\
+2275 East Bayshore Road, Suite 160\\
+Palo Alto, California 94303\\}
+\maketitle
+\begin{abstract}
+Improper task assignment will significantly degrade label accuracy
+in crowd labeling. In this paper, we formulate a framework to
+improve task assignment with online variational inference. One
+distinct advantage is that it can incorporate different worker
+models. Another is its novel prediction-based task assignment
+strategy to select the assignment with the maximum accuracy
+increment. To improve accuracy, we keep the prediction optimistic
+but modulate the scope of task assignment according to the
+uncertainty measurement of online inference. To improve
+efficiency, we develop an approximation algorithm for variational
+inference. The extensive experiments on two popular worker models
+and four MTurk datasets show that our framework not only achieves
+the highest label accuracy but also the best computation
+efficiency.
+\end{abstract}
+
+\section{Introduction}
+
+\bibliographystyle{named}
+\bibliography{ref}
+\end{document}
