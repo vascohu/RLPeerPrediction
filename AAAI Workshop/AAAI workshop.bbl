@@ -12,6 +12,12 @@ Anirban Dasgupta and Arpita Ghosh.
 \newblock Crowdsourced judgement elicitation with endogenous proficiency.
 \newblock In {\em Proc. of WWW}, 2013.
 
+\bibitem[\protect\citeauthoryear{Dawid and Skene}{1979}]{dawid1979maximum}
+Alexander~Philip Dawid and Allan~M Skene.
+\newblock Maximum likelihood estimation of observer error-rates using the em
+  algorithm.
+\newblock {\em Applied statistics}, pages 20--28, 1979.
+
 \bibitem[\protect\citeauthoryear{Deng \bgroup \em et al.\egroup
   }{2009}]{deng2009imagenet}
 Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li~Fei-Fei.

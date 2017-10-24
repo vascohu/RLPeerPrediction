@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.15)  24 OCT 2017 21:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.15)  24 OCT 2017 23:51
 entering extended mode
 **"./AAAI workshop.tex"
 ("AAAI workshop.tex"
@@ -500,30 +500,52 @@ File: image/3-eps-converted-to.pdf Graphic file (type pdf)
 Package pdftex.def Info: image/3-eps-converted-to.pdf used on input line 134.
 (pdftex.def)             Requested size: 151.76854pt x 81.8874pt.
  [2 <./image/Mechanism.png>]
-("AAAI workshop.bbl"
-Underfull \hbox (badness 1365) in paragraph at lines 65--68
+Package epstopdf Info: Source file: <image/4.eps>
+(epstopdf)                    date: 2017-10-24 23:29:55
+(epstopdf)                    size: 261638 bytes
+(epstopdf)             Output file: <image/4-eps-converted-to.pdf>
+(epstopdf)                    date: 2017-10-24 23:31:57
+(epstopdf)                    size: 10656 bytes
+(epstopdf)             Command: <epstopdf --outfile=image/4-eps-converted-to.pd
+f image/4.eps>
+(epstopdf)             \includegraphics on input line 190.
+Package epstopdf Info: Output file is already uptodate.
+
+<image/4-eps-converted-to.pdf, id=24, 1436.36626pt x 497.86pt>
+File: image/4-eps-converted-to.pdf Graphic file (type pdf)
+
+<use image/4-eps-converted-to.pdf>
+Package pdftex.def Info: image/4-eps-converted-to.pdf used on input line 190.
+(pdftex.def)             Requested size: 252.94499pt x 87.66617pt.
+
+Overfull \hbox (13.55061pt too wide) in paragraph at lines 190--191
+ [][] 
+ []
+
+("AAAI workshop.bbl" [3 <./image/1-eps-converted-to.pdf> <./image/2-eps-convert
+ed-to.pdf> <./image/3-eps-converted-to.pdf> <./image/4-eps-converted-to.pdf>]
+Underfull \hbox (badness 1365) in paragraph at lines 71--74
 []\OT1/ptm/m/n/10 Victor Shnay-der, Arpit Agar-wal, Rafael Frongillo, and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100--103
+Underfull \hbox (badness 10000) in paragraph at lines 106--109
 []\OT1/ptm/m/n/10 Jens Witkowski, Yoram Bachrach, Pe-ter Key, and
  []
 
 
-Underfull \hbox (badness 1107) in paragraph at lines 100--103
+Underfull \hbox (badness 1107) in paragraph at lines 106--109
 \OT1/ptm/m/n/10 David Christo-pher Parkes.  Dwelling on the neg-a-tive:
  []
 
-[3 <./image/1-eps-converted-to.pdf> <./image/2-eps-converted-to.pdf> <./image/3
--eps-converted-to.pdf>]) [4
+) [4
 
 ] ("AAAI workshop.aux") ) 
 Here is how much of TeX's memory you used:
- 5744 strings out of 493323
- 86170 string characters out of 3139062
- 275125 words of memory out of 3000000
- 9124 multiletter control sequences out of 15000+200000
+ 5751 strings out of 493323
+ 86329 string characters out of 3139062
+ 275159 words of memory out of 3000000
+ 9130 multiletter control sequences out of 15000+200000
  30580 words of font info for 78 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  39i,15n,39p,936b,492s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -539,9 +561,9 @@ amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
 msbm10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTe
 X 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on "AAAI workshop.pdf" (4 pages, 320774 bytes).
+Output written on "AAAI workshop.pdf" (4 pages, 330445 bytes).
 PDF statistics:
- 77 PDF objects out of 1000 (max. 8388607)
+ 91 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 

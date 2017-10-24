@@ -134,7 +134,7 @@ where $\xi_{i}^{d}=\sum_{g=1}^{d}1(L^{t}_k(i_g)=1)/d$ and $\bar{\xi}_{i}^{d}=1-\
         \includegraphics[width=\textwidth]{image/3}
         \caption{\label{E3}  MWUA Workers}
     \end{subfigure}    
-    \caption{\label{ED}Experiments on three different worker models}
+    \caption{\label{ED}Experiments on three popular worker models}
 \end{figure*}
 
 \noindent \textbf{Bayesian Inference:} Suppose the prior distributions are as follows: $c_{ik1}\sim \textrm{Beta}(\alpha^{p}_{ik1},\alpha^{p}_{ik2})$ and $\textrm{Pr}(l=1)\sim \textrm{Beta}(\beta^{p}_{1},\beta^{p}_{2})$. Then, we can explicitly derive the posterior distribution of true labels of assigned tasks, using collected labels from workers, as follows:
@@ -182,6 +182,14 @@ Note, in our experiments, rational workers exert  high efforts and report the tr
 Quantal response workers decide their strategy using the quantal response model, a classic bounded rationality model~\cite{mckelvey1995quantal}.
 MWUA workers adapt their strategies via the MWUA model, a classic learning agent model~\cite{chastain2014algorithms}.
 Based on all experiment results, we find that our mechanism is robust, and is able to significantly increase data requester's revenue, especially when workers are not fully rational.
+Besides, in Figure~\ref{ED2}, we present the comparison of accuracy errors between the classic Dawid-Skene estimator~\cite{dawid1979maximum} and our Gibbs sampling estimator.
+The results show that our estimator can significantly reduce the errors of $A_t$ and $F(A_t)$ estimations.
+The accurate estimation of $F(A_t)$ then can provide a high-quality reward signal, which warrants the good performance of our closed-loop reinforcement framework.
+\begin{figure}[htb]
+    \centering
+     \includegraphics[width=0.5\textwidth]{image/4}
+    \caption{\label{ED2} Mean errors of accuracy estimations in 200 runs}
+\end{figure}
 
 \bibliographystyle{named}
 \bibliography{ref}
