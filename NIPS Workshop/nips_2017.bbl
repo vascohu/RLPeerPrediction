@@ -1,0 +1,102 @@
+\begin{thebibliography}{10}
+
+\bibitem{chastain2014algorithms}
+E.~Chastain, A.~Livnat, C.~Papadimitriou, and U.~Vazirani.
+\newblock Algorithms, games, and evolution.
+\newblock {\em PNAS}, 111(29):10620--10623, 2014.
+
+\bibitem{dasgupta2013crowdsourced}
+A.~Dasgupta and A.~Ghosh.
+\newblock Crowdsourced judgement elicitation with endogenous proficiency.
+\newblock In {\em Proc. of WWW}, 2013.
+
+\bibitem{dawid1979maximum}
+A.~P. Dawid and A.~M. Skene.
+\newblock Maximum likelihood estimation of observer error-rates using the em
+  algorithm.
+\newblock {\em Applied statistics}, pages 20--28, 1979.
+
+\bibitem{deng2009imagenet}
+J.~Deng, W.~Dong, R.~Socher, L.-J. Li, K.~Li, and L.~Fei-Fei.
+\newblock Imagenet: A large-scale hierarchical image database.
+\newblock In {\em Proc. of CVPR}, 2009.
+
+\bibitem{engel2005reinforcement}
+Y.~Engel, S.~Mannor, and R.~Meir.
+\newblock Reinforcement learning with gaussian processes.
+\newblock In {\em Proc. of ICML}, 2005.
+
+\bibitem{jurca2007robust}
+R.~Jurca and B.~Faltings.
+\newblock Robust incentive-compatible feedback payments.
+\newblock In {\em Agent-Mediated Electronic Commerce. Automated Negotiation and
+  Strategy Design for Electronic Markets}, pages 204--218. Springer, 2007.
+
+\bibitem{jurca2009mechanisms}
+R.~Jurca, B.~Faltings, et~al.
+\newblock Mechanisms for making crowds truthful.
+\newblock {\em Journal of Artificial Intelligence Research}, 34(1):209, 2009.
+
+\bibitem{liu2017sequential}
+Y.~Liu and Y.~Chen.
+\newblock Sequential peer prediction: Learning to elicit effort using posted
+  prices.
+\newblock In {\em AAAI}, pages 607--613, 2017.
+
+\bibitem{mckelvey1995quantal}
+R.~D. McKelvey and T.~R. Palfrey.
+\newblock Quantal response equilibria for normal form games.
+\newblock {\em Games and economic behavior}, 10(1):6--38, 1995.
+
+\bibitem{miller2005eliciting}
+N.~Miller, P.~Resnick, and R.~Zeckhauser.
+\newblock Eliciting informative feedback: The peer-prediction method.
+\newblock {\em Management Science}, 51(9):1359--1373, 2005.
+
+\bibitem{radanovic2013robust}
+G.~Radanovic and B.~Faltings.
+\newblock A robust bayesian truth serum for non-binary signals.
+\newblock In {\em Proc. of AAAI}, 2013.
+
+\bibitem{shnayder2016informed}
+V.~Shnayder, A.~Agarwal, R.~Frongillo, and D.~C. Parkes.
+\newblock Informed truthfulness in multi-task peer prediction.
+\newblock In {\em Proc. of ACM EC}, 2016.
+
+\bibitem{simon1979rational}
+H.~A. Simon.
+\newblock Rational decision making in business organizations.
+\newblock {\em The American economic review}, 69(4):493--513, 1979.
+
+\bibitem{snow2008cheap}
+R.~Snow, B.~O'Connor, D.~Jurafsky, and A.~Y. Ng.
+\newblock Cheap and fast---but is it good?: evaluating non-expert annotations
+  for natural language tasks.
+\newblock In {\em Proc. of EMNLP}, 2008.
+
+\bibitem{waggoner2014output}
+B.~Waggoner and Y.~Chen.
+\newblock Output agreement mechanisms and common knowledge.
+\newblock In {\em Proc. of HCOMP}, 2014.
+
+\bibitem{witkowski2013dwelling}
+J.~Witkowski, Y.~Bachrach, P.~Key, and D.~C. Parkes.
+\newblock Dwelling on the negative: Incentivizing effort in peer prediction.
+\newblock In {\em Proc. of HCOMP}, 2013.
+
+\bibitem{witkowski2012peer}
+J.~Witkowski and D.~C. Parkes.
+\newblock Peer prediction without a common prior.
+\newblock In {\em Proc. of ACM EC}, 2012.
+
+\bibitem{witkowski2012robust}
+J.~Witkowski and D.~C. Parkes.
+\newblock A robust bayesian truth serum for small populations.
+\newblock In {\em Proc. of AAAI}, 2012.
+
+\bibitem{zheng2017truth}
+Y.~Zheng, G.~Li, Y.~Li, C.~Shan, and R.~Cheng.
+\newblock Truth inference in crowdsourcing: is the problem solved?
+\newblock {\em Proc. of the VLDB Endowment}, 10(5):541--552, 2017.
+
+\end{thebibliography}
