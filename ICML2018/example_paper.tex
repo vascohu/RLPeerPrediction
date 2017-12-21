@@ -1,0 +1,483 @@
+%%%%%%%% ICML 2018 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2018} with \usepackage[nohyperref]{icml2018} above.
+\usepackage{hyperref}
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+\usepackage{icml2018}
+\usepackage{natbib}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{bbm}
+\usepackage{bm}
+\usepackage{amssymb}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}{Definition}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{\par
+  \vspace{-\topsep}% remove the space after the theorem
+  \pushQED{\qed}%
+  \normalfont
+  \topsep0pt \partopsep0pt % no space before
+  \trivlist
+  \item[\hskip\labelsep
+        \itshape
+    #1\@addpunct{.}]\ignorespaces
+}{%
+  \popQED\endtrivlist\@endpefalse
+  \addvspace{0pt plus 0pt} % some space after
+}
+\makeatother
+
+% If accepted, instead use the following line for the camera-ready submission:
+%\usepackage[accepted]{icml2018}
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Incentivizing High Quality Crowdsourcing Information using Bayesian Inference and Reinforcement Learning}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{Incentivizing High Quality Crowdsourcing Information using\\Bayesian Inference and Reinforcement Learning}
+
+% It is OKAY to include author information, even for blind
+% submissions: the style file will automatically remove it for you
+% unless you've provided the [accepted] option to the icml2018
+% package.
+
+% List of affiliations: The first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, Country
+% Industry affiliations should list Company, City, Region, Country
+
+% You can specify symbols, otherwise they are numbered in order.
+% Ideally, you should not use this facility. Affiliations will be numbered
+% in order of appearance and this is the preferred way.
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Zehong Hu}{NTU}
+\icmlauthor{Yang Liu}{Harvard}
+\icmlauthor{Yitao Liang}{UCLA}
+\icmlauthor{Jie Zhang}{NTU}
+\end{icmlauthorlist}
+
+%\icmlaffiliation{NTU}{Rolls-Royce Cooperate Lab@NTU, School of Computer Science and Engineering, Nanyang Technological University, Singapore}
+%\icmlaffiliation{goo}{Googol ShallowMind, New London, Michigan, USA}
+%\icmlaffiliation{ed}{School of Computation, University of Edenborrow, Edenborrow, United Kingdom}
+
+%\icmlcorrespondingauthor{Cieua Vvvvv}{c.vvvvv@googol.com}
+%\icmlcorrespondingauthor{Eee Pppp}{ep@eden.co.uk}
+
+% You may provide any keywords that you
+% find helpful for describing your paper; these are used to populate
+% the "keywords" metadata in the PDF but will not be shown in the document
+\icmlkeywords{Machine Learning, ICML}
+
+\vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column
+% listing the affiliations and the copyright notice.
+% The command takes one argument, which is text to display at the start of the footnote.
+% The \icmlEqualContribution command is standard text for equal contribution.
+% Remove it (just {}) if you do not need this facility.
+
+%\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+%\printAffiliationsAndNotice{} % otherwise use the standard text.
+
+\begin{abstract}
+This document provides a basic paper template and submission guidelines.
+Abstracts must be a single paragraph, ideally between 4--6 sentences long.
+Gross violations will trigger corrections at the camera-ready phase.
+\end{abstract}
+
+\section{Introduction}
+\subsection{Motivation}
+Peer prediction mechanisms have two fatal drawbacks:
+\begin{itemize}
+\item Existing peer prediction mechanisms only care about incentive compatibility (IC) which only poses requirements to the expected incentives to workers. They achieve IC via comparing the reports between the targeted and selected reference agents. In this way, they only use a tiny part of the information behind all collected labels. Besides, they never analyze the stochastic property of incentives and the variation of incentives among different types of agents.
+\item Existing peer prediction mechanisms simplify workers' responses to the incentive mechanism by assuming that workers are all fully rational and only follow the utility-maximizing strategy. However, there is strong evidence showing that human workers are not always fully rational, and they may deviate from equilibrium strategies. Thus, these peer prediction mechanisms which is fancy in theory may yet fail in practice.
+\end{itemize}
+
+\subsection{Contribution}
+We have two core contributions in this paper:
+\begin{itemize}
+\item We propose a novel one-shot peer prediction mechanism based on Bayesian inference. Since existing Bayesian inference algorithms (e.g. EM estimator and variational inference) for crowdsourcing are biased in principle, we derive the explicit posterior distribution of the true labels and employ Gibbs sampling for inference. The most challenging problem of our mechanism is to prove the incentive compatibility of our mechanism which has never been explored in the literature. Besides, we also empirically show the advantages of our mechanism on the stability and fairness of incentives over existing ones.
+\item We design the first reinforcement peer prediction framework which sequentially interacts with workers. It dynamically adjusts the scaling level of our peer prediction mechanism to maximize the utility of the data requester. To avoid assuming a decision-making model for workers, we use the data-driven Gaussian process to represent the scaling level adjustment policy, and online updates our policy according to workers' responses. We theoretically prove the incentive compatibility of our framework and empirically show its advantages on improving the utility if the data requester over one-shot mechanisms.
+\end{itemize}
+
+\section{Related Work}
+
+\section{Learning-Based Peer Prediction}
+\subsection{Formulation and settings}
+Suppose in our system there is one data requester who assigns $M$ tasks with answer space $\left\{1,2\right\}$ to $N \geq 3$ candidate workers.
+We denote all tasks and workers by $\mathcal{T}=\{1,2,\ldots,M\}$ and $\mathcal{C}=\{1,2,\ldots,N\}$, respectively.
+The label $L_{i}(j)$ generated by worker $i\in \mathcal{C}$ for task $j\in\mathcal{T}$ comes from a distribution that depends both on the ground-truth label $L(j)$ and worker $i$'s effort level $e_i$ and reporting strategy $r_i$.
+Suppose there are two effort levels, High ($e_i=1$) and Low ($e_i=0$), that a worker can potentially choose from.
+Meanwhile, worker $i$ can decide either to truthfully report his observation $r_i = 1$ or to revert the answer $r_i = 0$.
+Note that worker $i$'s effort level and reporting strategy may be a mixed of the above pure actions.
+Thus, we use $e_i\in[0,1]$ and $r_i\in[0,1]$ to denote worker $i$'s probability of exerting high efforts and being truthful, respectively.
+Using the above notations, we can calculate worker $i$'s probability of providing the correct label as
+\begin{equation}
+\begin{split}
+p_i=&r_i e_i p_{i, H}+r_i (1-e_i) p_{i, L}+\\
+&(1-r_i) e_i (1-p_{i, H})+(1-r_i) (1-e_i) p_{i, L}
+\end{split}
+\end{equation}
+where $p_{i, H}$ and $p_{i, L}$ denote the probability of observing the correct label when worker $i$ exerts high and low efforts, respectively.
+Following the previous studies on peer prediction~\cite{dasgupta2013crowdsourced}, we assume that $p_{i, H}>p_{i, L}\geq 0.5$.
+Then, we can have Proposition~\ref{Incre}.
+\begin{proposition}
+\label{Incre}
+$p_i$ is strictly increasing with $e_i$ and $r_i$.  
+\end{proposition}
+
+\subsection{One-Shot Bayesian Peer Prediction Mechanism}
+Now, we present the definition of our mechanism as follows:
+\begin{definition}
+The Bayesian peer prediction mechanism computes worker $i$'s rewards for her reports on $M$ tasks as:
+\begin{equation}
+R(i)=M\cdot \left[a\cdot (\hat{p}_i-0.5) +b\right]
+\end{equation}
+where $a>0$ and $b\geq 0$ are the scaling level and the guaranteed base payment, respectively.
+\end{definition}
+
+The joint distribution of all the collected labels $\mathcal{L}=[L_i(j)]$ and the true labels $\bm{L}=[L(1),\ldots, L(M)]$ satisfies 
+\begin{equation}
+\begin{split}
+    &P(\mathcal{L},\bm{L}| \bm{p}, \bm{\tau})=\\ &\qquad \prod_{j=1}^{M}\prod_{k=1}^{K}\left\{\tau_{k}\prod_{i=1}^{N}p_i^{\delta_{ijk}}(1-p_i)^{\delta_{ij(3-k)}} \right\}^{\xi_{jk}}
+\end{split}
+\end{equation}
+where $\bm{p}=[p_i]_N$ and $\bm{\tau}=[\tau_1,\tau_2]$. $\tau_1$ and $\tau_2$ denote the distribution of answer $1$ and $2$ among all tasks, respectively.
+Besides,  $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$ and $\xi_{jk}= \mathbbm{1}(L^{t}(j)=k)$.
+Referring to the literature on Bayesian inference~\cite{liu2012variational}, we assume a Dirichlet prior for both $p_i$ and $\bm{\tau}$ as
+\begin{equation}
+[p_{i}, 1-p_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2})\;,\; \bm{\tau}\sim \textrm{Dir}(\beta_{1},\beta_{2}).
+\end{equation}
+where $\textrm{Dir}(\cdot)$ denotes the Dirichlet distribution. Then, we can derive the joint distribution of $\mathcal{L}$, $\bm{L}$, $\bm{p}$ and $\bm{\tau}$ as
+\begin{equation}
+\label{JointDist2}
+\begin{split}
+&P(\mathcal{L},\bm{L},\bm{p}, \bm{\tau}|\bm{\alpha}, \bm{\beta})=P(\mathcal{L},\bm{L}|\bm{p}, \bm{\tau})\cdot P(\bm{p}, \bm{\tau}|\bm{\alpha}, \bm{\beta})\\
+&=\frac{1}{B(\bm{\beta})}\prod_{k=1}^{K}\tau_k^{\hat{\beta}_k-1}\cdot\prod_{i=1}^{N}\frac{1}{B(\bm{\alpha})}p_i^{\hat{\alpha}_{i1}-1}(1-p_i)^{\hat{\alpha}_{i2}-1}
+\end{split}
+\end{equation}
+where $\bm{\alpha}=[\alpha_1,\alpha_2]$, $\bm{\beta}=[\beta_1,\beta_2]$ and
+\begin{equation}
+\begin{split}
+&\hat{\alpha}^{t}_{i1}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta^{t}_{ijk}\xi^{t}_{jk}+\alpha_{1}\\
+&\hat{\alpha}^{t}_{i2}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta^{t}_{ij(3-k)}\xi^{t}_{jk}+\alpha_{2}\\
+&\hat{\beta}^{t}_k={\sum}_{j=1}^{M}\xi^{t}_{jk}+\beta_{k}.
+\end{split}
+\end{equation}
+$B(\cdot)$ denotes the beta function which satisfies
+\begin{equation}
+B(x,y)=\frac{(x-1)!(y-1)!}{(x+y-1)!}.
+\end{equation}
+Furthermore, we can conduct marginalization via integrating Equation~\ref{JointDist2} over all possible values of $\bm{p}$ and $\bm{\tau}$ as
+\begin{equation}
+\begin{split}
+P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})&=\int_{\bm{p}, \bm{\tau}} P(\mathcal{L},\bm{L},\bm{p}, \bm{\tau}|\bm{\alpha}, \bm{\beta})\mathrm{d}\bm{p}\mathrm{d} \bm{\tau}\\
+&=\frac{B(\hat{\bm{\beta}})}{B(\bm{\beta})}\cdot \prod_{i=1}^{N}\frac{B(\hat{\bm{\alpha}}_{i})}{B(\bm{\alpha})}
+\end{split}
+\end{equation}
+where $\hat{\bm{\alpha}}_i=[\alpha_{i1},\alpha_{i2}]$ and $\hat{\bm{\beta}}=[\hat{\beta}_1,\hat{\beta}_2]$. Following Bayes' theorem, we can know the posterior distribution satisfies
+\begin{equation}
+\label{PostDist}
+P(\bm{L}|\mathcal{L}, \bm{\alpha}, \bm{\beta})=\frac{P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})}{P(\mathcal{L}|\bm{\alpha}, \bm{\beta})}\propto B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}_{i}). 
+\end{equation}
+Note that the previous studies have shown that we should be optimistic about workers' willingness to provide the correct label~\cite{chen2015statistical}, which requires $\alpha_1>\alpha_2$.
+In this paper, for the simplicity of derivation, we keep $\alpha_1=2$ and $\alpha_2=1$.
+Besides, since we have no knowledge about the distribution of answer $1$ and $2$, we employ the non-informative uniform distribution for $\bm{\tau}$, that is, setting $\beta_1=\beta_2=1$.
+
+To observe the posterior distribution, we resort to the classic Gibbs sampling. Firstly, according to Bayes' theorem, we can know the conditional posterior distribution satisfies
+\begin{equation}
+P(L(j)|\mathcal{L}, \bm{L}(\bar{j}), \bm{\alpha}, \bm{\beta})\propto P(\bm{L}|\mathcal{L}, \bm{\alpha}, \bm{\beta})
+\end{equation} 
+where $\bm{L}(\bar{j})$ denotes the true labels of all tasks expect for task $j$.
+Then, we can generate the samples of the posterior distribution $P(\bm{L}|\mathcal{L}, \bm{\alpha}, \bm{\beta})$ by using Algorithm~\ref{GSC}.
+In each round of sampling, Algorithm~\ref{GSC} traverses all tasks by increasing $j$ from $1$ to $M$ and always update the true label vector $\bm{L}$ via replacing $L(j)$ with the newly obtained sample (line 3-6).
+Here, we write the $s$-th sample as $\bm{L}^{(s)}$.
+Since Gibbs sampling requires the burn-in process, we need to discard the first $b$ samples in the obtained sample sequence $\mathcal{S}$ and can only use the latter $W-b$ samples.
+Thus, the marginal distribution of the true label of task $j$ can be approximately calculate as
+\begin{equation}
+P\left(L(j)=k\right)=\frac{1}{W-b}{\sum}_{s=b+1}^{W}\mathbbm{1}\left(L^{s)}(j)=k\right).
+\end{equation}
+Following the maximum a posteriori probability rule, we can decide the aggregated label of task $j$ as
+\begin{equation}
+\hat{L}^{t}(j)={\arg\max}_{k\in\{1,2\}}\textrm{Pr}(L^{t}(j)=k).
+\end{equation}
+Besides, we can estimate worker $i$'s probability to provide the correct label as
+\begin{equation}
+\label{p_infer}
+\hat{p}_{i}=\frac{\sum_{s=b+1}^{W}\left[\alpha_{i1}+\sum_{j=1}^{M}\mathbbm{1}(L^{(s)}(j)=L_{i}(j))\right]}{(W-b)\cdot(\alpha_{i1}+\alpha_{i2}+M)}.
+\end{equation}
+Note that both $W$ and $b$ should be large values, and in this paper, we set $W=1000$ and $b=100$.
+\begin{algorithm}[tb]
+   \caption{Gibbs sampling for crowdsourcing}
+   \label{GSC}
+   \small
+\begin{algorithmic}
+   \vspace{0.5mm}
+   \STATE {\bfseries Input:} the collected labels $\mathcal{L}$, the number of samples $W$
+   \STATE {\bfseries Output:} the sample sequence $\mathcal{S}$
+   \vspace{0.5mm}
+   \STATE $\mathcal{S}\leftarrow\emptyset$, Initialize $\bm{L}=[L(j)]_M$ with the uniform distribution
+   \FOR{$s=1$ {\bfseries to} $W$}
+   \FOR{$j=1$ {\bfseries to} $M$}
+   \STATE Set $L(j)=1$ and compute $x_1= B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}_{i})$
+   \STATE Set $L(j)=2$ and compute $x_2= B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}_{i})$
+   \STATE $L(j)\leftarrow$ Sample $\{1,2\}$ with $P(1)=x_1/(x_1+x_2)$
+   \ENDFOR
+   \STATE Append $\bm{L}$ to the sample sequence $\mathcal{S}$
+   \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Reinforcement Peer Prediction Framework}
+
+\section{Game-Theoretic Analysis}
+\subsection{One-Shot Peer Prediction Analysis}
+To study the game-theoretical behavior of our mechanism, we firstly define a new function set $H(m,p;M,t)$ as
+\begin{align}
+&H(m,p;M,t)=2^{M+1}\times \label{Hfunction}\\
+&\int_{0}^{1}[(2p-1)x+1-p]^{M-m}[(1-2p)x+p]^{m}x^t\mathrm{d}x \nonumber
+\end{align}
+where $M\geq m\geq 0$, $t\geq 0$ and $1\geq p\geq 1$.
+Besides, for the simplicity of notation, we introduce $n$ and $\bar{p}$ as $n=M-m$ and $\bar{p}=1-p$.
+Then, we can have:
+\begin{proposition}
+\label{MidPoint}
+$H(m,0.5;M,t) = 2(t+1)^{-1}$.
+\end{proposition}
+\begin{proposition}
+\label{Symmetry}
+$H(m,p;M,t) = H(n, \bar{p};M,t)$.
+\end{proposition}
+\begin{proposition}
+\label{LogConvexity}
+As a function of $m$, $H(m,p;M,t)$ is logarithmically convex.
+\begin{proof}
+Proposition~\ref{MidPoint} can be proved by integrating $2 x^t$ on $[0,1]$.
+Proposition~\ref{Symmetry} can be proved by showing that $H(n, \bar{p};M,t)$ has the same expression as $H(m,p;M,t)$.
+Thus, in the following proof, we focus on Propostion~\ref{LogConvexity}. Fixing $p$, $M$ and $t$, we denote $\log (H)$ by $f(m)$. Then, we compute the first-order derivative as
+\begin{equation}
+H(m)f'(m)=2^{M+1}\int_{0}^{1}\lambda u^{n}(1-u)^{m}x^t\mathrm{d}x
+\end{equation}
+where $u= (2p-1)x+1-p$ and $\lambda=\log(1-u)-\log(u)$. Furthermore, we can solve the second-order derivative as
+\begin{equation}
+\begin{split}
+&2^{-2(M+1)}H^2(m)f''(m)=\\
+&\int_{0}^{1}g^2(x)\mathrm{d}x\int_{0}^{1}h^2(x)\mathrm{d}x-\left(\int_{0}^{1}g(x)h(x)\mathrm{d}x\right)^2
+\end{split}
+\end{equation}
+where the functions $g,h:(0,1)\rightarrow  \mathbb{R}$ are defined by
+\begin{equation}
+g=\lambda\sqrt{u^{n}(1-u)^{m}}\;, \; h = \sqrt{u^{n}(1-u)^{m}}.
+\end{equation}
+By the Cauchy-Schwarz inequality,
+\begin{equation}
+\int_{0}^{1}g^2(x)\mathrm{d}x\int_{0}^{1}h^2(x)\mathrm{d}x\geq \left(\int_{0}^{1}g(x)h(x)\mathrm{d}x\right)^2
+\end{equation}
+we can know that $f''(m)\geq 0$ always holds, which concludes that $f$ is convex and $H$ is logarithmically convex.
+\end{proof}
+\end{proposition}
+For the special case that $t=1$ and $M\gg 1$, we can further derive the following three propositions for $H(m,p;M,1)$:
+\begin{proposition}
+\label{Ratio1}
+The ratio between two ends satisfies
+$$\log\frac{H(0,p;M,1)}{H(M,p;M,1)} \approx \left\{
+    \begin{array}{cl}
+    \log(M)+\epsilon(p) & p>0.5\\
+    0 & p=0.5\\
+    -\log(M)-\epsilon(\bar{p}) & p<0.5
+    \end{array}\right.$$
+\end{proposition}
+where $\epsilon(p)=\log(2p-1)-\log(p)$.
+\begin{proposition}
+\label{LowBound1}
+The lower bound can be calculated as
+\begin{equation*}
+\log H(m,p)\gtrsim \left\{
+    \begin{array}{cl}
+    H(0,p)- \underline{k}m& 2m\leq M\\
+    H(M,p)- \underline{k}n& 2m>M
+    \end{array}\right.
+\end{equation*}
+where $\underline{k}=\log\left(\max\left\{p/(\bar{p}+M^{-1}),\bar{p}/(p+M^{-1})\right\}\right)$.
+\end{proposition}
+\begin{proposition}
+\label{UpBound1}
+The upper bound can be calculated as
+\begin{equation*}
+\log H(m,p)\lesssim \left\{
+    \begin{array}{cl}
+    H(0,p)- \overline{k}m& 2m\leq M\\
+    H(M,p)- \overline{k}n& 2m>M
+    \end{array}\right.
+\end{equation*}
+where $n=M-m$ and $\overline{k}=2\log\left(2\cdot \max\left\{p,\bar{p}\right\}\right)$.
+\begin{proof}
+By Proposition~\ref{MidPoint}, $\log H(m, 0.5;M,1)\equiv 0$, which proves the above three propositions for the case that $p=0.5$. Considering the symmetry ensured by Proposition~\ref{Symmetry}, we thus focus on the case that $p>0.5$ in the following proof and transform $H(m,p)$ into the following formulation
+\begin{equation}
+H(m,p)=\omega(p)\cdot \int_{\bar{p}}^{p}x^n(1-x)^m(x-1+p)\mathrm{d}x
+\end{equation}
+where $\omega(p)=2^{M+1}/(2p-1)^2$. Then, we can solve $H(0,p)$ and $H(M,p)$ as
+\begin{equation}
+\begin{split}
+H(0,p)&=\omega(p)\int_{\bar{p}}^{p}x^M(x-\bar{p})\mathrm{d}x\\
+&=\frac{(2p)^{M+1}}{(2p-1)(M+1)} - O\left(\frac{(2p)^{M+1}}{M^2}\right)
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+&H(M,p)=\omega(p)\int_{\bar{p}}^{p}(1-x)^M(x-\bar{p})\mathrm{d}x\\
+&=\frac{p(2p)^{M+1}}{(2p-1)^2(M+1)(M+2)} - O\left(\frac{(2\bar{p})^{M+1}}{M+2}\right).
+\end{split}
+\end{equation}
+Using the Taylor expansion of function $\log(x)$, we can calculate the ratio in Proposition~\ref{Ratio1} as
+\begin{equation}
+\log\frac{H(0,p)}{H(M,p)}=\log(M)+\log\frac{2p-1}{p}+O\left(\frac{1}{M}\right)
+\end{equation}
+which concludes Proposition~\ref{Ratio1} when $M\gg 1$.
+
+Furthermore, we can solve $H(1,p)$ as
+\begin{equation}
+\begin{split}
+H(1,p)&= \omega(p)\int_{\bar{p}}^{p}x^{M-1}(x-\bar{p})\mathrm{d}x-H(0,p)\\
+&=\frac{(2\bar{p}+M^{-1})(2p)^{M}}{(2p-1)(M+1)} - O\left(\frac{(2p)^{M+1}}{M^2}\right)
+\end{split}
+\end{equation}
+The value ratio between $m=0$ and $m=1$ then satisfies
+\begin{equation}
+\log \frac{H(1,p)}{H(0,p)}  = \log\frac{p}{\bar{p}+M^{-1}}+O\left(\frac{1}{M}\right).
+\end{equation}
+By Rolle's theorem, there exists a $c\in [m, m+1]$ satisfying
+\begin{equation}
+\log H(1,p) - \log H(0,p) = f'(c)
+\end{equation}
+where $f(m)=\log H(m,p)$. Meanwhile, Proposition~\ref{LogConvexity} ensures that $f''(m)\geq 0$ always holds. Thus, we can have
+\begin{equation}
+\log H(m+1,p) - \log H(m,p)\geq \log \frac{H(1,0)}{H(0,p)}
+\end{equation}
+which concludes the first case of Proposition~\ref{LowBound1}. Similarly, we compute the ratio between $m=M-1$ and $M$ as
+\begin{equation}
+\log \frac{H(M,p)}{H(M-1,p)}  = \log\frac{p}{\bar{p}+M^{-1}}+O\left(\frac{1}{M}\right).
+\end{equation}
+Meanwhile, Rolle's theorem and Proposition~\ref{LogConvexity} ensure that
+\begin{equation}
+\log H(m,p) - \log H(m-1,p)\leq \log \frac{H(M,0)}{H(M-1,p)}
+\end{equation}
+which concludes the second case of Proposition~\ref{LowBound1}.
+
+Lastly, we focus on the upper bound described by Proposition~\ref{UpBound1}. According to the inequality of arithmetic and geometric means, $x(1-x)\leq 2^{-2}$ holds for any $x\in [0,1]$. Thus, when $2m\leq M$ (i.e. $n\geq m$), we can have
+\begin{equation}
+H(m,p)\leq 2^{-2m}\omega(p)\cdot \int_{\bar{p}}^{p}x^{n-m}(x-1+p)\mathrm{d}x
+\end{equation}
+where the equality only holds when $m=0$.
+\begin{equation}
+ \int_{\bar{p}}^{p}x^{n-m}(x-1+p)\mathrm{d}x=\frac{(2p-1)p^{\delta}}{\delta}+\frac{\Delta}{\delta(\delta+1)}
+\end{equation}
+where $\delta=n-m+1$ and $\Delta=\bar{p}^{\delta+1}-p^{\delta+1}<0$. Hence,
+\begin{equation}
+\log\frac{H(m,p)}{H(0,p)}\leq -2m[\log(2p)-\varepsilon(m)] + O\left(\frac{1}{M}\right)
+\end{equation}
+where $\varepsilon(m)=-(2m)^{-1}[\log(n-m+1)-\log(M+1)]$. Since $\log(x)$ is a concave function, we can know that
+\begin{equation}
+\varepsilon(m)\leq (M)^{-1}\log(M+1)=O\left(M^{-1}\right)
+\end{equation}
+which concludes the first case in Proposition~\ref{UpBound1}. Similarly, for $2m>M$ (i.e. $n<m$), we can have
+\begin{equation}
+\log\frac{H(m,p)}{H(M,p)}\leq -2n[\log(2p)-\hat{\varepsilon}(n)] + O\left(\frac{1}{M}\right)
+\end{equation}
+where $\hat{\varepsilon}(n)\leq O(M^{-1})$. Thereby, we can conclude the second case of Proposition~\ref{UpBound1}. Note that the case where $p<0.5$ can be derived by using Proposition~\ref{Symmetry}.
+\end{proof}
+\end{proposition}
+For the case that $t=0$ and $M\gg 1$, using the same method as the above proof, we can derive the same lower and upper bounds as Propositions~\ref{UpBound1} and \ref{LowBound1}. On the other hand, for $t=0$, Proposition~\ref{Ratio1} does not hold and we can have
+\begin{proposition}
+\label{Ratio0}
+$H(m,p;M,0)=H(n,p;M,0)$
+\begin{proof}
+When $t=0$,
+\begin{equation}
+H(m,p)=2^{M+1}(2p-1)^{-1}\int_{\bar{p}}^{p}x^n(1-x)^m\mathrm{d}x.
+\end{equation}
+Then, substituting $x$ as $1-v$ concludes Proposition~\ref{Ratio0}.
+\end{proof}
+\end{proposition}
+
+Next, we derive the upper bound of the estimation errors for our Bayesian inference algorithm.
+\begin{proposition}
+\label{Conv}
+Let $n(p_i>0.5)$ and $n(p_i<0.5)$ be the number of workers who are better and worse than random guess ($p_i=0.5$), respectively. Then,
+
+where the subscript of $\mathbb{E}$ denotes the random variable.
+\begin{proof}
+For the posterior label vector $\bm{L}$ generated by the posterior distribution $P(\bm{L}|\mathcal{L},\bm{\alpha}, \bm{\beta})$, we introduce $n$ and $m$ to denote the number of correct and wrong labels, respectively.
+Then, among the $n$ tasks of which the posterior label is correct, we introduce $x_0$ and $y_0$ to denote the number of tasks of which the real true label is $1$ and $2$, respectively.
+Among these $n$ tasks, we further use $x_i$ and $y_i$ to denote the number of tasks of which the label provided by worker $i$ is correct and wrong, respectively.
+Among the $m$ tasks of which the posterior label is wrong, we introduce $w_0$ and $z_0$ to denote the number of tasks of which the real true label is $1$ and $2$, respectively.
+Among these $m$ tasks, we also introduce $w_i$ and $z_i$ to denote the number of tasks of which the label provided by worker $i$ is correct and wrong, respectively.
+Thus, we can have $n+m=M$, $x_i+y_i=n$, $w_i+z_i=m$ and $\mathbb{E}_{\mathcal{L}}(x_i+w_i)=Mp_i$.
+Meanwhile, in Equation~\ref{p_infer}, when $M\gg 1$, we have $M\hat{p} \approx \mathbb{E}_{\bm{L}}(x_i+z_i)$.
+Thus, the inference error can be calculated as
+\begin{equation}
+\label{ErrorBound}
+ |\mathbb{E}_{\mathcal{L}}\hat{p}_i-p_i|\approx \mathbb{E}_{\mathcal{L},\bm{L}}\frac{|w_i-z_i|}{M}
+ \leq \mathbb{E}_{\mathcal{L},\bm{L}}\left[\frac{m}{M}\right].
+\end{equation}
+
+To compute the expectation, we need to analyze the probability density function of $m$. According to Equation~\ref{PostDist}, we can know the probability density function $P(m)$ satisfies
+\begin{equation}
+\label{PDist}
+P(m) = \frac{C_{M}^{m}}{Z}F(m, p_0; M, 0)\prod_{i=1}^{N}F(m, p_i; M, 1)
+\end{equation}
+where $Z$ is the normalization constant and
+\begin{equation}
+\label{Ffunction}
+\begin{split}
+F(m,p;M,t)={\sum}_{x=0}^{n}{\sum}_{w=0}^{m} 2^{M+1}C_{n}^{x}C_{m}^{w}\times\\
+p^{x+w}(1-p)^{y+z}B(x+z+1+t,y+w+1).
+\end{split}
+\end{equation}
+Here, $n=M-m$. Note that, when deriving Equation~\ref{Ffunction}, we utilize the independence between different workers. Besides, in Equation~\ref{Ffunction}, we add the factor $2^{M+1}$ to facilitate building the connection between $F$ and the $H$ function defined in Equation~\ref{Hfunction}.
+\end{proof}
+\end{proposition}
+\bibliographystyle{named}
+\bibliography{ref}
+
+\end{document}
+
+
+% This document was modified from the file originally made available by
+% Pat Langley and Andrea Danyluk for ICML-2K. This version was created
+% by Iain Murray in 2018. It was modified from a version from Dan Roy in
+% 2017, which was based on a version from Lise Getoor and Tobias
+% Scheffer, which was slightly modified from the 2010 version by
+% Thorsten Joachims & Johannes Fuernkranz, slightly modified from the
+% 2009 version by Kiri Wagstaff and Sam Roweis's 2008 version, which is
+% slightly modified from Prasad Tadepalli's 2007 version which is a
+% lightly changed version of the previous year's version by Andrew
+% Moore, which was in turn edited from those of Kristian Kersting and
+% Codrina Lauth. Alex Smola contributed to the algorithmic style files.
