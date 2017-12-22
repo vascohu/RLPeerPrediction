@@ -42,8 +42,9 @@ class DG13(MechBase):
         reward_mat = []
         self.label_mat = label_mat
         for i in range(label_mat.shape[1] - 1):
-            p += np.sum(self.reward_a_agent(i))
-            reward_mat.append(self.reward_a_agent(i))
+            r = self.reward_a_agent(i)
+            p += np.sum(r)
+            reward_mat.append(r)
         return (p, reward_mat)
 
     def reward_a_agent(self, agent_id: int):

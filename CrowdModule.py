@@ -16,10 +16,18 @@ class Task:
     # Difficulty level (should be a value in [0,1]
     difficulty = 0
 
+    # The generating distribution
+    p = 0.5
+
     def __init__(self, task_id):
         """Uniformly generate the true labels and difficulty level"""
         self.id = task_id
-        self.true_label = np.random.randint(1, 3)
+        #self.true_label = np.random.randint(1, 3)
+        th = np.random.rand()
+        if th<Task.p:
+            self.true_label = 1
+        else:
+            self.true_label = 2
         self.difficulty = np.random.rand()
 
 
@@ -50,7 +58,7 @@ class RWorker(Worker):
 
     def labeling(self, task: Task):
             th = np.random.rand()
-            if th < 0.9:
+            if th < 0.60:
                 return task.true_label
             else:
                 return (3 - task.true_label)
@@ -146,6 +154,47 @@ class MWUA_Worker(Worker):
         self.task_ids.clear()
         self.s_list.clear()
 
+class TRWorker(Worker):
+    P_H = 0.8
+    P_L = 0.5
+
+    def __init__(self, mech: MechModule.MechBase, id: int):
+        # Set the mechanism mirror
+        self.mirror_of_mech = mech
+        # High or Low
+        self.e = 1
+        # True or False
+        self.r = 1
+        # The probability
+        self.P_H = TRWorker.P_H #np.random.rand()*0.5+0.5#0.8#TRWorker.P_H
+        self.P_L = 0.5 #TRWorker.P_L
+        # Set the first worker
+        if id==0:
+            self.e = 1
+            self.r = 1
+            self.P_H = TRWorker.P_H
+
+    def labeling(self, task: Task):
+        th = np.random.rand()
+
+        if self.e==1:
+            p = self.P_H
+        else:
+            p = self.P_L
+
+        if self.r == 1:
+            if th < p:
+                return task.true_label
+            else:
+                return (3 - task.true_label)
+        else:
+            if th < p:
+                return (3-task.true_label)
+            else:
+                return task.true_label
+
+    def evolve(self, rewards: list):
+        pass
 
 # Crowdsourcing Market
 class CrowdMarket:
@@ -175,13 +224,9 @@ class CrowdMarket:
         # Set the numbers of tasks and workers
         self.n_task = task_number
         self.n_worker = worker_number
-        self.worker_num_per_task = self.n_worker - 1
+        self.worker_num_per_task = self.n_worker
         # Generate workers
-        for j in range(worker_number):
-            new_worker = MWUA_Worker(mech)
-            # new_worker = RWorker(mech)
-            # new_worker = QRWorker(mech)
-            self.worker_list.append(new_worker)
+        self.worker_init()
         # Generate the assign table
         self.task_assign_table = self.assign_task()
         self.mech = mech
@@ -189,9 +234,10 @@ class CrowdMarket:
     def worker_init(self):
         self.worker_list.clear()
         for j in range(self.n_worker):
-            new_worker = MWUA_Worker(self.mech)
+            # new_worker = MWUA_Worker(self.mech)
             # new_worker = RWorker(self.mech)
             # new_worker = QRWorker(self.mech)
+            new_worker = TRWorker(self.mech,j)
             self.worker_list.append(new_worker)
 
     def assign_task(self):
@@ -225,6 +271,22 @@ class CrowdMarket:
         for i in range(n_true_label):
             task = self.task_list[i]
             label_mat[i, -1] = task.true_label
+        return label_mat
+
+    def get_label_mat_NTL(self):
+        """Generate the label matrix"""
+        '''Generate the tasks'''
+        self.task_list.clear()
+        for i in range(self.n_task):
+            new_task = Task(i)
+            self.task_list.append(new_task)
+        '''Generate the labels'''
+        label_mat = np.zeros(shape=(self.n_task, self.n_worker), dtype=int)
+        for j in range(self.n_worker):
+            worker = self.worker_list[j]
+            for i in self.task_assign_table[j]:
+                task = self.task_list[i]
+                label_mat[i, j] = worker.labeling(task)
         return label_mat
 
     def get_true_label(self):

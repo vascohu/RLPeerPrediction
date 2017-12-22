@@ -1,5 +1,11 @@
 \begin{thebibliography}{10}
 
+\bibitem{bergemann2013introduction}
+D.~Bergemann, S.~Morris, et~al.
+\newblock An introduction to robust mechanism design.
+\newblock {\em Foundations and Trends{\textregistered} in Microeconomics},
+  8(3):169--230, 2013.
+
 \bibitem{chastain2014algorithms}
 E.~Chastain, A.~Livnat, C.~Papadimitriou, and U.~Vazirani.
 \newblock Algorithms, games, and evolution.
@@ -63,16 +69,16 @@ V.~Shnayder, A.~Agarwal, R.~Frongillo, and D.~C. Parkes.
 \newblock Informed truthfulness in multi-task peer prediction.
 \newblock In {\em Proc. of ACM EC}, 2016.
 
-\bibitem{simon1979rational}
-H.~A. Simon.
-\newblock Rational decision making in business organizations.
-\newblock {\em The American economic review}, 69(4):493--513, 1979.
-
 \bibitem{snow2008cheap}
 R.~Snow, B.~O'Connor, D.~Jurafsky, and A.~Y. Ng.
 \newblock Cheap and fast---but is it good?: evaluating non-expert annotations
   for natural language tasks.
 \newblock In {\em Proc. of EMNLP}, 2008.
+
+\bibitem{stojic2015human}
+H.~Stojic, P.~P. Analytis, and M.~Speekenbrink.
+\newblock Human behavior in contextual multi-armed bandit problems.
+\newblock In {\em Proc. of CogSci}, 2015.
 
 \bibitem{waggoner2014output}
 B.~Waggoner and Y.~Chen.

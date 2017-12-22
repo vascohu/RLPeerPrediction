@@ -2,6 +2,7 @@
 import abc
 import numpy as np
 import InferModuleX
+import InferModuleSC
 #from scipy.special import gammaln
 #import time
 
@@ -26,6 +27,9 @@ class InferBase(object):
     # The expected accuracy
     ex_accuracy = 0.0
 
+    # The expected log-prob-ratio
+    ex_x = 0.0
+
     # The reward brought
     R = 0.0
 
@@ -33,7 +37,7 @@ class InferBase(object):
     eta = 0.0001
 
     @abc.abstractmethod
-    def infer(self, label_mat: np.matrix, true_label: list):
+    def infer(self, label_mat: np.matrix, true_label: list = None):
         """Infer the states and expected accuracy"""
         return
 
@@ -64,7 +68,7 @@ class GibbsSampling(InferBase):
         InferModuleX.init_classX(self.task_num, self.worker_num, self.class_num, self.true_label_num,
                                 self.sample, self.alpha, self.beta, self.y_dist, self.b)
 
-    def infer(self, label_mat: np.matrix, true_label: list):
+    def infer(self, label_mat: np.matrix, true_label: list = None):
         InferModuleX.infer(label_mat, np.asarray(true_label))
 
     def test(self, label_mat: np.matrix, true_label: list):
@@ -84,6 +88,45 @@ class GibbsSampling(InferBase):
         self.ex_accuracy /= (self.task_num-self.true_label_num)
         accuracy /= (self.task_num-self.true_label_num)
         return accuracy
+
+
+class GibbsSamplingSC(InferBase):
+    def __init__(self, _task_num: int, _worker_num: int):
+        self.task_num = _task_num
+        self.worker_num = _worker_num
+        self.y_dist = np.zeros(shape=(_task_num, 2))
+        self.p_vec = np.zeros(shape=(_worker_num))
+        self.x_vec = np.zeros(shape=(_task_num))
+        InferModuleSC.init_classX(self.task_num, self.worker_num, self.y_dist, self.p_vec, self.x_vec)
+
+    def __del__(self):
+        pass
+        #InferModuleSC.deconstructX()
+
+    def infer(self, label_mat: np.matrix, true_label: list=None):
+        self.ex_accuracy = InferModuleSC.inferX(label_mat)
+        self.ex_prob_ratio()
+
+    def test(self, label_mat: np.matrix, true_label: list):
+        self.ex_accuracy = InferModuleSC.inferX(label_mat)
+        self.ex_prob_ratio()
+        accuracy = 0
+        for i in range(self.task_num):
+            #label = np.argmax(self.y_dist[i, :])
+            if self.x_vec[i]>=0:
+                label = 0
+            else:
+                label = 1
+            if label == true_label[i]-1:
+                accuracy += 1
+        accuracy /= self.task_num
+        return accuracy
+
+    def ex_prob_ratio(self):
+        abs_log_ratio = np.absolute(self.x_vec)
+        self.ex_x = np.mean(abs_log_ratio)
+
+
 
 """
     # Number of samples

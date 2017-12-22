@@ -1,11 +1,11 @@
 \documentclass{article}
 
 % if you need to pass options to natbib, use, e.g.:
-%\PassOptionsToPackage{numbers, compress}{natbib}
+% \PassOptionsToPackage{numbers, compress}{natbib}
 % before loading nips_2017
 %
 % to avoid loading the natbib package, add option nonatbib:
-%\usepackage[nonatbib]{nips_2017}
+% \usepackage[nonatbib]{nips_2017}
 
 \usepackage[final]{nips_2017}
 
@@ -25,27 +25,7 @@
 \usepackage{bm}
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage{color}
-\usepackage{picins}
-\usepackage{epstopdf}
-
-
-\ifodd 1
-%\newcommand{\rev2}[1]{{\color{blue}#1}}%revise of the text
-\newcommand{\rev}[1]{#1}
-\newcommand{\frev}[1]{{\color{magenta}#1}}%revise of the text
-\newcommand{\com}[1]{\textbf{\color{red}(COMMENT: #1)}} %comment of the text
-\newcommand{\clar}[1]{\textbf{\color{green}(NEED CLARIFICATION: #1)}}
-\newcommand{\response}[1]{\textbf{\color{magenta}(RESPONSE: #1)}} %response to comment
-\else
-\newcommand{\rev}[1]{#1}
-\newcommand{\frev}[1]{#1}
-\newcommand{\com}[1]{}
-\newcommand{\clar}[1]{}
-\newcommand{\response}[1]{}
-\fi
-
-\title{A Reinforcement Learning Framework for Eliciting High Quality Information}
+\title{Reinforcement Peer Prediction: A Reinforcement Learning Framework for Eliciting Information}
 
 % The \author macro works with any number of authors. There are two
 % commands used to separate the names and addresses of multiple
@@ -102,128 +82,133 @@
 \maketitle
 
 \begin{abstract}
-Peer prediction is a class of mechanisms that help elicit high-quality information from strategic human agents when there is no ground-truth for verifying contributions. Despite its elegant design, peer prediction mechanisms often fail in practice, mostly due to two shortcomings: (1) agents' incentives for exerting effort %to produce high-quality information 
-are assumed to be known;
- (2) agents are modeled as being fully rational. In this paper, we propose the first reinforcement learning (RL) framework in this domain, \emph{Reinforcement Peer Prediction}, to tackle these two limitations.  %while being robust to different agent models.
-In our framework, we develop a model-free RL algorithm for the data requester to dynamically adjust the incentive level to maximize his revenue, and to pay workers using peer prediction scoring functions. 
-%One of our main contributions is to leverage Bayesian inference to define unbiased estimators of the requestors' revenue and agents' states (accuracy levels).
-%Based on these estimators,  to learn the optimal policy of incentive level adjustment.
- Experiments show significant improvement in data requestor's revenue under different agent models.
-%Experiment results show that our mechanism is robust, and is able to significantly increase data requester's revenue under different worker models, such as fully rational and learning agent models.
+Traditional peer prediction mechanisms are designed by assuming an idealized worker model.
+However, in practice, the worker model is often violated, causing the mechanisms to fail.
+In this paper, we propose the first model-free reinforcement peer prediction mechanism where a data requester wants to dynamically adjust the incentive level to maximize his revenue.
+To accurately estimate data requester's revenue and workers' state, we derive their posterior distributions and sample the distributions with Gibbs sampling.
+Considering the inferred revenue and state are not accurate, we employ online Gaussian process regression to learn the revenue corresponding to different incentive levels and utilize the classic $\epsilon$-greedy strategy to choose the optimal incentive level.
+The experiments on different worker models show that our mechanism can significantly increase data requester's revenue.
 \end{abstract}
 
 \section{Introduction}
-Crowdsourcing rises as a promising inexpensive method to collect a large amount of training data %(for machine learning)
-quickly \cite{snow2008cheap,deng2009imagenet}.
-Notwithstanding its high efficiency, one salient concern about crowdsourcing is the quality of the collected information, as it is often too costly to verify workers' contributions.
+Crowdsourcing, which elicits useful information from a crowd of online human workers, has arisen as a promising method to facilitate the development of machine learning systems.
+For example, a popular application of crowdsourcing is to generate labels for large scale machine learning datasets such as RTE~\cite{snow2008cheap} and ImageNet~\cite{deng2009imagenet}.
+Notwithstanding its high efficiency and immediate availability, one salient concern about crowdsourcing is the quality of collected answers, because it is often difficult or too costly to verify workers' answers.
 This problem is called information elicitation without verification~\cite{waggoner2014output}.
 A class of incentive mechanisms, collectively called peer prediction, has been developed to solve this problem~\cite{miller2005eliciting,jurca2009mechanisms,witkowski2012robust,witkowski2012peer,radanovic2013robust}.
-The core idea of peer prediction is quite simple and elegant -- the mechanism designer financially incentivizes 
-workers according to the scoring of their contributions in comparison with their peers'. The payment rules are designed so that each worker reporting truthfully or reporting a high-quality signal is a strict Bayesian Nash Equilibrium.
-
-Many peer prediction mechanisms adopt the effort-sensitive model to depict agents' trade-off reasoning in contributing high-quality information~\cite{witkowski2013dwelling,dasgupta2013crowdsourced,shnayder2016informed,liu2017sequential}. In these mechanisms, workers are incentivized to exert high efforts to generate high-quality answers.
-%All the aforementioned peer prediction mechanisms focus on a one-shot interaction with agents\comt{For this one, we do not get into further details how this makes difference, we maybe we should just not mention it here} .
-One critical assumption in those mechanisms is an explicitly-known worker model which includes workers' incentives. Furthermore it is also assumed workers are fully rational, following the utility-maximizing strategy. Unfortunately, neither is true in practice. Firstly, workers' incentives %, or cost,%
-to exert high effort can most likely only be known after we, as the mechanism designers, interact with them. Secondly, there is strong evidence showing that human workers are not fully rational~\cite{simon1979rational}, and they are often observed to be deviating from equilibrium strategies in practice \cite{mckelvey1995quantal,jurca2007robust}.
+In peer prediction, the payment for one worker is decided by comparing his answers with those of his peers, and the payment rules are elegantly designed so that truthful report is a game-theoretic equilibrium for all workers.
 
 
-%Or, they do not calculate the utility-maximizing strategy but gradually adjust their strategy according to the interaction with the peer prediction mechanism~\cite{chastain2014algorithms,stojic2015human}.
-%In some cases, workers' utility function may also be different from our anticipation~\cite{bergemann2013introduction}.
-%To avoid this precondition, 
+Effort elicitation is another goal considered by more recent peer prediction mechanisms~\cite{witkowski2013dwelling,dasgupta2013crowdsourced,shnayder2016informed,liu2017sequential}.
+In these mechanisms, workers are incentivized not only to report truthfully, but also to generate high quality answers by exerting their maximal efforts.
+For all the aforementioned peer prediction mechanisms, one essential precondition is an explicitly-known worker model which includes workers' utility function and the assumption that workers are fully rational and only take the utility-maximizing strategy.
+However, in practice, workers may be bounded rational~\cite{mckelvey1995quantal,jurca2007robust}.
+Or, they do not calculate the utility-maximizing strategy but gradually adjust their strategy according to the interaction with the peer prediction mechanism~\cite{chastain2014algorithms,stojic2015human}.
+In some cases, workers' utility function may also be different from our anticipation~\cite{bergemann2013introduction}.
+To avoid this precondition, we propose to decide the payment for workers by using reinforcement learning.
+It learns the optimal payment based on workers' contributions at each step.
+Nevertheless, there are two main challenges.
+Firstly, classic reinforcement learning focuses on the interaction between a single agent and its environment.
+It does not consider the game among workers, and thus may violate the incentive compatibility requirement that rational workers should be able to gain the maximal utility by reporting truthfully and exerting maximal efforts.
+Secondly, no ground-truth answers are available for evaluating the benefits of workers.
+Hence, we need to find a proper way to compute workers' contributions so that reinforcement learning can be applied.
 
-To push peer prediction mechanisms towards being more practical, we propose a reinforcement learning framework, \emph{Reinforcement Peer Prediction}, to interact with workers, so as to (1) incentivize workers to converge to a high effort exertion state, and (2) learn the optimal payment based on workers' contributions at each step.
-Nevertheless, we face two main challenges.
-Firstly, classic reinforcement learning focuses on the interaction between a single agent and its environment. We, instead, need to effectively consider a multi-agent setting. Immediately a game is formed among workers, because our incentive strategy relies on the comparison between workers' answers and their peers'. Therefore, the evolution of workers' state is a outcome of collective actions from all workers, as well as the environment. Secondly, no ground-truth is available to evaluate either the state of the workers or the rewards in our setting, whereas it is taken as granted in most other reinforcement learning frameworks. Hence, we need to find a proper way to evaluate workers' contributions so that model-free RL algorithms which learn based on the reward signal can be applied.
-
-
-The main contributions of this paper are as follows.
-(1) We propose the first model-free reinforcement peer prediction mechanism.
-Our mechanism combines a peer prediction mechanism with reinforcement learning to jointly incentivize workers and learn the optimal incentive level at each step.
-(2) Due to the lack of ground-truth, we adopt Bayesian inference to evaluate workers' contributions, and to infer the reward following each action (i.e. offered incentive level). We derive the explicit posterior distribution of workers' contributions and employ Gibbs sampling to eliminate its bias.
-(3) In our setting, the inferred contributions are corrupted by noise and only the most recent previous state rather than the current can be observed. We use the online Gaussian process regression to learn the $Q$-function and replace the unknown current state with the pair of the last observed state and incentive level (action).
-(4) We conduct empirical evaluation, and the results show that our mechanism is robust, and is able to significantly increase data requester's revenue under different worker models, such as fully rational, bounded rational and learning agent models.
-%on different worker models, which shows that our mechanism can significantly increase the revenue of using crowdsourcing.
+The main contributions of this paper are the following four aspects.
+Firstly, we propose the first model-free reinforcement peer prediction mechanism.
+Our mechanism uses reinforcement learning to calculate the overall incentive level, traditional peer prediction mechanisms to decide the payment for each worker, and Bayesian inference to evaluate workers' contributions.
+Secondly, classic Bayesian inference algorithms for crowdsourcing (e.g. the Dawid-Skene estimator~\cite{dawid1979maximum}) suffer from local optimum, causing the estimation of workers' contributions to be biased.
+This bias will further mislead reinforcement learning.
+Thus, we derive the explicit posterior distribution of workers' contributions and employ Gibbs sampling for inference to eliminate the bias.
+Thirdly, in our mechanism, the inferred contributions are corrupted by noise and we can only observe the last step worker state rather than the current one.
+Hence, in reinforcement learning, we use the online Gaussian process regression to learn the Q-function and replace the unknown current state with the couple of the last step state and incentive level.
+Fourthly, we conduct empirical evaluation on different worker models, which shows that our mechanism can significantly increase the revenue of using crowdsourcing.
 
 \section{Problem Formulation}
-Our proposed mechanism mainly works in the setting where one data requester, at every step, assigns $M$ binary tasks with answer space $\left\{1,2\right\}$ to $N \geq 4$ candidate workers. At step $t$, worker $i$'s labels for the task $j$ is denoted as $L_i^t(j)$, and correspondingly the payment that the mechanism pays is denoted as $P^{t}_i(j)$. Note that we use $L^{t}_i(j)=0$ to denote task $j$ is not assigned to worker $i$ at step $t$, and naturally under this case $P^{t}_i(j)=0$.
-After every step, the data requester collects labels and aggregates them through Bayesian inference~\cite{zheng2017truth}.
-Assuming the aggregate reaches an accuracy $A_t$,  the revenue for the data requester can then be computed as
-$r_t = F(A_t) - \eta {\sum}_{i=1}^{N}{\sum}_{j=1}^{M}P^t_i(j)$,
-where $F(\cdot)$ is a non-decreasing monotonic function mapping accuracy to revenue and $\eta$ is a
-tunable parameter balancing label quality and costs. Intuitively, the $F(\cdot)$ function needs to be non-deceasing as higher accuracy is preferred and also labels are only useful when their aggregate accuracy reaches a certain requirement. Note that our framework is robust to any such $F(\cdot)$ function. For instance, it is set as $F(A_t)=A^{10}_t$ in our experiments.
-Our goal is to maximize data requester's revenue, namely the cumulative reward $R = \sum_{t=1}^{T} \gamma^t r_t$, where $\gamma\approx 1.0$ is the discount rate and $T$ is the ending time, by making wise choices of actions  (i.e. deciding incentive levels) at each step.
+Suppose in our system there are one data requester and $N$ candidate workers denoted by $\mathcal{C}=\{1,\ldots, M\}$, where $M\geq 4$.
+At every stage, the data requester assigns $M$ binary answer tasks, with answer space $\{1,2\}$, to workers.
+At stage $t$, for task $i$, worker $j$'s label can be written as $L_{t}(i,j)$, and correspondingly our mechanism needs to pay $P_{t}(i,j)$.
+Besides, we use $L_{t}(i,j)=0$ to denote that task $i$ is not assigned to worker $j$, and thus $P_{t}(i,j)=0$.
+After collecting labels, the data requester will aggregate labels via Bayesian inference~\cite{zheng2017truth}, and the label accuracy can be written as $A_t$.
+Thus, the revenue of the data requester at stage $t$ can be calculated as:
+\begin{equation}
+r_t = F(A_t) - \eta {\sum}_{i=1}^{N}{\sum}_{j=1}^{M}P_{ij}
+\end{equation}
+where $F(\cdot)$ maps accuracy into revenue. In practice, the higher accuracy, the better. Meanwhile, the collected labels can only be used when their accuracy reaches a certain requirement.
+Thus, we set $F(A_t)=A^{n}_t$ in this paper.
+It is worth noting that our reinforcement peer prediction mechanism does not require any specific formulation of the $F$ function.
+Suppose our mechanism goes for $T$ stages.
+Thus, the goal of our mechanism is to maximize the accumulative revenue, namely $R = \sum_{t=1}^{T} r_t$.
 
 \section{Reinforcement Peer Prediction}
-%\begin{figure}[htb]
-%        \includegraphics[width=0.6\textwidth]{image/Mechanism}
-%        \caption{\label{ED1} Illustration of our reinforcement peer prediction mechanism}
-%\end{figure}
-We present \emph{Reinforcement Peer Prediction} in Figure~\ref{ED1}. Note at every step $t$, the payment to worker $i$ for task $j$ is factored as a function over two elements, namely $P^{t}_i(j)=I_t \cdot p^{t}_i(j)$, where $I_t\geq 0$ is the incentive level (scaling factor) learned and computed by our RL algorithm, and
-$p^t_i(j)$ is the output of our peer prediction scoring function.
-%By doing so, we can ensure the reinforcement learning does not break the one-step incentive compatibility requirement, that is, truthful report and exerting maximal efforts is always a Nash equilibrium for all workers.
-%We use Bayesian inference to aggregate the collected labels.
-Since the ground-truth is not available, we cannot directly compute the reward (i.e accuracy $A_t$), following each action (i.e. deciding the offered incentive level). 
-Thus, we introduce the expected accuracy $\mathbb{E}A_t$ as an unbiased estimator of the real accuracy $A_t$.
-It can be calculated as $\mathbb{E}A_t = \frac{1}{M}\sum_{j=1}^{M} \textrm{Pr}(L^{t}(j) = y^{t}_j)$, where $L^{t}(j)$ and $y^{t}_j$ are the aggregate and true labels at step $t$, respectively. Besides used to aggregate data, Bayesian inference is also used to generate confusion matrices of all workers and the distribution of task labels $\left[\textrm{Pr}(l=1), \textrm{Pr}(l=2)\right]$, with $l$ denoting the ground-truth label.
-For worker $i$, his confusion matrix $C_i = [c_{ikg}]_{2\times 2}$ is a measurement of how much efforts he exerts, where $c_{ikg}$ denotes the probability that worker $i$ labels a task in class $k$ as class $g$. Since the accuracy of labels is determined by the overall efforts of workers, we denote the state of the whole worker crowd $s_t$ by workers' average probability of being correct,
-\piccaption[]{\label{ED1}Illustration of our mechanism}
-\parpic{%
-  \includegraphics[width=0.55\textwidth]%
-                  {image/Mechanism}}
+\begin{figure}[htb]
+        \centering
+        \includegraphics[width=0.6\textwidth]{image/Mechanism}
+        \caption{\label{ED1} The architecture of our reinforcement peer prediction mechanism}
+\end{figure}
+We present the architecture of our mechanism in Figure~\ref{ED1}. At step $t$, our mechanism decides the payment for workers as $P_{t}(i,j)=I_t \cdot p_{t}(i,j)$, where $I_t$ denotes the incentive level calculated by our reinforcement learning algorithm.
+$p_t(i,j)$ denotes the output of the peer prediction mechanism.
+By doing so, we can ensure the reinforcement learning does not break the incentive compatibility requirement, that is, truthful report and exerting maximal efforts is always a Nash equilibrium for all workers.
+Besides, we use Bayesian inference to aggregate the collected labels.
+Since the ground-truth answers are unavailable, we cannot directly calculate the accuracy $A_t$.
+Thus, we use the expected accuracy $\mathbb{E}A_t$ instead.
+It can be calculated as $\mathbb{E}A_t = \frac{1}{N}\sum_{i=1}^{N} \textrm{Pr}(L_i = y_i)$, where $L_i$ and $y_i$ denote the aggregated and true label, respectively.
+Meanwhile, Bayesian inference can also output the confusion matrices of all workers and the distribution of task labels $\left[\textrm{Pr}(l=1), \textrm{Pr}(l=2)\right]$.
+For worker $j$, his confusion matrix $C_j = [c_{jkg}]_{2\times 2}$, where $c_{jkg}$ denotes the probability that worker $j$ labels a task in class $k$ as class $g$.
+Since the accuracy of labels are determined by the overall quality of workers, how an individual worker performs is not the concern of our reinforcement learning algorithm.
+Thus, we denote the state of the whole worker crowd $s_t$ by workers' average probability of being correct, namely $s_t = \sum_{k\in\{1,2\}}\textrm{Pr}(l=k)\cdot \frac{1}{M}\sum_{j=1}^{M}c_{jkk}$.
+After workers receive the payment, they may adjust their strategies, which will lead to the change $s_t$.
+However, when computing the incentive level $I_{t+1}$, we only has the last step state $s_t$.
+In other words, the state observation has one-stage delay, which makes our reinforcement learning problem different from traditional ones.
 
-namely $s_t =\frac{1}{N}\cdot \sum_{k=1}^2\textrm{Pr}(l=k)\cdot  \sum_{i=1}^{N}c_{ikk}$.
-After receiving the payment, workers may potentially adjust their strategies in exerting efforts (based on their rationality model), which will lead to the change of their state $s_t$.
-However, when deciding the next-step incentive level $I_{t+1}$, we can only estimate the last step state $s_t$.
-In other words, the state observation in our mechanism is not only imperfect, but also has one-step delay. This also makes our reinforcement learning problem different from traditional ones.
+\noindent \textbf{Peer Prediction Mechanism:} We adopt the state-of-the-art mechanism proposed by \cite{dasgupta2013crowdsourced}.  For each task-worker pair $(i, j)$, it selects a reference worker $k$. Suppose workers $j$ and $k$ have been assigned $d$ other distinct tasks $\{j_1,\ldots,j_d\}$ and $\{k_1,\ldots, k_d\}$, respectively. Then, the payment $p_t(i,j)= 1[L(i,j)=L(i,k)]- \xi_{j}^d\cdot \xi_{k}^d -\bar{\xi}_{j}^d\cdot \bar{\xi}_{k}^d$, where $\xi_{k}^{d}=\sum_{g=1}^{d}1(L(i_g, k)=1)/d$ and $\bar{\xi}_{k}^{d}=1-\xi_{k}^{d}$.
 
-\noindent \textbf{Peer Prediction Mechanism:} We adopt the multi-task mechanism proposed by Dasgupta and Ghosh \cite{dasgupta2013crowdsourced}.  For each worker-task pair $(i, j)$, it selects a reference worker $k$. Suppose workers $i$ and $k$ have been assigned $d$ other distinct tasks $\{i_1,\ldots,i_d\}$ and $\{k_1,\ldots, k_d\}$, respectively. Then, the payment $p^t_{i}(j)= 1[L^{t}_i(j)=L^{t}_k(j)]- \xi_{i}^d\cdot \xi_{k}^d -\bar{\xi}_{i}^d\cdot \bar{\xi}_{k}^d$, where $\xi_{i}^{d}=\sum_{g=1}^{d}1(L^{t}_k(i_g)=1)/d$ and $\bar{\xi}_{i}^{d}=1-\xi_{i}^{d}$.
-
-\noindent \textbf{Bayesian Inference:} Suppose the prior distributions are as follows: $c_{ik1}\sim \textrm{Beta}(\alpha^{p}_{ik1},\alpha^{p}_{ik2})$ and $\textrm{Pr}(l=1)\sim \textrm{Beta}(\beta^{p}_{1},\beta^{p}_{2})$. Then, we can explicitly derive the posterior distribution of true labels of assigned tasks, using collected labels from workers, as follows:
+\noindent \textbf{Bayesian Inference:} Suppose the prior distributions that $c_{jk1}\sim \textrm{Beta}(\alpha^{0}_{jk1},\alpha^{0}_{jk2})$ and $\textrm{Pr}(l=1)\sim \textrm{Beta}(\beta^{0}_{1},\beta^{0}_{2})$. Then, we can explicitly derive the posterior distribution of true labels as
 \begin{equation}
 \label{PostDist}
-P(\bm{y}^{t}|\bm{L}^{t})\propto B(\bm{\beta}^{t}){\prod}_{i=1}^{N}{\prod}_{k=1}^{K} B(\bm{\alpha}^{t}_{ik}), \alpha^{t}_{ikg}={\sum}_{j=1}^{M}\delta^{t}_{ijg}\xi^{t}_{jk}+\alpha^{p}_{ikg}, \beta^{t}_k={\sum}_{j=1}^{M}\xi^{t}_{jk}+\beta^{p}_{k}
+P(\bm{y}|\bm{L})\propto B(\bm{\beta}){\prod}_{j=1}^{M}{\prod}_{k=1}^{K} B(\bm{\alpha}_{jk})\;,\; \alpha_{jkg}={\sum}_{i=1}^{N}\delta_{ijg}\xi_{ik}+\alpha^{0}_{jkg}, \beta_k={\sum}_{i=1}^{N}\xi_{ik}+\beta^{0}_{k}
 \end{equation}
-where $B(\cdot)$ denotes the beta function, $\delta^{t}_{ijg}=1(L^t_i(j)=g)$ and $\xi^{t}_{jk}= 1(y^{t}_j=k)$. According to Gibbs sampling, we can generate posterior samples via iteratively sampling $P(y^{t}_j|\bm{L}, \bm{y}^t_{s\neq j})$.
+where $B(\cdot)$ denotes the beta function, $\delta_{ijg}=1(L(i,j)=g)$ and $\xi_{ik}= 1(y_i=k)$. According to Gibbs sampling, we can generate posterior samples via iteratively sampling $P(y_i|\bm{L}, \bm{y}_{j\neq i})$.
 
-\noindent \textbf{Reinforcement Learning:} Recall that when computing the incentive level $I_{t}$ for step $t$, the current state $s_{t}$ cannot be observed. Because of it, we resort to the previous state and incentive level to define our  policy $\pi(I_{t}|x_t)$, where $x_t=\langle s_{t-1}, I_{t-1}, t \rangle$.
-Then, the $Q$-function of our policy can be calculated as $Q(x_t, I_t)= \sum_{i=0}^{T-t} \gamma^{i} r_{t+i}$.  %and $Q(x_{T+1}, I_{T+1})=0$.
-Since both the state $s_t$ and reward $r_t$ can not be accurately observed, we have to approximate the temporal difference (TD) by assuming that the residual follows a Gaussian process: $Q(x_t, I_t) - \gamma Q(x_{t+1}, I_{t+1}) = r_t + N(x_t,x_{t+1})$, where $N(\cdot)$ is the residual. Then, the Q-function can be learned effectively using the online Gaussian process regression algorithm~\cite{engel2005reinforcement}. Furthermore, we use the classic $\epsilon$-greedy policy to make decisions at every step.
+\noindent \textbf{Reinforcement Learning:} When calculating the incentive level $I_{t}$ for stage $t$, the current state $s_{t}$ cannot be observed. Thus, we define our incentive policy as $\pi(I_{t}|x_t)$, where $x_t=\langle s_{t-1}, I_{t-1}, t \rangle$.
+Then, the Q-function of our policy can be calculated as $Q(x_t, I_t)= \sum_{i=0}^{T-t} \gamma^{i} r_{t+i}$, where the discount factor $\gamma$ is slightly smaller than $1$ and $Q(x_{T+1}, I_{T+1})=0$.
+Both the state $s_t$ and reward $r_t$ are not accurately observed.
+Thus, we apply Gaussian process regression for the Q-function:
+\begin{equation}
+\label{GaussPro}
+Q(x_t, I_t) - \gamma Q(x_{t+1}, I_{t+1}) = r_t + N(x_t,x_{t+1})
+\end{equation}
+where the residual $N(x_t,x_{t+1})$ is assumed to be a Gaussian process. By applying the online Gaussian process regression algorithm~\cite{engel2005reinforcement}, we can learn the Q-function. Then, we decide the incentive level $I_t$ for stage $t$ as $\arg\max Q(x_t, I_t)$ with probability $1-\epsilon$ and a random value with probability $\epsilon$.
 
 \section{Experiments}
-\vspace{-4mm}
 \begin{figure}[htb]
     \centering
-    \hspace{-1mm}
-    \begin{subfigure}[t]{0.35\textwidth}
+    \begin{subfigure}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/1}
-        \caption{\label{E1} Fully Rational Workers}
+        \caption{\label{E1} Rational Workers}
     \end{subfigure}%
-    ~\hspace{-6mm}
-    \begin{subfigure}[t]{0.35\textwidth}
+    ~
+    \begin{subfigure}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/2}
         \caption{\label{E2}  Quantal Response Workers}
     \end{subfigure}
-    ~\hspace{-6mm}
-    \begin{subfigure}[t]{0.35\textwidth}
+    ~
+    \begin{subfigure}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/3}
         \caption{\label{E3}  MWUA Workers}
     \end{subfigure}    
+    \caption{\label{ED}Experiments on different worker models}
     \vspace{-1mm}
-    %\caption{\label{ED}Experiments on three popular worker models}
 \end{figure}
-The above figure %~\ref{ED} 
-shows our experimental results on three popular worker models.
-Suppose there are four incentive levels, namely $I_t\in \{0.1, 1.0, 5.0, 10.0\}$.
-In practice, traditional one-shot peer prediction mechanisms are often implemented with a fixed incentive level.
-Here, we set the incentive level as $1.0$ and denote this mechanism with a fixed incentive level as FIL-PP.
-By contrast, our reinforcement peer prediction (RPP) mechanism can dynamically learn and adjust the incentive level to maximize data requester's revenue.
-Note, in our experiments, rational workers exert  high efforts and report the true labels with probability $0.9$ for any incentive level.
-Quantal response workers decide their strategy using the quantal response model, a classic bounded rationality model~\cite{mckelvey1995quantal}.
-MWUA workers adapt their strategies via the MWUA model, a classic learning agent model~\cite{chastain2014algorithms}.
-Based on all experiment results, we find that our mechanism is robust, and is able to significantly increase data requester's revenue, especially when workers are not fully rational.
+In Figure~\ref{ED}, we present the simulation results on different worker models.
+In our experiments, we assume there are four incentive levels, namely $I_t\in \{0.1, 1.0, 5.0, 10.0\}$.
+Meanwhile, we set the number of workers and tasks at each stage as $10$ and $100$, respectively.
+For rational workers, we assume all workers report the true labels with probability $0.9$ for all incentive levels.
+For quantal response workers, we assume workers use the quantal response model~\cite{mckelvey1995quantal} to decide whether to exert the maximal efforts.
+For MWUA workers, we assume workers follow the MWUA model~\cite{chastain2014algorithms}.
+From all the experiments, we can find that our reinforcement peer prediction mechanism can gradually lean the optimal incentive strategy, which significantly increase the revenue when workers are not rational.
 
 %\subsubsection*{Acknowledgments}
 
