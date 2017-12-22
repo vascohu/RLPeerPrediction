@@ -1,7 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.15)  24 OCT 2017 23:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.10.15)  22 NOV 2017 07:52
 entering extended mode
-**"./AAAI workshop.tex"
-("AAAI workshop.tex"
+**"C:/Users/Zehong/Dropbox/New Research/POMDP/GitHub/RLPeerPrediction/AAAI Work
+shop/aaai18_RPP.tex"
+
+("C:/Users/Zehong/Dropbox/New Research/POMDP/GitHub/RLPeerPrediction/AAAI Works
+hop/aaai18_RPP.tex"
 LaTeX2e <2017-04-15>
 Babel <3.10> and hyphenation patterns for 75 language(s) loaded.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
@@ -20,8 +23,8 @@ File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 \abovecaptionskip=\skip41
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
-) (aaai17.sty
-Conference Style for AAAI for LaTeX 2e -- version of 14 January 2017
+) (aaai18.sty
+Conference Style for AAAI for LaTeX 2e -- version for the AAAI-18 conference
 \titlebox=\skip43
 ) ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\times.sty"
 Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
@@ -322,53 +325,16 @@ Package: blindtext 2012/01/06 V2.0 blindtext-Package
 \c@blind@pangramcount=\count139
 \c@blind@pangrammax=\count140
 ))
-("AAAI workshop.aux")
-\openout1 = `"AAAI workshop.aux"'.
+("C:\Program Files\MiKTeX 2.9\tex\latex\bbm\bbm.sty"
+Package: bbm 1999/03/15 V 1.2 provides fonts for set symbols - TH
+LaTeX Font Info:    Overwriting math alphabet `\mathbbm' in version `bold'
+(Font)                  U/bbm/m/n --> U/bbm/bx/n on input line 33.
+LaTeX Font Info:    Overwriting math alphabet `\mathbbmss' in version `bold'
+(Font)                  U/bbmss/m/n --> U/bbmss/bx/n on input line 35.
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf.sty"
+Package: epstopdf 2016/05/15 v2.6 Conversion with epstopdf on the fly (HO)
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 40.
- ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1ptm.fd"
-File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
-) ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count141
-\scratchdimen=\dimen138
-\scratchbox=\box41
-\nofMPsegments=\count142
-\nofMParguments=\count143
-\everyMPshowfont=\toks30
-\MPscratchCnt=\count144
-\MPscratchDim=\dimen139
-\MPnumerator=\count145
-\makeMPintoPDFobject=\count146
-\everyMPtoPDFconversion=\toks31
-) ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\pdftexcmds.sty"
-Package: pdftexcmds 2017/03/19 v0.25 Utility functions of pdfTeX for LuaTeX (HO
-)
-
-("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifluatex.sty"
-Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
-Package ifluatex Info: LuaTeX not detected.
-)
-("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
-Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
-)
-Package pdftexcmds Info: LuaTeX not detected.
-Package pdftexcmds Info: \pdf@primitive is available.
-Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode found.
-)
 ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -386,41 +352,97 @@ Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
 
 ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\etexcmds.sty"
 Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifluatex.sty"
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
 Package etexcmds Info: Could not find \expanded.
 (etexcmds)             That can mean that you are not using pdfTeX 1.50 or
 (etexcmds)             that some package has redefined \expanded.
 (etexcmds)             In the latter case, load this package earlier.
 )))
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\pdftexcmds.sty"
+Package: pdftexcmds 2017/03/19 v0.25 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
+Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 38.
 Package grfext Info: Graphics extension search list:
 (grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
+))
+(aaai18_RPP.aux)
+\openout1 = `aaai18_RPP.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 60.
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1ptm.fd"
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count141
+\scratchdimen=\dimen138
+\scratchbox=\box41
+\nofMPsegments=\count142
+\nofMParguments=\count143
+\everyMPshowfont=\toks30
+\MPscratchCnt=\count144
+\MPscratchDim=\dimen139
+\MPnumerator=\count145
+\makeMPintoPDFobject=\count146
+\everyMPtoPDFconversion=\toks31
 )
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
-LaTeX Font Info:    Try loading font information for U+msa on input line 49.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 70.
+LaTeX Font Info:    Try loading font information for U+msa on input line 70.
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 49.
+LaTeX Font Info:    Try loading font information for U+msb on input line 70.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 70.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 50.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 70.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 70.
 
-Underfull \hbox (badness 1960) in paragraph at lines 62--65
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
+File: omsptm.fd 
+)
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <9> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 70.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 71.
+
+Underfull \hbox (badness 1960) in paragraph at lines 83--86
 []\OT1/ptm/m/n/10 Many peer pre-dic-tion mech-a-nisms adopt the effort-
  []
 
@@ -432,21 +454,28 @@ Underfull \vbox (badness 1400) has occurred while \output is active []
 
 
 ]
-Underfull \hbox (badness 1062) in paragraph at lines 96--99
-\OT1/ptm/m/n/10 where $\OML/cmm/m/it/10 L[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 j\
-OT1/cmr/m/n/10 )$ \OT1/ptm/m/n/10 and $\OML/cmm/m/it/10 y[]$ \OT1/ptm/m/n/10 ar
-e the ag-gre-gate and true la-bels
- []
-
 <image/Mechanism.png, id=9, 558.6471pt x 232.7094pt>
 File: image/Mechanism.png Graphic file (type png)
  <use image/Mechanism.png>
-Package pdftex.def Info: image/Mechanism.png used on input line 106.
-(pdftex.def)             Requested size: 227.64894pt x 94.82912pt.
+Package pdftex.def Info: image/Mechanism.png used on input line 134.
+(pdftex.def)             Requested size: 252.94499pt x 105.3645pt.
 
-Underfull \hbox (badness 1102) in paragraph at lines 111--112
-\OT1/ptm/b/n/10 Peer Pre-dic-tion Mech-a-nism: \OT1/ptm/m/n/10 We adopt the mul
-ti-task
+Overfull \hbox (13.55061pt too wide) in paragraph at lines 134--135
+[][] 
+ []
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 139.
+LaTeX Font Info:    Try loading font information for U+bbm on input line 143.
+("C:\Program Files\MiKTeX 2.9\tex\latex\bbm\ubbm.fd"
+File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
+) [2 <./image/Mechanism.png>]
+Overfull \hbox (0.55008pt too wide) detected at line 164
+\OMS/cmsy/m/n/10 f\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 L[]\OT1/cmr/m/n/10 (1)\OML/
+cmm/m/it/10 ; [] ; L[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 M\OT1/cmr/m/n/10 ))\OML
+/cmm/m/it/10 ; [] ; \OT1/cmr/m/n/10 (\OML/cmm/m/it/10 L[]\OT1/cmr/m/n/10 (1)\OM
+L/cmm/m/it/10 ; [] ; L[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 M\OT1/cmr/m/n/10 ))\O
+MS/cmsy/m/n/10 g\OML/cmm/m/it/10 ;
  []
 
 Package epstopdf Info: Source file: <image/1.eps>
@@ -457,14 +486,14 @@ Package epstopdf Info: Source file: <image/1.eps>
 (epstopdf)                    size: 25590 bytes
 (epstopdf)             Command: <epstopdf --outfile=image/1-eps-converted-to.pd
 f image/1.eps>
-(epstopdf)             \includegraphics on input line 122.
+(epstopdf)             \includegraphics on input line 183.
 Package epstopdf Info: Output file is already uptodate.
-<image/1-eps-converted-to.pdf, id=10, 1445.4pt x 779.91376pt>
+<image/1-eps-converted-to.pdf, id=21, 1445.4pt x 779.91376pt>
 File: image/1-eps-converted-to.pdf Graphic file (type pdf)
 
 <use image/1-eps-converted-to.pdf>
-Package pdftex.def Info: image/1-eps-converted-to.pdf used on input line 122.
-(pdftex.def)             Requested size: 151.76854pt x 81.8874pt.
+Package pdftex.def Info: image/1-eps-converted-to.pdf used on input line 183.
+(pdftex.def)             Requested size: 177.06458pt x 95.5373pt.
 Package epstopdf Info: Source file: <image/2.eps>
 (epstopdf)                    date: 2017-10-24 14:28:49
 (epstopdf)                    size: 127927 bytes
@@ -473,15 +502,15 @@ Package epstopdf Info: Source file: <image/2.eps>
 (epstopdf)                    size: 24696 bytes
 (epstopdf)             Command: <epstopdf --outfile=image/2-eps-converted-to.pd
 f image/2.eps>
-(epstopdf)             \includegraphics on input line 128.
+(epstopdf)             \includegraphics on input line 189.
 Package epstopdf Info: Output file is already uptodate.
 
-<image/2-eps-converted-to.pdf, id=11, 1445.4pt x 779.91376pt>
+<image/2-eps-converted-to.pdf, id=22, 1445.4pt x 779.91376pt>
 File: image/2-eps-converted-to.pdf Graphic file (type pdf)
 
 <use image/2-eps-converted-to.pdf>
-Package pdftex.def Info: image/2-eps-converted-to.pdf used on input line 128.
-(pdftex.def)             Requested size: 151.76854pt x 81.8874pt.
+Package pdftex.def Info: image/2-eps-converted-to.pdf used on input line 189.
+(pdftex.def)             Requested size: 177.06458pt x 95.5373pt.
 Package epstopdf Info: Source file: <image/3.eps>
 (epstopdf)                    date: 2017-10-24 14:29:26
 (epstopdf)                    size: 298938 bytes
@@ -490,16 +519,23 @@ Package epstopdf Info: Source file: <image/3.eps>
 (epstopdf)                    size: 56852 bytes
 (epstopdf)             Command: <epstopdf --outfile=image/3-eps-converted-to.pd
 f image/3.eps>
-(epstopdf)             \includegraphics on input line 134.
+(epstopdf)             \includegraphics on input line 195.
 Package epstopdf Info: Output file is already uptodate.
 
-<image/3-eps-converted-to.pdf, id=12, 1445.4pt x 779.91376pt>
+<image/3-eps-converted-to.pdf, id=23, 1445.4pt x 779.91376pt>
 File: image/3-eps-converted-to.pdf Graphic file (type pdf)
 
 <use image/3-eps-converted-to.pdf>
-Package pdftex.def Info: image/3-eps-converted-to.pdf used on input line 134.
-(pdftex.def)             Requested size: 151.76854pt x 81.8874pt.
- [2 <./image/Mechanism.png>]
+Package pdftex.def Info: image/3-eps-converted-to.pdf used on input line 195.
+(pdftex.def)             Requested size: 177.06458pt x 95.5373pt.
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 243.
+ [3]
+Underfull \hbox (badness 1152) in paragraph at lines 258--259
+[]\OT1/ptm/b/n/10 Quantal Re-sponse Work-ers \OT1/ptm/m/n/10 ( McK-elvey and Pa
+l-frey
+ []
+
 Package epstopdf Info: Source file: <image/4.eps>
 (epstopdf)                    date: 2017-10-24 23:29:55
 (epstopdf)                    size: 261638 bytes
@@ -508,62 +544,49 @@ Package epstopdf Info: Source file: <image/4.eps>
 (epstopdf)                    size: 10656 bytes
 (epstopdf)             Command: <epstopdf --outfile=image/4-eps-converted-to.pd
 f image/4.eps>
-(epstopdf)             \includegraphics on input line 190.
+(epstopdf)             \includegraphics on input line 287.
 Package epstopdf Info: Output file is already uptodate.
-
-<image/4-eps-converted-to.pdf, id=24, 1436.36626pt x 497.86pt>
+<image/4-eps-converted-to.pdf, id=30, 1436.36626pt x 497.86pt>
 File: image/4-eps-converted-to.pdf Graphic file (type pdf)
 
 <use image/4-eps-converted-to.pdf>
-Package pdftex.def Info: image/4-eps-converted-to.pdf used on input line 190.
-(pdftex.def)             Requested size: 252.94499pt x 87.66617pt.
+Package pdftex.def Info: image/4-eps-converted-to.pdf used on input line 287.
+(pdftex.def)             Requested size: 278.24104pt x 96.44038pt.
 
-Overfull \hbox (13.55061pt too wide) in paragraph at lines 190--191
- [][] 
+Overfull \hbox (17.9845pt too wide) in paragraph at lines 286--288
+[]  [] 
  []
 
-("AAAI workshop.bbl" [3 <./image/1-eps-converted-to.pdf> <./image/2-eps-convert
-ed-to.pdf> <./image/3-eps-converted-to.pdf> <./image/4-eps-converted-to.pdf>]
-Underfull \hbox (badness 1365) in paragraph at lines 71--74
-[]\OT1/ptm/m/n/10 Victor Shnay-der, Arpit Agar-wal, Rafael Frongillo, and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 106--109
-[]\OT1/ptm/m/n/10 Jens Witkowski, Yoram Bachrach, Pe-ter Key, and
- []
-
-
-Underfull \hbox (badness 1107) in paragraph at lines 106--109
-\OT1/ptm/m/n/10 David Christo-pher Parkes.  Dwelling on the neg-a-tive:
- []
-
-) [4
-
-] ("AAAI workshop.aux") ) 
+[4 <./image/1-eps-converted-to.pdf> <./image/2-eps-converted-to.pdf> <./image/3
+-eps-converted-to.pdf> <./image/4-eps-converted-to.pdf>] (aaai18_RPP.bbl)
+[5] (aaai18_RPP.aux) ) 
 Here is how much of TeX's memory you used:
- 5751 strings out of 493323
- 86329 string characters out of 3139062
- 275159 words of memory out of 3000000
- 9130 multiletter control sequences out of 15000+200000
- 30580 words of font info for 78 fonts, out of 3000000 for 9000
+ 5831 strings out of 493323
+ 88061 string characters out of 3139062
+ 274431 words of memory out of 3000000
+ 9192 multiletter control sequences out of 15000+200000
+ 33363 words of font info for 85 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,15n,39p,936b,492s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.e
-nc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/P
-rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program F
-iles/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKT
-eX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files/MiKTeX 2.9/
-fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
-e1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/
-amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
-/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/
-msbm10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Pr
-ogram Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTe
-X 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on "AAAI workshop.pdf" (4 pages, 330445 bytes).
+ 42i,17n,39p,999b,496s stack positions out of 5000i,500n,10000p,200000b,50000s
+ <C:\Users\Zehong\AppData\Local\MiKTeX\2.9\fonts\pk\ljfou
+r\public\bbm\dpi600\bbm10.pk>{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/
+8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><
+C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Progr
+am Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files
+/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
+fonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
+msy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb
+><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Prog
+ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Program
+ Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9
+/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/
+times/utmri8a.pfb>
+Output written on aaai18_RPP.pdf (5 pages, 368547 bytes).
 PDF statistics:
- 91 PDF objects out of 1000 (max. 8388607)
+ 111 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
