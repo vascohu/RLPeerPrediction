@@ -149,6 +149,73 @@ For the integral operation, substituting $u$ with $v-1$ at first and then $v$ wi
 \end{proof}
 \end{lemma}
 
+\begin{lemma}
+\label{Sum1}
+$\sum_{n=0}^{N}C_N^{n}\cdot x^{n}=(1+x)^N$.
+\end{lemma}
+\begin{lemma}
+\label{Sum2}
+$\sum_{n=0}^{N} C_N^{n}\cdot n\cdot x^{n}=N\cdot x\cdot (1+x)^{N-1}$.
+\end{lemma}
+\begin{lemma}
+\label{Sum3}
+$\sum_{n=0}^{N} C_N^{n}\cdot n\cdot x^{N-n}=N\cdot (1+x)^{N-1}$.
+\end{lemma}
+\begin{lemma}
+\label{Sum4}
+If $0<x<1$, we can have
+\begin{equation*}
+\begin{split}
+\sum_{n=0}^{\lfloor N/2\rfloor} C_N^{n}\cdot x^{n} &\geq \left(1-e^{-cN}\right) \cdot (1+x)^{N}\\
+\sum_{n=\lfloor N/2 \rfloor +1}^{N} C_N^{n}\cdot x^{N-n}&\geq \left(1-e^{-cN}\right) \cdot (1+x)^{N}.
+\end{split}
+\end{equation*}
+where $c=0.5(1-x)^2(1+x)^{-2}$.
+\begin{proof}
+Lemma~\ref{Sum1} can be obtained by expanding $(1+x)^N$.
+Then, Lemma~\ref{Sum2} can be proved as follows
+\begin{equation}
+\begin{split}
+\sum_{n=0}^{N} C_N^{n} n x^{n}&=\sum_{n=0}^{N} C_N^{n} (n+1) x^{n}-(1+x)^N\\
+\sum_{n=0}^{N} C_N^{n} (n+1) x^{n}&=\frac{\mathrm{d}}{\mathrm{d}x}\left(x\sum_{n=0}^{N} C_N^{n} x^{n}\right)\\
+&=Nx(1+x)^{N-1}+(1+x)^N.
+\end{split}
+\end{equation}
+Lemma~\ref{Sum3} can be obtained as follows
+\begin{equation}
+\begin{split}
+\sum_{n=0}^{N} C_N^{n} n x^{N-n}&=x^N\sum_{n=0}^{N} C_N^{n} (n+1) \left(\frac{1}{x}\right)^n\\
+&=x^N\cdot N\cdot \frac{1}{x}\cdot \left(1+\frac{1}{x}\right)^{N-1}.
+\end{split}
+\end{equation}
+For Lemma~\ref{Sum4}, we can have
+\begin{equation}
+\sum_{n=0}^{\lfloor N/2\rfloor} C_N^{n} x^{n}=(1+x)^{N}\sum_{n=0}^{\lfloor N/2\rfloor} C_N^{n} p^n (1-p)^{N-n}
+\end{equation}
+where $p=x(1+x)^{-1}$. Let $X\sim \mathrm{Bin}(N, p)$, we can have
+\begin{equation}
+\sum_{n=0}^{\lfloor N/2\rfloor} C_N^{n} p^n (1-p)^{N-n}\geq 1-P\left(X\geq N/2\right).
+\end{equation}
+Since $x<1$, $p<0.5$ and $Np<N/2$. Considering Hoeffding's inequality, we can get
+\begin{equation}
+P\left(X\geq N/2\right)\leq \exp \left[-\frac{N(1-x)^2}{2(1+x)^2}\right]
+\end{equation}
+which concludes the first inequality in Lemma~\ref{Sum4}. Similarly, for the second inequality, we can have
+\begin{equation}
+\sum_{n=K}^{N} C_N^{n}x^{N-n}=(1+x)^{N}\sum_{n=K}^{N} C_N^{n} (1-p)^n p^{N-n}
+\end{equation}
+where $K=\lfloor N/2 \rfloor +1$. Suppose $Y\sim \mathrm{Bin}(N, 1-p)$, we can have
+\begin{equation}
+\sum_{n=K}^{N} C_N^{n} (1-p)^n p^{N-n}\geq 1-P\left(Y\leq N/2\right).
+\end{equation}
+Considering Hoeffding's inequality, we can also get
+\begin{equation}
+P\left(Y\leq N/2\right)\leq \exp \left[-\frac{N(1-x)^2}{2(1+x)^2}\right]
+\end{equation}
+which concludes the second inequality in Lemma~\ref{Sum4}.
+\end{proof}
+\end{lemma}
+
 
 \bibliographystyle{named}
 \bibliography{ref}

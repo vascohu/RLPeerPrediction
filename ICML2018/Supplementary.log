@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.7.31)  22 DEC 2017 11:41
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.7.31)  26 DEC 2017 15:18
 entering extended mode
 **Supplementary.tex
 
@@ -532,37 +532,38 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 ("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\microtype\mt-msb.cfg"
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-)
+) [1{C:/Users/Zehong/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
+
+
+
+]
 ("C:\Users\Zehong\Dropbox\New Research\POMDP\GitHub\RLPeerPrediction\ICML2018\S
 upplementary.bbl"
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1.
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 156.
- [1{C:/Users/Zehong/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
-
-
-
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 223.
+ [2
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 156.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 223.
 
 ("C:\Users\Zehong\Dropbox\New Research\POMDP\GitHub\RLPeerPrediction\ICML2018\S
 upplementary.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 156.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 156.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 223.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 223.
 Package rerunfilecheck Info: File `Supplementary.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 156.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 223.
  ) 
 Here is how much of TeX's memory you used:
- 8864 strings out of 493921
- 132041 string characters out of 3144873
- 255268 words of memory out of 3000000
- 11968 multiletter control sequences out of 15000+200000
- 21608 words of font info for 70 fonts, out of 3000000 for 9000
+ 8888 strings out of 493921
+ 132263 string characters out of 3144873
+ 263360 words of memory out of 3000000
+ 11972 multiletter control sequences out of 15000+200000
+ 22953 words of font info for 75 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 31i,16n,45p,269b,419s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 31i,16n,45p,269b,497s stack positions out of 5000i,500n,10000p,200000b,50000s
 {D:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<D:/Progra
 m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><D:/Program 
 Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><D:/Program Fi
@@ -575,9 +576,9 @@ X 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb><D:/Program Files (x86)/Mi
 KTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><D:/Program Files (x86)/MiKTeX 2.9/fo
 nts/type1/urw/times/utmr8a.pfb><D:/Program Files (x86)/MiKTeX 2.9/fonts/type1/u
 rw/times/utmri8a.pfb>
-Output written on Supplementary.pdf (1 page, 115973 bytes).
+Output written on Supplementary.pdf (2 pages, 130429 bytes).
 PDF statistics:
- 70 PDF objects out of 1000 (max. 8388607)
- 10 named destinations out of 1000 (max. 500000)
+ 94 PDF objects out of 1000 (max. 8388607)
+ 23 named destinations out of 1000 (max. 500000)
  18433 words of extra memory for PDF output out of 20736 (max. 10000000)
 

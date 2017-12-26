@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.7.31)  22 DEC 2017 13:51
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.7.31)  26 DEC 2017 22:26
 entering extended mode
 **example_paper.tex
 
@@ -567,30 +567,28 @@ File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
 ) [2] [3] [4]
 ("C:\Users\Zehong\Dropbox\New Research\POMDP\GitHub\RLPeerPrediction\ICML2018\e
 xample_paper.bbl")
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 497.
- [5
-
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 497.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 522.
+ [5]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 522.
 
 ("C:\Users\Zehong\Dropbox\New Research\POMDP\GitHub\RLPeerPrediction\ICML2018\e
 xample_paper.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 497.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 497.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 522.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 522.
 Package rerunfilecheck Info: File `example_paper.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 497.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 522.
  ) 
 Here is how much of TeX's memory you used:
- 9185 strings out of 493921
- 136288 string characters out of 3144873
- 269548 words of memory out of 3000000
- 12106 multiletter control sequences out of 15000+200000
- 33737 words of font info for 156 fonts, out of 3000000 for 9000
+ 9196 strings out of 493921
+ 136412 string characters out of 3144873
+ 269668 words of memory out of 3000000
+ 12113 multiletter control sequences out of 15000+200000
+ 35322 words of font info for 158 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  31i,18n,45p,658b,584s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\Zehong\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\public\bbm\dpi600\
@@ -620,9 +618,9 @@ nts/type1/public/amsfonts/symbols/msbm10.pfb><D:/Program Files (x86)/MiKTeX 2.9
 /fonts/type1/urw/times/utmb8a.pfb><D:/Program Files (x86)/MiKTeX 2.9/fonts/type
 1/urw/times/utmr8a.pfb><D:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times
 /utmri8a.pfb>
-Output written on example_paper.pdf (5 pages, 308281 bytes).
+Output written on example_paper.pdf (5 pages, 313716 bytes).
 PDF statistics:
- 247 PDF objects out of 1000 (max. 8388607)
- 71 named destinations out of 1000 (max. 500000)
- 23041 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 259 PDF objects out of 1000 (max. 8388607)
+ 74 named destinations out of 1000 (max. 500000)
+ 23553 words of extra memory for PDF output out of 24883 (max. 10000000)
 
