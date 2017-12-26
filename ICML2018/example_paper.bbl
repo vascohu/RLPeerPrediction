@@ -19,4 +19,9 @@ Qiang Liu, Jian Peng, and Alexander~T Ihler.
 \newblock Variational inference for crowdsourcing.
 \newblock In {\em Proc. of NIPS}, 2012.
 
+\bibitem[\protect\citeauthoryear{Olver}{2010}]{olver2010nist}
+Frank~WJ Olver.
+\newblock {\em NIST Handbook of Mathematical Functions}.
+\newblock Cambridge University Press, 2010.
+
 \end{thebibliography}

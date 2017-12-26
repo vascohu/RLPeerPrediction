@@ -45,6 +45,10 @@
 }
 \makeatother
 
+% Supplementary File
+\usepackage{xr-hyper}
+\externaldocument[Su-]{Supplementary}
+
 % If accepted, instead use the following line for the camera-ready submission:
 %\usepackage[accepted]{icml2018}
 
@@ -461,7 +465,30 @@ F(m,p;M,t)={\sum}_{x=0}^{n}{\sum}_{w=0}^{m} 2^{M+1}C_{n}^{x}C_{m}^{w}\times\\
 p^{x+w}(1-p)^{y+z}B(x+z+1+t,y+w+1).
 \end{split}
 \end{equation}
-Here, $n=M-m$. Note that, when deriving Equation~\ref{Ffunction}, we utilize the independence between different workers. Besides, in Equation~\ref{Ffunction}, we add the factor $2^{M+1}$ to facilitate building the connection between $F$ and the $H$ function defined in Equation~\ref{Hfunction}.
+Note that, when deriving Equation~\ref{Ffunction}, we utilize the independence between different workers. Besides, due to the normalization constant $Z$, the factor $2^{M+1}$ will not affect the value of $P(m)$.
+Applying Lemma~\ref{Su-SolveF} in the supplementary file for the $F$ function, we can know
+$F(m,p;M,t) = H(m,p;M,t)$ and thus $P(m)=Z^{-1}C_{M}^{m}Y(m)$, where
+\begin{equation}
+\label{PDist}
+Y(m) =e^{\log H(m,p_0;M,0)+\sum_{i=1}^{N}\log H(m,p_i;M,1)}
+\end{equation}
+and $Z=\sum_{m=1}^{M}C_{M}^{m}Y(m)$. 
+By using the lower and upper bounds ensured by Propositions~\ref{LowBound1} and \ref{UpBound1}, we can have
+\begin{equation}
+\left\{
+\begin{array}{lc}
+e^{C+\underline{K}m}\lesssim Y(m) \lesssim e^{C+\overline{K}m} & 2m\leq M\\
+e^{C+\delta+\underline{K}n}\lesssim Y(m) \lesssim e^{C+\delta+\overline{K}n} & 2m>M
+\end{array}
+\right.
+\end{equation}
+where $C=H(0,p_0;M,0)+\sum_{i=1}^{N}H(0,p_i;M,1)$ and
+\begin{equation*}
+\begin{split}
+&\delta = [n(p<0.5)-n(p>0.5)]\log(M)+{\sum}_{i=1}^{N}\varepsilon(\hat{p}_i)\\
+&\qquad \underline{K} = {\sum}_{i=0}^{N}\log \hat{\lambda}_{i}\;,\; \overline{K} =  2{\sum}_{i=0}^{N}\log 2\hat{p}_{i}.
+\end{split}
+\end{equation*}
 \end{proof}
 \end{proposition}
 \bibliographystyle{named}

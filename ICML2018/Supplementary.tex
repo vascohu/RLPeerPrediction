@@ -1,0 +1,169 @@
+%%%%%%%% ICML 2018 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2018} with \usepackage[nohyperref]{icml2018} above.
+\usepackage{hyperref}
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+\usepackage{icml2018}
+\usepackage{natbib}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{bbm}
+\usepackage{bm}
+\usepackage{amssymb}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+%\makeatletter
+%\renewenvironment{proof}[1][\proofname]{\par
+%  \vspace{-\topsep}% remove the space after the theorem
+%  \pushQED{\qed}%
+%  \normalfont
+%  \topsep0pt \partopsep0pt % no space before
+%  \trivlist
+%  \item[\hskip\labelsep
+%        \itshape
+%    #1\@addpunct{.}]\ignorespaces
+%}{%
+%  \popQED\endtrivlist\@endpefalse
+%  \addvspace{0pt plus 0pt} % some space after
+%}
+%\makeatother
+
+% If accepted, instead use the following line for the camera-ready submission:
+%\usepackage[accepted]{icml2018}
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Supplementary File}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{Supplementary File for\\Incentivizing High Quality Crowdsourcing Information using Bayesian Inference and Reinforcement Learning} 
+
+% It is OKAY to include author information, even for blind
+% submissions: the style file will automatically remove it for you
+% unless you've provided the [accepted] option to the icml2018
+% package.
+
+% List of affiliations: The first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, Country
+% Industry affiliations should list Company, City, Region, Country
+
+% You can specify symbols, otherwise they are numbered in order.
+% Ideally, you should not use this facility. Affiliations will be numbered
+% in order of appearance and this is the preferred way.
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Zehong Hu}{NTU}
+\icmlauthor{Yang Liu}{Harvard}
+\icmlauthor{Yitao Liang}{UCLA}
+\icmlauthor{Jie Zhang}{NTU}
+\end{icmlauthorlist}
+
+%\icmlaffiliation{NTU}{Rolls-Royce Cooperate Lab@NTU, School of Computer Science and Engineering, Nanyang Technological University, Singapore}
+%\icmlaffiliation{goo}{Googol ShallowMind, New London, Michigan, USA}
+%\icmlaffiliation{ed}{School of Computation, University of Edenborrow, Edenborrow, United Kingdom}
+
+%\icmlcorrespondingauthor{Cieua Vvvvv}{c.vvvvv@googol.com}
+%\icmlcorrespondingauthor{Eee Pppp}{ep@eden.co.uk}
+
+% You may provide any keywords that you
+% find helpful for describing your paper; these are used to populate
+% the "keywords" metadata in the PDF but will not be shown in the document
+%\icmlkeywords{Machine Learning, ICML}
+
+\vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column
+% listing the affiliations and the copyright notice.
+% The command takes one argument, which is text to display at the start of the footnote.
+% The \icmlEqualContribution command is standard text for equal contribution.
+% Remove it (just {}) if you do not need this facility.
+
+%\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+%\printAffiliationsAndNotice{} % otherwise use the standard text.
+
+\begin{lemma}
+\label{MoGene}
+If $x\sim \mathrm{Bin}(n,p)$, $\mathbb{E}t^x= \left(1-p+tp\right)^{n}$ holds for any $t>0$, where $\mathrm{Bin}(\cdot)$ is the binomial distribution.
+\begin{proof}
+\begin{equation}
+t^x = e^{x\log t}=m_x(\log t)= \left(1-p+pe^{\log t}\right)^{n}
+\end{equation}
+where $m_x(\cdot)$ denotes the moment generating function.
+\end{proof}
+\end{lemma}
+
+\begin{lemma}
+\label{SolveF}
+For given $n,m\geq 0$, if $0\leq p\leq 1$, we can have
+\begin{equation*}
+\begin{split}
+&{\sum}_{x=0}^{n}{\sum}_{w=0}^{m} C_{n}^{x}C_{m}^{w}p^{x+w}(1-p)^{y+z}\times\\
+&\qquad\qquad\qquad B(x+z+1+t,y+w+1)=\\
+&\int_{0}^{1}[(2p-1)x+1-p]^{n}[(1-2p)x+p]^{m}x^{t}\mathrm{d}x
+\end{split}
+\end{equation*}
+\begin{proof}
+By the definition of the beta function~\cite{olver2010nist},
+\begin{equation}
+B(x, y) = \int_{0}^{+\infty} u^{x-1}(1+u)^{-(x+y)}\mathrm{d}u
+\end{equation}
+we can have
+\begin{align}
+&\sum_{x,w} C_{n}^{x}C_{m}^{w}p^{x+w}(1-p)^{y+z}B(x+z+1+t,y+w+1)\nonumber\\
+&= \int_{0}^{+\infty} \mathbb{E}u^{x}\cdot\mathbb{E}u^z \cdot u^t\cdot (1+u)^{-(n+m+2+t)}\mathrm{d}u
+\end{align}
+where we regard $x\sim \mathrm{Bin}(n,p)$ and $z\sim \mathrm{Bin}(m,1-p)$.
+Thus, according to Lemma~\ref{MoGene}, we can obtain
+\begin{equation}
+\begin{split}
+&\int_{0}^{+\infty} \mathbb{E}u^{x}\cdot\mathbb{E}u^z \cdot u^t\cdot (1+u)^{-(n+m+3)}\mathrm{d}u\\
+&=\int_{0}^{+\infty} \frac{[1-p+up]^n\cdot [p+(1-p)u]^m\cdot u^t}{(1+u)^{n+m+2+t}}\mathrm{d}u.
+\end{split}
+\end{equation}
+For the integral operation, substituting $u$ with $v-1$ at first and then $v$ with $(1-x)^{-1}$, we can conclude Lemma~\ref{SolveF}.
+\end{proof}
+\end{lemma}
+
+
+\bibliographystyle{named}
+\bibliography{ref}
+
+\end{document}
+
+
+% This document was modified from the file originally made available by
+% Pat Langley and Andrea Danyluk for ICML-2K. This version was created
+% by Iain Murray in 2018. It was modified from a version from Dan Roy in
+% 2017, which was based on a version from Lise Getoor and Tobias
+% Scheffer, which was slightly modified from the 2010 version by
+% Thorsten Joachims & Johannes Fuernkranz, slightly modified from the
+% 2009 version by Kiri Wagstaff and Sam Roweis's 2008 version, which is
+% slightly modified from Prasad Tadepalli's 2007 version which is a
+% lightly changed version of the previous year's version by Andrew
+% Moore, which was in turn edited from those of Kristian Kersting and
+% Codrina Lauth. Alex Smola contributed to the algorithmic style files.
