@@ -263,7 +263,105 @@ Note that both $W$ and $b$ should be large values, and in this paper, we set $W=
 
 \section{Game-Theoretic Analysis}
 \subsection{One-Shot Peer Prediction Analysis}
-To study the game-theoretical behavior of our mechanism, we firstly define a new function set $H(m,p;M,t)$ as
+To conduct the game-theoretical analysis on our mechanism, we firstly study the error upper bound of our Bayesian inference algorithm.
+For the posterior label vector $\bm{L}$ generated based on the posterior distribution $P(\bm{L}|\mathcal{L},\bm{\alpha}, \bm{\beta})$, we introduce $n$ and $m$ to denote the number of correct and wrong labels, respectively. Then, we can have
+\begin{proposition}
+\label{ConvBound}
+Suppose the number of workers whose real score is lower and higher than $0.5$ are $N(p>0.5)$ and $N(p<0.5)$, respectively.
+Then, when $M\gg 1$, the expectation\footnote{The collected labels can be regarded as random variables generated based on the distribution of true labels and the real scores of workers. Different labels will cause our Bayesian inference to output different estimations. Here, we use the subscript of $\mathbb{E}$ to denote the random variable and follow this rule in this paper.} of the number of wrong labels satisfies
+\begin{equation*}
+\mathbb{E}_{\mathcal{L},\bm{L}}\left[\frac{m}{M}\right]\lesssim \frac{(x+e^{\delta})(1+x)^{M-1}}{2[1-e^{-c(y)M}](1+y)^{M}}
+\end{equation*}
+where $x=\left(4^{N+1}\prod_{i=0}^{N}\hat{p}^{2}_i\right)^{-1}$, $y=\left(\prod_{i=0}^{N}\hat{\lambda}_{i}\right)^{-1}$ and
+\begin{equation*}
+\begin{split}
+&\;\;\delta = [N(p<0.5)-N(p>0.5)]\log(M)+\phi(\bm{p})\\
+&\phi(\bm{p})=\sum_{i=1}^{N}(-1)^{1(p_i>0.5)}\varepsilon(\hat{p}_i)\;,\; c(y)=\frac{(1-y)^2}{2(1+y)^{2}}.
+\end{split}
+\end{equation*}
+\begin{proof}
+Among the $n$ tasks of which the posterior label is correct, we introduce $x_0$ and $y_0$ to denote the number of tasks of which the real true label is $1$ and $2$, respectively.
+Among these $n$ tasks, we further use $x_i$ and $y_i$ to denote the number of tasks of which the label provided by worker $i$ is correct and wrong, respectively.
+Among the $m$ tasks of which the posterior label is wrong, we introduce $w_0$ and $z_0$ to denote the number of tasks of which the real true label is $1$ and $2$, respectively.
+Among these $m$ tasks, we also introduce $w_i$ and $z_i$ to denote the number of tasks of which the label provided by worker $i$ is correct and wrong, respectively.
+Thus, we can have $x_i+y_i=n$ and $w_i+z_i=m$.
+To compute the expectation of $m$, we need to analyze the probability density function of $m$. According to Equation~\ref{PostDist}, we can know the probability density function $P(m)$ satisfies
+\begin{equation}
+\label{PDist}
+P(m) = \frac{C_{M}^{m}}{Z}H(m, p_0; M, 0)\prod_{i=1}^{N}H(m, p_i; M, 1)
+\end{equation}
+where $Z$ is the normalization constant and
+\begin{equation}
+\label{Ffunction}
+\begin{split}
+H(m,p;M,t)={\sum}_{x=0}^{n}{\sum}_{w=0}^{m} 2^{M+1}C_{n}^{x}C_{m}^{w}\times\\
+p^{x+w}(1-p)^{y+z}B(x+z+1+t,y+w+1).
+\end{split}
+\end{equation}
+Note that, when deriving Equation~\ref{Ffunction}, we utilize the independence between different workers. Besides, due to the normalization constant $Z$, the factor $2^{M+1}$ will not affect the value of $P(m)$.
+Applying Lemma~\ref{Su-SolveF} in the supplementary file for the $H$ function, we can know
+\begin{align}
+&H(m,p;M,t)=2^{M+1}\times \label{Hfunction}\\
+&\int_{0}^{1}[(2p-1)x+1-p]^{M-m}[(1-2p)x+p]^{m}x^t\mathrm{d}x. \nonumber
+\end{align}
+Then, $P(m)=Z^{-1}C_{M}^{m}Y(m)$, where
+\begin{equation}
+\label{PDist}
+Y(m) =e^{\log H(m,p_0;M,0)+\sum_{i=1}^{N}\log H(m,p_i;M,1)}
+\end{equation}
+and $Z=\sum_{m=1}^{M}C_{M}^{m}Y(m)$. 
+The theoretical analysis on the $H$ function is the core of our proof. However, for the clarity of our analysis, we put it in Section~\ref{HFunSec}.
+Here, we directly use the obtained lower and upper bounds of the $H$ function (Propositions~\ref{LowBound1} and \ref{UpBound1}) and can have
+\begin{equation}
+\left\{
+\begin{array}{lc}
+e^{C-\underline{K}m}\lesssim Y(m) \lesssim e^{C-\overline{K}m} & 2m\leq M\\
+e^{C+\delta-\underline{K}n}\lesssim Y(m) \lesssim e^{C+\delta-\overline{K}n} & 2m>M
+\end{array}
+\right.
+\end{equation}
+where $C=H(0,p_0;M,0)+\sum_{i=1}^{N}H(0,p_i;M,1)$ and
+\begin{equation*}
+\begin{split}
+\underline{K} = {\sum}_{i=0}^{N}\log \hat{\lambda}_{i}\;,\; \overline{K} =  2{\sum}_{i=0}^{N}\log \left(2\hat{p}_i\right).
+\end{split}
+\end{equation*}
+Then, the expectation of $m$ can be calculated as
+\begin{equation}
+\label{ExM}
+\mathbb{E}[m] \lesssim \frac{\sum_{m=0}^{M}me^{-\overline{K}m}+\sum_{m=0}^{M}me^{\delta-\overline{K}n}}{\sum_{m=0}^{k}e^{-\underline{K}m}+\sum_{m=k+1}^{M}e^{\delta-\underline{K}n}}
+\end{equation}
+where $k=\lfloor M/2 \rfloor$. By using Lemmas~\ref{Su-Sum2} and \ref{Su-Sum3} in the supplementary file, we can know the upper bound of the numerator in Equation~\ref{ExM} is $M(x+e^{\delta})(1+x)^{M-1}$. On the other hand, by using Lemma~\ref{Su-Sum4} in the supplementary file, we can obtain the lower bound of the denominator in Equation~\ref{ExM} is $2[1-e^{-c(y)M}](1+y)^{M}$. In this case, we can conclude Proposition~\ref{ConvBound} by combining these two bounds.
+\end{proof}
+\end{proposition}
+
+Then, focusing on game-theoretical analysis, we can have
+\begin{proposition}
+\label{OSEqulibrium}
+When $M\gg 1$, if $\xi^{-1}(1+\xi^{-1})^{M-1}<1$ and $\xi=(2p_H)^{N-1}$, then reporting truthfully and exerting high efforts is a Nash equilibrium for all workers.
+\begin{proof}
+In this proof, we continue to use the notations defined in the proof of Proposition~\ref{ConvBound}.
+According to Equation~\ref{p_infer}, we can know the inferred score of worker $i$ satisfies $\hat{p}_i\approx \mathbb{E}_{\bm{L}}(x_i+z_i)/M$. Thus, the expectation of $\hat{p}_i$ satisfies
+\begin{equation}
+\mathbb{E}_{\mathcal{L}}\hat{p}_i=\sum_{m=0}^{M}\sum_{x_i,z_i}\frac{x_i+z_i}{M}P(x_i|m)P(z_i|m)P(m)
+\end{equation}
+For a given $m$, $x_i\sim\mathrm{Bin}(n, p_i)$ and $z_i\sim\mathrm{Bin}(m, 1-p_i)$.
+Considering $\mathbb{E}m+\mathbb{E}n = M$, we can have
+\begin{equation}
+\mathbb{E}_{\mathcal{L}}\hat{p}_i = p_i\left(1-\mathbb{E}_{\mathcal{L},\bm{L}}\left[\frac{m}{M}\right]\right)+(1-p_i)\mathbb{E}_{\mathcal{L},\bm{L}}\left[\frac{m}{M}\right].
+\end{equation}
+Thereby, if $\mathbb{E}_{\mathcal{L},\bm{L}}\left[m/M\right]\leq 0.5$, 
+
+for any worker $i$, we can know the inferred score 
+
+suppose all other workers report truthfully and exert high efforts. Then, $N(p<0.5)-N(p>0.5)\leq 1-N\leq -2$. Since $M\gg 1$, in the error bound ensured by Proposition~\ref{ConvBound}, $e^{\delta}\approx 0$ and $e^{-M}\approx0$. Considering $2\hat{p}_i\geq 1$ and $(1+y)^{M}>1$, we can have
+$|\mathbb{E}_{\mathcal{L}}\hat{p}_i-p_i|\lesssim (2\xi)^{-1}[1+(2\xi)^{-1}]^{M-1}$. By applying Lemma~\ref{Su-Inequality1} in the supplementary file to simplifying this inequality, we can conclude Proposition~\ref{EqBound}.
+\end{proof}
+\end{proposition}
+
+\subsection{H function analysis}
+\label{HFunSec}
+define a new function set $H(m,p;M,t)$ as
 \begin{align}
 &H(m,p;M,t)=2^{M+1}\times \label{Hfunction}\\
 &\int_{0}^{1}[(2p-1)x+1-p]^{M-m}[(1-2p)x+p]^{m}x^t\mathrm{d}x \nonumber
@@ -431,91 +529,8 @@ Then, substituting $x$ as $1-v$ concludes Proposition~\ref{Ratio0}.
 \end{proof}
 \end{proposition}
 
-Next, we derive the upper bound of the estimation errors for our Bayesian inference algorithm.
-For the simplicity of notation, we introduce the following two notations at first:
-\begin{equation}
-\hat{p}=\max\{p, 1-p\},\hat{\lambda}=\max\left\{\frac{p}{\bar{p}_i+\frac{1}{M}}, \frac{\bar{p}}{p+\frac{1}{M}}\right\}.
-\end{equation}
-Then, we can obtain the following proposition.
-\begin{proposition}
-\label{ConvBound}
-Suppose the number of workers whose real score is lower and higher than $0.5$ are $n(p>0.5)$ and $n(p<0.5)$, respectively.
-Then, in our mechanism, the expectation\footnote{For different labels} of the inferred score of any worker $i$ satisfies
-\begin{equation*}
-|\mathbb{E}_{\mathcal{L}}\hat{p}_i-p_i|\leq \frac{(x+e^{\delta})(1+x)^{M-1}}{2[1-e^{-c(y)M}](1+y)^{M}}
-\end{equation*}
-where $x=e^{-2{\sum}_{i=0}^{N}\log \left(2\hat{p}_i\right)}$, $y=e^{-{\sum}_{i=0}^{N}\log \hat{\lambda}_{i}}$ and
-\begin{equation*}
-\begin{split}
-&\;\;\;\delta = [n(p<0.5)-n(p>0.5)]\log(M)+\phi(\bm{p})\\
-&\phi(\bm{p})=\sum_{i=1}^{N}(-1)^{1(p_i<0.5)}\varepsilon(\hat{p}_i)\;,\; c(y)=\frac{(1-y)^2}{2(1+y)^{2}}.
-\end{split}
-\end{equation*}
-\begin{proof}
-For the posterior label vector $\bm{L}$ generated by the posterior distribution $P(\bm{L}|\mathcal{L},\bm{\alpha}, \bm{\beta})$, we introduce $n$ and $m$ to denote the number of correct and wrong labels, respectively.
-Then, among the $n$ tasks of which the posterior label is correct, we introduce $x_0$ and $y_0$ to denote the number of tasks of which the real true label is $1$ and $2$, respectively.
-Among these $n$ tasks, we further use $x_i$ and $y_i$ to denote the number of tasks of which the label provided by worker $i$ is correct and wrong, respectively.
-Among the $m$ tasks of which the posterior label is wrong, we introduce $w_0$ and $z_0$ to denote the number of tasks of which the real true label is $1$ and $2$, respectively.
-Among these $m$ tasks, we also introduce $w_i$ and $z_i$ to denote the number of tasks of which the label provided by worker $i$ is correct and wrong, respectively.
-Thus, we can have $n+m=M$, $x_i+y_i=n$, $w_i+z_i=m$ and $\mathbb{E}_{\mathcal{L}}(x_i+w_i)=Mp_i$.
-Meanwhile, in Equation~\ref{p_infer}, when $M\gg 1$, we have $M\hat{p} \approx \mathbb{E}_{\bm{L}}(x_i+z_i)$.
-Thus, the inference error can be calculated as
-\begin{equation}
-\label{ErrorBound}
- |\mathbb{E}_{\mathcal{L}}\hat{p}_i-p_i|\approx \mathbb{E}_{\mathcal{L},\bm{L}}\frac{|w_i-z_i|}{M}
- \leq \mathbb{E}_{\mathcal{L},\bm{L}}\left[\frac{m}{M}\right].
-\end{equation}
 
-To compute the expectation, we need to analyze the probability density function of $m$. According to Equation~\ref{PostDist}, we can know the probability density function $P(m)$ satisfies
-\begin{equation}
-\label{PDist}
-P(m) = \frac{C_{M}^{m}}{Z}F(m, p_0; M, 0)\prod_{i=1}^{N}F(m, p_i; M, 1)
-\end{equation}
-where $Z$ is the normalization constant and
-\begin{equation}
-\label{Ffunction}
-\begin{split}
-F(m,p;M,t)={\sum}_{x=0}^{n}{\sum}_{w=0}^{m} 2^{M+1}C_{n}^{x}C_{m}^{w}\times\\
-p^{x+w}(1-p)^{y+z}B(x+z+1+t,y+w+1).
-\end{split}
-\end{equation}
-Note that, when deriving Equation~\ref{Ffunction}, we utilize the independence between different workers. Besides, due to the normalization constant $Z$, the factor $2^{M+1}$ will not affect the value of $P(m)$.
-Applying Lemma~\ref{Su-SolveF} in the supplementary file for the $F$ function, we can know
-$F(m,p;M,t) = H(m,p;M,t)$ and thus $P(m)=Z^{-1}C_{M}^{m}Y(m)$, where
-\begin{equation}
-\label{PDist}
-Y(m) =e^{\log H(m,p_0;M,0)+\sum_{i=1}^{N}\log H(m,p_i;M,1)}
-\end{equation}
-and $Z=\sum_{m=1}^{M}C_{M}^{m}Y(m)$. 
-By using the lower and upper bounds ensured by Propositions~\ref{LowBound1} and \ref{UpBound1}, we can have
-\begin{equation}
-\left\{
-\begin{array}{lc}
-e^{C-\underline{K}m}\lesssim Y(m) \lesssim e^{C-\overline{K}m} & 2m\leq M\\
-e^{C+\delta-\underline{K}n}\lesssim Y(m) \lesssim e^{C+\delta-\overline{K}n} & 2m>M
-\end{array}
-\right.
-\end{equation}
-where $C=H(0,p_0;M,0)+\sum_{i=1}^{N}H(0,p_i;M,1)$ and
-\begin{equation*}
-\begin{split}
-\underline{K} = {\sum}_{i=0}^{N}\log \hat{\lambda}_{i}\;,\; \overline{K} =  2{\sum}_{i=0}^{N}\log \left(2\hat{p}_i\right).
-\end{split}
-\end{equation*}
-Then, the expectation of $m$ can be calculated as
-\begin{equation}
-\label{ExM}
-\mathbb{E}[m] \lesssim \frac{\sum_{m=0}^{M}me^{-\overline{K}m}+\sum_{m=0}^{M}me^{\delta-\overline{K}n}}{\sum_{m=0}^{k}e^{-\underline{K}m}+\sum_{m=k+1}^{M}e^{\delta-\underline{K}n}}
-\end{equation}
-where $k=\lfloor M/2 \rfloor$. By using Lemmas~\ref{Su-Sum2} and \ref{Su-Sum3} in the supplementary file, we can know the upper bound of the numerator in Equation~\ref{ExM} is $M(x+e^{\delta})(1+x)^{M-1}$. On the other hand, by using Lemma~\ref{Su-Sum4} in the supplementary file, we can obtain the lower bound of the denominator in Equation~\ref{ExM} is $2[1-e^{-c(y)M}](1+y)^{M}$. In this case, we can conclude Proposition~\ref{ConvBound} by combining these two bounds.
 
-\end{proof}
-\end{proposition}
-
-$\hat{\lambda}_{i}=\max\left\{p_i/(\bar{p}_i+M^{-1}),\bar{p}_i/(p_i+M^{-1})\right\}$
-$x=e^{-\overline{K}}$
-$c=0.5(1-y)^2(1+y)^{-2}$
-$y=e^{-\underline{K}}$
 \bibliographystyle{named}
 \bibliography{ref}
 

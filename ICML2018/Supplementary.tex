@@ -216,7 +216,14 @@ which concludes the second inequality in Lemma~\ref{Sum4}.
 \end{proof}
 \end{lemma}
 
-
+\begin{lemma}
+\label{Inequality1}
+For any $x,y\geq 0$, we can have
+$$(1+x)^{y}\leq e^{xy}.$$
+\begin{proof}
+Firstly, we can know $(1+x)^{y}=e^{y\log(1+x)}$. Let $f(x)=x-\log(x)$. Then, we can have $f(0)=0$ and $f'(x)\geq 0$. Thus, $x\geq\log (1+x)$ and we can conclude Lemma~\ref{Inequality1} by taking this inequality into the equality.
+\end{proof}
+\end{lemma}
 \bibliographystyle{named}
 \bibliography{ref}
 
