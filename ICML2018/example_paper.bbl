@@ -13,15 +13,34 @@ Anirban Dasgupta and Arpita Ghosh.
 \newblock Crowdsourced judgement elicitation with endogenous proficiency.
 \newblock In {\em Proc. of WWW}, 2013.
 
+\bibitem[\protect\citeauthoryear{Dawid and Skene}{1979}]{dawid1979maximum}
+Alexander~Philip Dawid and Allan~M Skene.
+\newblock Maximum likelihood estimation of observer error-rates using the em
+  algorithm.
+\newblock {\em Applied statistics}, pages 20--28, 1979.
+
+\bibitem[\protect\citeauthoryear{Liu and Chen}{2017}]{liu2017sequential}
+Yang Liu and Yiling Chen.
+\newblock Sequential peer prediction: Learning to elicit effort using posted
+  prices.
+\newblock In {\em AAAI}, pages 607--613, 2017.
+
 \bibitem[\protect\citeauthoryear{Liu \bgroup \em et al.\egroup
   }{2012}]{liu2012variational}
 Qiang Liu, Jian Peng, and Alexander~T Ihler.
 \newblock Variational inference for crowdsourcing.
 \newblock In {\em Proc. of NIPS}, 2012.
 
-\bibitem[\protect\citeauthoryear{Olver}{2010}]{olver2010nist}
-Frank~WJ Olver.
-\newblock {\em NIST Handbook of Mathematical Functions}.
-\newblock Cambridge University Press, 2010.
+\bibitem[\protect\citeauthoryear{Tzikas \bgroup \em et al.\egroup
+  }{2008}]{tzikas2008variational}
+Dimitris~G Tzikas, Aristidis~C Likas, and Nikolaos~P Galatsanos.
+\newblock The variational approximation for bayesian inference.
+\newblock {\em IEEE Signal Processing Magazine}, 25(6):131--146, 2008.
+
+\bibitem[\protect\citeauthoryear{Zheng \bgroup \em et al.\egroup
+  }{2017}]{zheng2017truth}
+Yudian Zheng, Guoliang Li, Yuanbing Li, Caihua Shan, and Reynold Cheng.
+\newblock Truth inference in crowdsourcing: is the problem solved?
+\newblock {\em Proc. of the VLDB Endowment}, 10(5):541--552, 2017.
 
 \end{thebibliography}

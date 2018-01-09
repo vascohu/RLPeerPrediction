@@ -162,6 +162,14 @@ $\sum_{n=0}^{N} C_N^{n}\cdot n\cdot x^{n}=N\cdot x\cdot (1+x)^{N-1}$.
 $\sum_{n=0}^{N} C_N^{n}\cdot n\cdot x^{N-n}=N\cdot (1+x)^{N-1}$.
 \end{lemma}
 \begin{lemma}
+\label{Sum5}
+$\sum_{n=0}^{N} C_N^{n}\cdot n^2\cdot x^{n}=Nx(1+Nx)(1+x)^{N-2}$.
+\end{lemma}
+\begin{lemma}
+\label{Sum6}
+$\sum_{n=0}^{N} C_N^{n}\cdot n^2\cdot x^{N-n}=N(x+N)(1+x)^{N-2}$.
+\end{lemma}
+\begin{lemma}
 \label{Sum4}
 If $0<x<1$, we can have
 \begin{equation*}
@@ -172,20 +180,41 @@ If $0<x<1$, we can have
 \end{equation*}
 where $c=0.5(1-x)^2(1+x)^{-2}$.
 \begin{proof}
-Lemma~\ref{Sum1} can be obtained by expanding $(1+x)^N$.
-Then, Lemma~\ref{Sum2} can be proved as follows
+To prove the lemmas above, we firstly define
+\begin{equation}
+F_t(x)=\sum_{n=0}^{N} C_N^{n} n^t x^{n}
+\end{equation}
+Then, Lemma~\ref{Sum1} can be obtained by expanding $(1+x)^N$.
+Lemma~\ref{Sum2} can be proved as follows
 \begin{equation}
 \begin{split}
-\sum_{n=0}^{N} C_N^{n} n x^{n}&=\sum_{n=0}^{N} C_N^{n} (n+1) x^{n}-(1+x)^N\\
-\sum_{n=0}^{N} C_N^{n} (n+1) x^{n}&=\frac{\mathrm{d}}{\mathrm{d}x}\left(x\sum_{n=0}^{N} C_N^{n} x^{n}\right)\\
+F_1(x)&=\sum_{n=0}^{N} C_N^{n} (n+1) x^{n}-(1+x)^N\\
+\sum_{n=0}^{N} C_N^{n} (n+1) x^{n}&=\frac{\mathrm{d}}{\mathrm{d}x}\left[xF_0(x)\right]\\
 &=Nx(1+x)^{N-1}+(1+x)^N.
 \end{split}
 \end{equation}
 Lemma~\ref{Sum3} can be obtained as follows
 \begin{equation}
 \begin{split}
-\sum_{n=0}^{N} C_N^{n} n x^{N-n}&=x^N\sum_{n=0}^{N} C_N^{n} (n+1) \left(\frac{1}{x}\right)^n\\
+\sum_{n=0}^{N} C_N^{n} n x^{N-n}&=x^N\sum_{n=0}^{N} C_N^{n} n \left(\frac{1}{x}\right)^n\\
 &=x^N\cdot N\cdot \frac{1}{x}\cdot \left(1+\frac{1}{x}\right)^{N-1}.
+\end{split}
+\end{equation}
+For Lemma~\ref{Sum5}, we can have
+\begin{align}
+F_2(x)&=\sum_{n=0}^{N} C_N^{n} (n+2)(n+1) x^{n}-3F_{1}(x)-2F_{0}(x)\nonumber \\
+&=\left[x^2F_0(x)\right]' -3F_{1}(x)-2F_{0}(x)
+\end{align}
+Thus, we can have
+\begin{equation}
+F_2(x)=Nx(1+Nx)(1+x)^{N-2}
+\end{equation}
+which concludes Lemma~\ref{Sum5}.
+Then, Lemma~\ref{Sum6} can be obtained by considering Equation~\ref{Eqv}.
+\begin{equation}
+\label{Eqv}
+\begin{split}
+\sum_{n=0}^{N} C_N^{n} n^2 x^{N-n}=x^N\sum_{n=0}^{N} C_N^{n} n^2 \left(\frac{1}{x}\right)^n.
 \end{split}
 \end{equation}
 For Lemma~\ref{Sum4}, we can have
