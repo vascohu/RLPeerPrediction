@@ -144,7 +144,7 @@ Thus, we use $e^{t}_i\in[0,1]$ and $r^{t}_i\in[0,1]$ to denote worker $i$'s prob
 Using the above notations, we can define worker $i$'s score (i.e. the probability of providing the correct label)  as
 \begin{equation}
 \begin{split}
-p^{t}_i=&r^{t}_i e^{t}_i p_{i, H}+r^{t}_i (1-e^{t}_i) p_{i, L}+\\
+&p^{t}_i=r^{t}_i e^{t}_i p_{i, H}+r^{t}_i (1-e^{t}_i) p_{i, L}+\\
 &(1-r^{t}_i) e^{t}_i (1-p_{i, H})+(1-r^{t}_i) (1-e^{t}_i) (1-p_{i, L})
 \end{split}
 \end{equation}
@@ -158,7 +158,7 @@ Now, we present our mechanism designed for inducing truthful reports and high ef
 \label{MechDef}
 Denote worker $i$'s score estimated by using the Bayesian inference algorithm developed later in this section as $\tilde{p}^{t}_i$. Then, at step $t$, our mechanism computes worker $i$'s rewards for her reports on $M$ tasks as:
 \begin{equation}
-R^t(i)=a\cdot (\tilde{p}^{t}_i - 0.5)+b
+R^t(i)=M\cdot [a\cdot (\tilde{p}^{t}_i - 0.5)+b]
 \end{equation}
 where $a>0$ and $b\geq 0$ are the scaling level and the guaranteed base payment, respectively.
 \end{definition}
@@ -238,12 +238,12 @@ and the distribution of true labels $\bm{\tau}$ as
 \label{tau_infer}
 \tilde{\tau}_{k}=\frac{\sum_{s=b+1}^{W}\left[\beta_{1}+\sum_{j=1}^{M}\mathbbm{1}(L^{(s)}(j)=k)\right]}{(W-b)\cdot(\beta_{1}+\beta_{2}+M)}.
 \end{equation}
-We define the label probability ratio of task $j$ as $\sigma_j =P(L(j)=1)/P(L(j)=2)$ and calculate the ratio as
+We define the log-ratio of task $j$ as $\sigma_j =\log (P(L(j)=1)/P(L(j)=2))$ and calculate the value as
 \begin{equation}
 \label{ProbRatio}
-\tilde{\sigma}_j=\frac{\tau_1}{\tau_2}{\prod}_{i=1}^{N}\tilde{\lambda}_i^{\delta_{ij1}-\delta_{ij2}}
+\tilde{\sigma}_j=\log\left(\frac{\tau_1}{\tau_2}{\prod}_{i=1}^{N}\tilde{\lambda}_i^{\delta_{ij1}-\delta_{ij2}}\right)
 \end{equation}
-where $\lambda_i = p_i/(1-p_i)$. This ratio will be used for the estimation of accuracy in the following section.
+where $\tilde{\lambda}_i = \tilde{p}_i/(1-\tilde{p}_i)$. This ratio will be used for the estimation of accuracy in the following section.
 Besides, both $W$ and $b$ should be large values, and in this paper, we set $W=1000$ and $b=100$.
 \begin{algorithm}[tb]
    \caption{Gibbs sampling for crowdsourcing}
@@ -273,13 +273,17 @@ need to discuss with Yitao
 \begin{equation}
 \label{vot}
 \begin{split}
-A^t(j)=1-\frac{\check{\sigma}}{1+\check{\sigma}}\;,\;\check{\sigma_j}=\min\{\tilde{\sigma}_j, \tilde{\sigma}^{-1}_j\} \\  A^t = \frac{1}{M}\sum_{j=1}^{M}v^t(j)
+\tilde{\sigma}^t = \frac{1}{M}{\sum}_{j=1}^{M}|\tilde{\sigma}_j^{t}|
+\end{split}
+\end{equation}
+There is a value function $F(\tilde{\sigma}^t)$
+\begin{equation}
+\label{utility}
+\begin{split}
+U = M\cdot F(\tilde{\sigma}^t) - \sum_{i=1}^{N}R^t(i)
 \end{split}
 \end{equation}
 
-\begin{equation}
-F(A^t)=F_v(v^t)
-\end{equation}
 
 \section{Game-Theoretic Analysis}
 \subsection{One-Step mechanism analysis}
@@ -617,20 +621,55 @@ Then, substituting $x$ as $1-v$ concludes Proposition~\ref{Ratio0}.
 \end{proof}
 \end{proposition}
 \subsection{Reinforcement mechanism analysis}
+\begin{proposition}
+\label{RMNE}
+For our reinforcement mechanism, reporting truthfully and exerting high efforts is always a Nash equilibrium for all workers when
+$$N \min_{a,b\in\mathcal{A}}(a-b) p_H\geq (1-\rho)^{-1}K_u f(p_H).$$
+where $\min_{a,b\in\mathcal{A}}(a-b)$ denotes the minimal gap between any two available values of the scaling factor.
+\begin{proof}
 In this proof, if the superscripts of variables in an equation are not specified, it means that it holds for any time step $t$. Suppose all workers except worker $i$ report truthfully and exert high efforts at all time steps.
 Then, at step $t$, according to Proposition~\ref{ConvBound}, under the condition of Proposition~\ref{OSEqulibrium}, 
 both $\mathbb{E}[m/M]$ and $\mathbb{E}[m/M]^2$ approaches $0$.
-In this case, $\tilde{p}_i\rightarrow p_i$. Thus, the probability ratio computed in Equation~\ref{ProbRatio} satisfies
+In this case, $\tilde{p}_i\rightarrow p_i$. Thus, the log-ratio computed in Equation~\ref{ProbRatio} satisfies
 \begin{equation}
 \label{ProbRatioApp}
-\tilde{\sigma}_j\approx \frac{\tau_{1}}{\tau_{2}}\lambda_i^{\delta_{ij1}-\delta_{ij2}}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}
+\tilde{\sigma}_j\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_i^{\delta_{ij1}-\delta_{ij2}}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right)
 \end{equation}
-Besides, if the real true label of task $j$ is $2$, to ensure $\mathbb{E}[m/M]$ to approach $0$, the probability ratio computed in Equation~\ref{ProbRatio} must approaches $0$.
-Then, we can discard the min($\cdot$) operation in Equation~\ref{vot} and get $\check{\sigma}_j = \sigma_j\rightarrow 0$.
-Furthermore, by using Taylor's expansion, we can have $A^{t}(j)\approx 1-\sigma_j$. Then, $\mathbb{E}A^{t}(j)\approx 1-\mathbb{E}\tilde{\sigma}_j$ and
+Besides, if the real true label of task $j$ is $1$, to ensure $\mathbb{E}[m/M]$ to approach $0$, the log-ratio $\tilde{\sigma}_j$ must approach $+\infty$.
+Similarly, if the real true label of task $j$ is $2$, the log-ratio $\tilde{\sigma}_j$ must approach $-\infty$.
+Then, we can discard the absolute operation in Equation~\ref{vot} and get 
 \begin{equation}
-\mathbb{E}\tilde{\sigma}_j=\frac{\tau_{1}}{\tau_{2}}(\bar{p}_i\lambda_i+)
+\label{approx1}
+\tilde{\sigma}^t \approx \tau_1 \mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j-\tau_2\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j.
 \end{equation}
+Here, $\mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j$ denotes the expectation of $\tilde{\sigma}_j$ when the true label of task $j$ is $1$, and it can be computed as 
+\begin{equation}
+\mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j=\log\frac{\tau_{1}}{\tau_{2}}+f(p_i)+(N-1)f(p_H).
+\end{equation}
+Similarly, $\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j$ should satisfy
+\begin{equation}
+\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j=\log\frac{\tau_{1}}{\tau_{2}}-f(p_i)-(N-1)f(p_H).
+\end{equation}
+Thus, we can have
+\begin{equation}
+\label{approx2}
+\tilde{\sigma}^t \approx u^t(p_i) = f(\tau_1)+f(p_i)+(N-1)f(p_H).
+\end{equation}
+Noted that, in the left-hand side of Equation~\ref{approx2}, we do not include the expectation operation because $\tilde{\sigma}^t$ should be a random variable of which the variance is $O(M^{-1})$.
+In this case, by using the Taylor expansion, we can have $\mathbb{E}F(\tilde{\sigma}^t)\approx F(u^t(p_i))$.
+Considering $f(x)$ is monotonically decreasing and increasing in $(0,0.5]$ and $[0.5,1)$, respectively, we can know the maximum effect of worker $j$'s strategy at step $t$ is
+\begin{equation}
+{\max}_{p_i}[u^t(p_H)-u^t(p_i)]= f(p_H).
+\end{equation}
+Meanwhile, we can have $u(p_i)\geq (N-1)f(p_H)$. Thus,
+\begin{equation}
+{\max}_{p_i}[F(u^t(p_i))-F(u^t(p_i))]= K_u f(p_H).
+\end{equation}
+
+Suppose, due to the manipulation of worker $j$, our reinforcement mechanism learns to increase the scaling factor $a$ by $\xi$ to incentivize higher efforts of worker $j$. In this case, our mechanism will at least pay more money to $N$ workers at the current step. The payment, which is the second term of the utility function described in Equation~\ref{utility}, should increase at least by $NM \xi p_H$. On the other hand, taking the long-term effects into consideration, we can know worker $j$'s effects can help increase our utility by $M(1-\rho)^{-1}K_u f(p_H)$. Considering $\xi\geq \min_{a,b\in \mathcal{A}}(a-b)$, we can know that $NM \xi p_H\geq M(1-\rho)^{-1}K_u f(p_H)$. In other words, the increment of our current payment will always larger than the long-term utility increment. Thus, our mechanism will not change the action because of worker $j$'s manipulation. In this case, worker $j$ will lose his money because of a lower $\tilde{p}^t_j$, which concludes Proposition~\ref{RMNE}.
+\end{proof}
+\end{proposition}
+
 
 %\begin{equation}
 %P(L(j)=1)=\tau_1{\prod}_{k\neq i}p_H^{\delta_{kj1}}(1-p_H)^{\delta_{kj2}}
