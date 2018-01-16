@@ -6,6 +6,8 @@
 *.pdf
 *.bbl
 *.pyd
-build/
+*build/
 *.xml
 *.iml
+*__pycache__*
+*cmake-build-debug/*
