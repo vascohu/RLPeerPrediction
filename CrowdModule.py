@@ -167,7 +167,7 @@ class TRWorker(Worker):
         self.r = 1
         # The probability
         self.P_H = TRWorker.P_H #np.random.rand()*0.5+0.5#0.8#TRWorker.P_H
-        self.P_L = 0.5 #TRWorker.P_L
+        self.P_L = TRWorker.P_L
         # Set the first worker
         if id==0:
             self.e = 1

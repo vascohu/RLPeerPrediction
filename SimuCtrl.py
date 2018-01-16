@@ -10,7 +10,7 @@ import pickle
 
 # Basic parameters
 task_num = 100
-worker_num = 5
+worker_num = 10
 num_true_label = 0
 T = 200
 EP = 25
@@ -18,7 +18,7 @@ EP = 25
 # np.random.seed(0)
 
 CrowdModule.Task.p=0.5
-CrowdModule.TRWorker.P_H = 0.8
+CrowdModule.TRWorker.P_H = 0.5
 num_exp = 1000
 #payment = np.zeros(shape=(8,num_exp))
 #file_name = 'VS_Bayes_High_True8.pkl'
@@ -28,11 +28,13 @@ num_exp = 1000
 # f.close()
 # for i in range(8):
 # for i in [18]:
-X = np.zeros(shape=(7, num_exp))
-Y = np.zeros(shape=(7, num_exp))
-file_name = 'TX1.pkl'
-for i in range(7):
-    CrowdModule.TRWorker.P_H = 0.6 + i*0.05
+X = np.zeros(shape=(11, num_exp))
+Y = np.zeros(shape=(11, num_exp))
+Z = np.zeros(shape=(11, num_exp))
+pay = np.zeros(shape=(1, num_exp))
+file_name = 'NewExp1.pkl'
+for i in range(11):
+    CrowdModule.TRWorker.P_H = 0.5 + i*0.05
     #CrowdModule.Task.p = 0.05 + 0.05 * i
     print(CrowdModule.TRWorker.P_H)
     for t in range(num_exp):
@@ -47,17 +49,26 @@ for i in range(7):
         label_mat = mkt.get_label_mat_NTL()
         #pay = mech.pay(label_mat)
         # print(np.sum(pay[1][0])/90)
-        #infer.infer(label_mat)
+        # print(label_mat)
+        # infer.infer(label_mat)
+        # pay[0, t] = infer.p_vec[0]
+        # print(pay[0, t])
         #payment[i, t] = infer.p_vec[0]
         #revenue[i, t] = infer.ex_accuracy
         Y[i, t] = infer.test(label_mat, mkt.get_true_label())
         X[i, t] = infer.ex_x
+        Z[i, t] = infer.p_vec[0]
+        #print(infer.p_vec)
+        #print(infer.x_vec)
         #payment[i, t] = np.sum(pay[1][0])/90
 
 f = open(file_name, 'wb')
 #pickle.dump(payment, f)
 #pickle.dump(revenue, f)
 pickle.dump(X, f)
+pickle.dump(Y, f)
+pickle.dump(Z, f)
+#pickle.dump(pay, f)
 f.close()
 '''
 # The incentive mechanism

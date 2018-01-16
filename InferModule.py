@@ -54,6 +54,7 @@ class InferBase(object):
 
 
 class GibbsSampling(InferBase):
+
     def __init__(self, _task_num: int, _worker_num: int, _class_num: int, _true_label_num: int = 0):
         self.task_num = _task_num
         self.worker_num = _worker_num
@@ -124,7 +125,8 @@ class GibbsSamplingSC(InferBase):
 
     def ex_prob_ratio(self):
         abs_log_ratio = np.absolute(self.x_vec)
-        self.ex_x = np.mean(abs_log_ratio)
+        temp = np.mean(abs_log_ratio)
+        self.ex_x = np.exp(temp)/(1+np.exp(temp))
 
 
 
