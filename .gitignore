@@ -5,3 +5,7 @@
 *.synctex.gz
 *.pdf
 *.bbl
+*.pyd
+build/
+*.xml
+*.iml
