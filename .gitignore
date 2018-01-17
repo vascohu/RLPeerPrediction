@@ -11,3 +11,4 @@
 *.iml
 *__pycache__*
 *cmake-build-debug/*
+*.so

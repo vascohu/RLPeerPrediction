@@ -128,7 +128,7 @@ const char * sfmt_get_idstring(sfmt_t * sfmt);
 int sfmt_get_min_array_size32(sfmt_t * sfmt);
 int sfmt_get_min_array_size64(sfmt_t * sfmt);
 void sfmt_gen_rand_all(sfmt_t * sfmt);
-sfmt_t* init_gen_rand(uint32_t seed);
+static sfmt_t* init_gen_rand(uint32_t seed);
 
 inline static sfmt_t* init_gen_rand(uint32_t seed) {
 	sfmt_t sfmt;

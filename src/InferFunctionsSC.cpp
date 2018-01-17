@@ -1,5 +1,5 @@
 #include "InferFunctionsSC.h"
-#include "SFMT\SFMT.h"
+#include "SFMT/SFMT.h"
 #include <stdlib.h>
 #include <math.h>
 
