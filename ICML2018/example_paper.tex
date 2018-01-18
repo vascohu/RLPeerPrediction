@@ -5,7 +5,8 @@
 % Recommended, but optional, packages for figures and better typesetting:
 \usepackage{microtype}
 \usepackage{graphicx}
-\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{booktabs} % for professional tables
 
 % hyperref makes hyperlinks in the resulting PDF.
@@ -273,14 +274,14 @@ need to discuss with Yitao
 \begin{equation}
 \label{vot}
 \begin{split}
-\tilde{\sigma}^t = \frac{1}{M}{\sum}_{j=1}^{M}|\tilde{\sigma}_j^{t}|
+\mathbb{E}A^t = \frac{1}{M}{\sum}_{j=1}^{M}e^{|\tilde{\sigma}_j^{t}|}(1+e^{|\tilde{\sigma}_j^{t}|})^{-1}
 \end{split}
 \end{equation}
 There is a value function $F(\tilde{\sigma}^t)$
 \begin{equation}
 \label{utility}
 \begin{split}
-U = M\cdot F(\tilde{\sigma}^t) - \sum_{i=1}^{N}R^t(i)
+U = M\cdot F(\mathbb{E}A^t ) - \sum_{i=1}^{N}R^t(i)
 \end{split}
 \end{equation}
 
@@ -623,53 +624,158 @@ Then, substituting $x$ as $1-v$ concludes Proposition~\ref{Ratio0}.
 \subsection{Reinforcement mechanism analysis}
 \begin{proposition}
 \label{RMNE}
-For our reinforcement mechanism, reporting truthfully and exerting high efforts is always a Nash equilibrium for all workers when
-$$N \min_{a,b\in\mathcal{A}}(a-b) p_H\geq (1-\rho)^{-1}K_u f(p_H).$$
-where $\min_{a,b\in\mathcal{A}}(a-b)$ denotes the minimal gap between any two available values of the scaling factor.
+Suppose\footnote{In other words, the estimation errors of the one-step mechanism is smaller enough when at least $N-1$ workers report truthfully and exert high efforts.}, for our one-step mechanism, $M\rightarrow \infty$ and $(2p_H)^{2(N-1)}>M$. Then, for our reinforcement mechanism, reporting truthfully and exerting high efforts is always a Nash equilibrium for all workers when
+$$ {\min}_{a,b\in\mathcal{A}}(a-b) \geq \frac{K_{\epsilon} \epsilon}{Np_H(1-\rho)}$$
+where $\min_{a,b\in\mathcal{A}}(a-b)$ denotes the minimal gap between any two available values of the scaling factor and
+$$\epsilon =(\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2)[4p_H(1-p_H)]^{\frac{N-1}{2}} $$
+$$K_{\epsilon}={\max}_{0<x\leq \epsilon}F'(1-x)$$
 \begin{proof}
-In this proof, if the superscripts of variables in an equation are not specified, it means that it holds for any time step $t$. Suppose all workers except worker $i$ report truthfully and exert high efforts at all time steps.
+In this proof, if the superscripts of variables in an equation are not specified, the equation should hold for any time step $t$. Suppose all workers except worker $i$ report truthfully and exert high efforts at all time steps.
 Then, at step $t$, according to Proposition~\ref{ConvBound}, under the condition of Proposition~\ref{OSEqulibrium}, 
 both $\mathbb{E}[m/M]$ and $\mathbb{E}[m/M]^2$ approaches $0$.
-In this case, $\tilde{p}_i\rightarrow p_i$. Thus, the log-ratio computed in Equation~\ref{ProbRatio} satisfies
+In this case, $\tilde{p}_i\rightarrow p_i$. Thus, the log-ratio, which is used for computing the posterior accuracy in Equation~\ref{vot} satisfies
 \begin{equation}
 \label{ProbRatioApp}
-\tilde{\sigma}_j\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_i^{\delta_{ij1}-\delta_{ij2}}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right)
+\tilde{\sigma}_j(p_i)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_i^{\delta_{ij1}-\delta_{ij2}}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right).
 \end{equation}
-Besides, if the real true label of task $j$ is $1$, to ensure $\mathbb{E}[m/M]$ to approach $0$, the log-ratio $\tilde{\sigma}_j$ must approach $+\infty$.
-Similarly, if the real true label of task $j$ is $2$, the log-ratio $\tilde{\sigma}_j$ must approach $-\infty$.
-Then, we can discard the absolute operation in Equation~\ref{vot} and get 
+To quantify the effects of worker $i$ on our mechanism, we firstly analyze the accuracy lower bound when worker $i$ reports randomly, namely $p_i=0.5$. Considering Lemma~\ref{Su-Concave2} in the supplementary file, if the true label is $1$, we can have $\mathbb{E}_{[L(j)=1]}A> 1-q_1-q_2$, where
+\begin{equation*}
+\begin{split}
+&q_1 = \frac{\tau_2}{\tau_1}{\sum}_{n=K+1}^{N-1}C_{N-1}^{n} (\frac{1}{\lambda_H})^{n-m}p_H^n(1-p_H)^m\\
+&q_2 = \frac{\tau_1}{\tau_2}{\sum}_{n=0}^{K}C_{N-1}^{n} {\lambda_H}^{n-m}p_H^n(1-p_H)^m\\
+&n={\sum}_{k\neq i}\delta_{kj1}\;,\;m= {\sum}_{k\neq i}\delta_{kj2}\;,\;K=\lfloor (N-1)/2 \rfloor.
+\end{split}
+\end{equation*}
+Here, we derive the inequality by using $e^{-\tilde{\sigma}_j}$ and $e^{\tilde{\sigma}_j}$ as the upper bound of $[1+e^{|\tilde{\sigma}_j|}]^{-1}$ when $n\in (K, N-1]$ and $n\in [0, K]$, respectively. Then, by using Lemma~\ref{Su-Concave3} in the supplementary file, we can have
 \begin{equation}
-\label{approx1}
-\tilde{\sigma}^t \approx \tau_1 \mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j-\tau_2\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j.
+\begin{split}
+\mathbb{E}_{[L(j)=1]}A > 1-c_{\tau}[4p_H(1-p_H)]^{\frac{N-1}{2}}.
+\end{split}
 \end{equation}
-Here, $\mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j$ denotes the expectation of $\tilde{\sigma}_j$ when the true label of task $j$ is $1$, and it can be computed as 
+where $c_{\tau}=\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2$. Similarly,
 \begin{equation}
-\mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j=\log\frac{\tau_{1}}{\tau_{2}}+f(p_i)+(N-1)f(p_H).
+\begin{split}
+\mathbb{E}_{[L(j)=2]}A > 1-c_{\tau}[4p_H(1-p_H)]^{\frac{N-1}{2}}.
+\end{split}
 \end{equation}
-Similarly, $\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j$ should satisfy
-\begin{equation}
-\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j=\log\frac{\tau_{1}}{\tau_{2}}-f(p_i)-(N-1)f(p_H).
-\end{equation}
-Thus, we can have
-\begin{equation}
-\label{approx2}
-\tilde{\sigma}^t \approx u^t(p_i) = f(\tau_1)+f(p_i)+(N-1)f(p_H).
-\end{equation}
-Noted that, in the left-hand side of Equation~\ref{approx2}, we do not include the expectation operation because $\tilde{\sigma}^t$ should be a random variable of which the variance is $O(M^{-1})$.
-In this case, by using the Taylor expansion, we can have $\mathbb{E}F(\tilde{\sigma}^t)\approx F(u^t(p_i))$.
-Considering $f(x)$ is monotonically decreasing and increasing in $(0,0.5]$ and $[0.5,1)$, respectively, we can know the maximum effect of worker $j$'s strategy at step $t$ is
-\begin{equation}
-{\max}_{p_i}[u^t(p_H)-u^t(p_i)]= f(p_H).
-\end{equation}
-Meanwhile, we can have $u(p_i)\geq (N-1)f(p_H)$. Thus,
-\begin{equation}
-{\max}_{p_i}[F(u^t(p_i))-F(u^t(p_i))]= K_u f(p_H).
-\end{equation}
+Thereby, $\mathbb{E}A>1-c_{\tau}[4p_H(1-p_H)]^{\frac{N-1}{2}}=1-\epsilon$.
 
-Suppose, due to the manipulation of worker $j$, our reinforcement mechanism learns to increase the scaling factor $a$ by $\xi$ to incentivize higher efforts of worker $j$. In this case, our mechanism will at least pay more money to $N$ workers at the current step. The payment, which is the second term of the utility function described in Equation~\ref{utility}, should increase at least by $NM \xi p_H$. On the other hand, taking the long-term effects into consideration, we can know worker $j$'s effects can help increase our utility by $M(1-\rho)^{-1}K_u f(p_H)$. Considering $\xi\geq \min_{a,b\in \mathcal{A}}(a-b)$, we can know that $NM \xi p_H\geq M(1-\rho)^{-1}K_u f(p_H)$. In other words, the increment of our current payment will always larger than the long-term utility increment. Thus, our mechanism will not change the action because of worker $j$'s manipulation. In this case, worker $j$ will lose his money because of a lower $\tilde{p}^t_j$, which concludes Proposition~\ref{RMNE}.
+
+Then, we consider the case that worker $i$ exerts high efforts but report falsely, namely $p_i=1-p_H$. In this case, we can rewrite Equation~\ref{ProbRatioApp} as
+\begin{equation}
+\tilde{\sigma}_j(1-p_H)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_H^{x-y}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right).
+\end{equation}
+where $x=\delta_{ij2}$ and $y=\delta_{ij1}$. Since $p_i=1-p_H$, $x$ and $y$ has the same distribution as $\delta_{kj1}$ and $\delta_{kj2}$. Thus, the distribution of $\tilde{\sigma}_j(1-p_H)$ is the same as $\tilde{\sigma}_j(p_H)$, {\color{red} which means our mechanism uses the information provided by worker $i$ via flipping his labels}. Thus, worker $i$'s strategies can lower the posterior label accuracy at most by $\epsilon$.
+
+%the accuracy upper bound when worker $i$ report truthfully and exert high efforts $(p_i=p_H)$. According to Lemma~\ref{Su-Concave1} in the supplementary file, we know that $g(x)=e^{x}(1+e^{x})^{-1}$ is a concave function for $x\in [0,+\infty)$. By Jensen's inequality, we can have $\mathbb{E}A\leq g(\mathbb{E}|\tilde{\sigma}_j|)$. If the real true label of task $j$ is $1$, to ensure $\mathbb{E}[m/M]$ to approach $0$, the log-ratio $\tilde{\sigma}_j$ must approach $+\infty$ with probability $1$. Thus, we can discard the absolute operation and get 
+%\begin{equation}
+%\mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j=\log\frac{\tau_{1}}{\tau_{2}}+N(2p_H-1)\log\lambda_H
+%\end{equation}
+%where  $\mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j$ denotes the expectation of $\tilde{\sigma}_j$ when the true label of task $j$ is $1$. Similarly,
+%\begin{equation}
+%\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j=\log\frac{\tau_{1}}{\tau_{2}}-N(2p_H-1)\log\lambda_H.
+%\end{equation}
+%Thereby, $\mathbb{E}A\leq f(\tau_1)f^{N}(p_H)/[1+f(\tau_1)f^{N}(p_H)]$ because $\mathbb{E}|\tilde{\sigma}_j|\approx \tau_1 \mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j-\tau_2\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j$.
+
+
+
+
+
+
+
+
+
+%Write the expectation of a variable $x$ when the true label of task $j$ is $1$ as $\mathbb{E}_{[L(j)=1]}x$. 
+%\begin{equation}
+%\mathbb{E}_{[L(j)=1]}A\leq g(\mathbb{E}\tilde{\sigma}_j)=\frac{\tau_1}{\tau_2}\lambda_H^{N\xi_H}
+%\end{equation}
+%Similarly, for the case that the true label of task $j$ is $2$ and $p_i=p_H$, we can have
+%\begin{equation}
+%\mathbb{E}_{[L(j)=2]}A\leq g(\mathbb{E}\tilde{\sigma}_j)=\frac{\tau_2}{\tau_1}\lambda_H^{N\xi_H}
+%\end{equation}
+%we can have $\mathbb{E}_{[L(j)=1]}A\leq g(\mathbb{E}\tilde{\sigma}_j)$.
+%
+%In Equation~\ref{vot}, for the map between the posterior accuracy and the log-ratio, we can have
+%\begin{equation}
+%\frac{e^{|\tilde{\sigma}_j|}}{1+e^{|\tilde{\sigma}_j|}}\approx 
+%\left\{
+%\begin{array}{lc}
+%1 - e^{-\tilde{\sigma}_j} & \tilde{\sigma}_j\gg +1 \\
+%1 - e^{\tilde{\sigma}_j} & \tilde{\sigma}_j\ll -1
+%\end{array}
+%\right.
+%\end{equation}
+%Suppose the real true label of task $j$ is $1$. Then, to ensure $\mathbb{E}[m/M]$ to approach $0$, the log-ratio $\tilde{\sigma}_j$ must approach $+\infty$ with probability $1$. Thus, if $p_i=p_H$, then
+%\begin{equation}
+%\begin{split}
+%\mathbb{E}e^{-\tilde{\sigma}_j}&\approx \frac{\tau_2}{\tau_1}\sum_{s=0}^{\lfloor N/2 \rfloor}C_{N}^{s}p^{s}_{H}(1-p_H)^{N-s} \\
+%&=\frac{\tau_2}{\tau_1} I_{1-p_H}(N-\lfloor N/2 \rfloor, \lfloor N/2 \rfloor+1)
+%\end{split}
+%\end{equation}
+%
+%Similarly, if the real true label of task $j$ is $2$, the log-ratio $\tilde{\sigma}_j$ must approach $-\infty$.
+%Then, we can discard the absolute operation in Equation~\ref{vot} and get 
+%\begin{equation}
+%\label{approx1}
+%\tilde{\sigma}^t \approx \tau_1 \mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j-\tau_2\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j.
+%\end{equation}
+%Here, $\mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j$ denotes the expectation of $\tilde{\sigma}_j$ when the true label of task $j$ is $1$, and it can be computed as 
+%\begin{equation}
+%\mathbb{E}_{[L(j)=1]}\tilde{\sigma}_j=\log\frac{\tau_{1}}{\tau_{2}}+f(p_i)+(N-1)f(p_H).
+%\end{equation}
+%Similarly, $\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j$ should satisfy
+%\begin{equation}
+%\mathbb{E}_{[L(j)=2]}\tilde{\sigma}_j=\log\frac{\tau_{1}}{\tau_{2}}-f(p_i)-(N-1)f(p_H).
+%\end{equation}
+%Thus, we can have
+%\begin{equation}
+%\label{approx2}
+%\tilde{\sigma}^t \approx u^t(p_i) = f(\tau_1)+f(p_i)+(N-1)f(p_H).
+%\end{equation}
+%Noted that, in the left-hand side of Equation~\ref{approx2}, we do not include the expectation operation because $\tilde{\sigma}^t$ should be a random variable of which the variance is $O(M^{-1})$.
+%In this case, by using the Taylor expansion, we can have $\mathbb{E}F(\tilde{\sigma}^t)\approx F(u^t(p_i))$.
+%Considering $f(x)$ is monotonically decreasing and increasing in $(0,0.5]$ and $[0.5,1)$, respectively, we can know the maximum effect of worker $j$'s strategy at step $t$ is
+%\begin{equation}
+%{\max}_{p_i}[u^t(p_H)-u^t(p_i)]= f(p_H).
+%\end{equation}
+%Meanwhile, we can have $u(p_i)\geq (N-1)f(p_H)$. Thus,
+%\begin{equation}
+%{\max}_{p_i}[F(u^t(p_i))-F(u^t(p_i))]= K_u f(p_H).
+%\end{equation}
+
+Suppose, due to the manipulation of worker $j$, our reinforcement mechanism learns to increase the scaling factor $a$ by $\xi$ to incentivize higher efforts of worker $j$. In this case, our mechanism will at least pay more money to $N$ workers at the current step. The payment, which is the second term of the utility function described in Equation~\ref{utility}, should increase at least by $NM \xi p_H$. On the other hand, taking the long-term effects into consideration, we can know worker $j$'s effects can help increase our utility by $M(1-\rho)^{-1}K_{\epsilon} \epsilon$. Considering $\xi\geq \min_{a,b\in \mathcal{A}}(a-b)$, we can know that $NM \xi p_H\geq M(1-\rho)^{-1}K_{\epsilon} \epsilon$. In other words, the increment of our current payment will always larger than the long-term utility increment. Thus, our mechanism will not change the action because of worker $j$'s manipulation. In this case, worker $j$ will lose his money because of a lower $\tilde{p}^t_j$, which concludes Proposition~\ref{RMNE}.
 \end{proof}
 \end{proposition}
 
+\section{Empirical Results}
+
+\begin{figure*}[t]
+    \centering
+        \begin{subfigure}[t]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image/EXPC1}
+        \caption{\label{BPP1}Changing the true label distribution}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[t]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image/BPP1}
+        \caption{\label{BPP1}Changing the true label distribution}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image/BPP2}
+        \caption{\label{BPP2}Changing the opponent workers}
+    \end{subfigure}
+        ~
+    \begin{subfigure}[t]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image/BPP3}
+        \caption{\label{BPP3}Changing the targeted worker}
+    \end{subfigure}
+    \caption{\label{BPP}Empirical analysis on the incentive received by worker $1$}
+\end{figure*}
 
 %\begin{equation}
 %P(L(j)=1)=\tau_1{\prod}_{k\neq i}p_H^{\delta_{kj1}}(1-p_H)^{\delta_{kj2}}
