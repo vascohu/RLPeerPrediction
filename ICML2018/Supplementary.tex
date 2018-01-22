@@ -253,6 +253,71 @@ $$(1+x)^{y}\leq e^{xy}.$$
 Firstly, we can know $(1+x)^{y}=e^{y\log(1+x)}$. Let $f(x)=x-\log(x)$. Then, we can have $f(0)=0$ and $f'(x)\geq 0$. Thus, $x\geq\log (1+x)$ and we can conclude Lemma~\ref{Inequality1} by taking this inequality into the equality.
 \end{proof}
 \end{lemma}
+
+\begin{lemma}
+\label{Concave1}
+$$g(x)=\frac{e^x}{e^x+1}$$
+is a concave function when $x\in [0,+\infty)$.
+\begin{proof}
+$g'(x)= (2+t(x))^{-1}$, where $t(x)=e^x+e^{-x}$. $t'(x)=e^x-e^{-x}\geq 0$ when $x\in [0,+\infty)$. Thus, $g'(x)$ is monotonically decreasing when $x\in [0,+\infty)$, which concludes Lemma~\ref{Concave1}.
+\end{proof}
+\end{lemma}
+
+\begin{lemma}
+\label{Concave2}
+For $x\in(-\infty, +\infty)$, 
+$$h(x)=\frac{1}{e^{|x|}+1}$$
+satisfies
+$$h(x)< e^x \;\;\mathrm{and}\;\; h(x)< e^{-x}.$$
+\begin{proof}
+When $x\geq 0$, we can have
+\begin{equation}
+h(x)<\frac{1}{e^x}=e^{-x}\leq e^{x}.
+\end{equation}
+When $x\leq 0$, we can have
+\begin{equation}
+h(x)=\frac{e^x}{e^x+1}<e^{x}\leq e^{-x}.
+\end{equation}
+\end{proof}
+\end{lemma}
+
+\begin{lemma}
+\label{Concave3}
+If $\lambda=p/(1-p)$ and $0.5<p<1$, then
+$${\sum}_{n=\lfloor N/2 \rfloor}^{N}C_N^n\lambda^{m-n}p^n(1-p)^m\leq [4p(1-p)]^{N/2}$$
+$${\sum}_{n=0}^{\lfloor N/2 \rfloor}C_N^n\lambda^{n-m}p^n(1-p)^m\leq [4p(1-p)]^{N/2}$$
+where $m=N-n$.
+\begin{proof}
+For the first inequality, we can have
+\begin{align}
+&\sum_{n=\lfloor N/2 \rfloor}^{N}C_N^n\lambda^{m-n}p^n(1-p)^m \\&=\sum_{n=\lfloor N/2 \rfloor}^{N}C_N^np^m(1-p)^n\leq \sum_{m=0}^{\lfloor N/2 \rfloor}C_N^m p^m(1-p)^n\nonumber
+\end{align}
+According to the inequality in \cite{Arratia1989}, we can have
+\begin{equation}
+\label{xxx}
+ \sum_{m=0}^{\lfloor N/2 \rfloor}C_N^m p^m(1-p)^n \leq \exp (-ND)
+\end{equation}
+where $D=-0.5\log(2p)-0.5\log(2(p-1))$, which concludes the first inequality in Lemma~\ref{Concave3}.
+
+For the second inequality, we can have
+\begin{equation}
+\begin{split}
+&\sum_{n=0}^{\lfloor N/2 \rfloor}C_N^n\lambda^{n-m}p^n(1-p)^m \\
+&= \frac{1}{[p(1-p)]^N}\sum_{n=0}^{\lfloor N/2 \rfloor}C_N^n[p^3]^n[(1-p)^3]^m
+ \\&=\frac{[p^3+(1-p)^3]^N}{[p(1-p)]^N}\sum_{n=0}^{\lfloor N/2 \rfloor}C_N^n x^n(1-x)^m
+\end{split}
+\end{equation}
+where $x=p^3/[p^3+(1-p)^3]$. By using Equation~\ref{xxx}, we can have
+\begin{equation}
+\begin{split}
+&\sum_{n=0}^{\lfloor N/2 \rfloor}C_N^n\lambda^{n-m}p^n(1-p)^m\\
+&\leq \frac{[p^3+(1-p)^3]^N}{[p(1-p)]^N} [x(1-x)]^{N/2} \\
+&=[4p(1-p)]^{N/2}
+\end{split}
+\end{equation}
+which concludes the second inequality of Lemma~\ref{Concave3}.
+\end{proof}
+\end{lemma}
 \bibliographystyle{named}
 \bibliography{ref}
 
