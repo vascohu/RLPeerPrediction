@@ -4,18 +4,18 @@
 #include <math.h>
 
 
-int task_num;
-int worker_num;
+long task_num;
+long worker_num;
 
-int sample_num = 2000;
-int burn_num = 1000;
-int interval = 5;
+long sample_num = 5000;
+long burn_num = 1000;
+long longerval = 2;
 
 sfmt_t sfmt;
 
-int *y;
-int *alpha;
-int *beta;
+long *y;
+long *alpha;
+long *beta;
 
 double *yDist;
 double *pVec;
@@ -23,7 +23,7 @@ double *xVec;
 double p0;
 
 
-void init_class(int _task_num, int _worker_num, double *_yDist, double *_pVec, double *_xVec)
+void init_class(long _task_num, long _worker_num, double *_yDist, double *_pVec, double *_xVec)
 {
 	task_num = _task_num;
 	worker_num = _worker_num;
@@ -33,13 +33,14 @@ void init_class(int _task_num, int _worker_num, double *_yDist, double *_pVec, d
 
 	sfmt_init_gen_rand(&sfmt, 1234);
 
-	y = (int *) malloc(task_num * sizeof(int));
-	alpha = new int[2*worker_num]; //(int *) malloc(2 * worker_num * sizeof(int));
-	beta = new int[2]; //(int *) malloc(2 * sizeof(int));
+	y = (long *) malloc(task_num * sizeof(long));
+	alpha = new long[2*worker_num]; //(long *) malloc(2 * worker_num * sizeof(long));
+	beta = new long[2]; //(long *) malloc(2 * sizeof(long));
 }
 
-int random_sample(double p)
+long random_sample(double p)
 {
+
 	double r = sfmt_genrand_res53(&sfmt);
 	if(r<p)
 	{
@@ -51,47 +52,47 @@ int random_sample(double p)
 	}
 }
 
-int argmax(int *p)
+long argmax(long *p)
 {
 	return(p[0]>p[1]?0:1);
 }
 
 
-void init_y_alpha_beta(int *pLabelMat)
+void init_y_alpha_beta(long *pLabelMat)
 {
 	beta[0] = 1;
 	beta[1] = 1;
-	for(int j=0; j<worker_num; ++j)
+	for(long j=0; j<worker_num; ++j)
 	{
 		alpha[j*2] = 2;
 		alpha[j*2+1] = 1;
 	}
 
-	int *votes = (int *) malloc(2 * sizeof(int));
-	for(int i= 0; i<task_num; ++i)
+	long *votes = (long *) malloc(2 * sizeof(long));
+	for(long i= 0; i<task_num; ++i)
 	{
-		int sum_votes = 0;
-		for(int k=0; k<2; ++k)
+		long sum_votes = 0;
+		for(long k=0; k<2; ++k)
 		{
 			votes[k] = 1;
 			sum_votes += 1;
 		}
-		for(int j=i*worker_num; j<(i+1)*worker_num; ++j)
+		for(long j=i*worker_num; j<(i+1)*worker_num; ++j)
 		{
-			int label = pLabelMat[j]-1;
+			long label = pLabelMat[j]-1;
 			if(label>=0)
 			{
 				votes[label]++;
 				sum_votes++;
 			}
 		}
-		int L = random_sample((double)votes[0]/sum_votes);
-		//int L = argmax(votes);
+		long L = random_sample((double)votes[0]/sum_votes);
+		//long L = argmax(votes);
 		y[i] = L;
 		beta[L]++;
-		for(int j=0; j<worker_num; ++j)
+		for(long j=0; j<worker_num; ++j)
 		{
-			int g = pLabelMat[i*worker_num+j]-1;
+			long g = pLabelMat[i*worker_num+j]-1;
 			if(g==L)
 			{
 				alpha[j*2]+=1;
@@ -104,24 +105,24 @@ void init_y_alpha_beta(int *pLabelMat)
 	}
 	delete(votes);
 	/*
-	for(int j=0; j<worker_num; ++j)
+	for(long j=0; j<worker_num; ++j)
 	{
-		printf("%d, %d\n",alpha[2*j], alpha[2*j+1]);
+		prlongf("%d, %d\n",alpha[2*j], alpha[2*j+1]);
 	}
-	printf("%d, %d\n", beta[0], beta[1]);
+	prlongf("%d, %d\n", beta[0], beta[1]);
 	*/
 }
 
-void update_alpha_beta_y(int *pLabelMat, int i, int yn)
+void update_alpha_beta_y(long *pLabelMat, long i, long yn)
 {
-	int y0 = y[i];
+	long y0 = y[i];
 	if(y0!=yn)
 	{
 		beta[y0]-=1;
 		beta[yn]+=1;
-		for(int j=0; j<worker_num; ++j)
+		for(long j=0; j<worker_num; ++j)
 		{
-			int g = pLabelMat[i*worker_num+j]-1;
+			long g = pLabelMat[i*worker_num+j]-1;
 			if(g==yn)
 			{
 				alpha[2*j]++;
@@ -137,9 +138,9 @@ void update_alpha_beta_y(int *pLabelMat, int i, int yn)
 	}
 }
 
-double prob_ratio(int x, int y, int L)
+double prob_ratio(long x, long y, long L)
 {
-	int z,w;
+	long z,w;
 	if(L==0)
 	{
 		return ((double)x/(double)y);
@@ -150,10 +151,10 @@ double prob_ratio(int x, int y, int L)
 	}
 }
 
-double calc_lambda(int *pLabelMat, int i)
+double calc_lambda(long *pLabelMat, long i)
 {
 	double lambda = 1.0;
-	int x1=0,x2=0;
+	long x1=0,x2=0;
 	if(y[i]==0)
 	{
 		x1 = beta[0]-1;
@@ -165,9 +166,9 @@ double calc_lambda(int *pLabelMat, int i)
 		x2 = beta[1]-1;			
 	}
 	lambda*=(double)x1/(double)x2;
-	for(int j=0; j<worker_num; j++)
+	for(long j=0; j<worker_num; j++)
 	{
-		int L = pLabelMat[i*worker_num+j]-1;
+		long L = pLabelMat[i*worker_num+j]-1;
 		if(L>=0)
 		{
 			if(L==y[i])
@@ -186,26 +187,26 @@ double calc_lambda(int *pLabelMat, int i)
 	return(lambda);
 }
 
-void generate_one_label(int *pLabelMat, int i)
+void generate_one_label(long *pLabelMat, long i)
 {
 
-	/*printf("%f, ",lambda);
+	/*prlongf("%f, ",lambda);
 	if(i==worker_num-1)
 	{
-		printf("\n");
+		prlongf("\n");
 	}*/
 	double lambda = calc_lambda(pLabelMat, i);
-	int z = random_sample(lambda/(1+lambda));
+	long z = random_sample(lambda/(1+lambda));
 	update_alpha_beta_y(pLabelMat, i, z);
 }
 
 
-void gs_burn_in(int *pLabelMat)
+void gs_burn_in(long *pLabelMat)
 {
 	init_y_alpha_beta(pLabelMat);
-	for(int t=0; t<burn_num; ++t)
+	for(long t=0; t<burn_num; ++t)
 	{
-		for(int i=0; i<task_num; ++i)
+		for(long i=0; i<task_num; ++i)
 		{
 			generate_one_label(pLabelMat, i);
 		}
@@ -213,60 +214,61 @@ void gs_burn_in(int *pLabelMat)
 }
 
 
-double infer(int *pLabelMat)
+double infer(long *pLabelMat)
 {
 
 	double accuracy = 0.0;
 	gs_burn_in(pLabelMat);
 	
-	for(int i=0; i<2*task_num; ++i)
+	for(long i=0; i<2*task_num; ++i)
 	{
 		yDist[i] = 0.0;
 	}
 
-	for(int i=0; i<task_num; ++i)
+	for(long i=0; i<task_num; ++i)
 	{
 		xVec[i] = 0.0;
 	}
 
-	for(int j=0; j<worker_num; ++j)
+	for(long j=0; j<worker_num; ++j)
 	{
 		pVec[j] = 0.0;
 	}
 
 	p0 = 0;
 
-	for(int t=0; t<sample_num; ++t)
+	for(long t=0; t<sample_num; ++t)
 	{
-		for(int n=0; n<interval; ++n)
+		for(long n=0; n<longerval; ++n)
 		{
-			for(int i=0; i<task_num; ++i)
+			for(long i=0; i<task_num; ++i)
 			{
 				generate_one_label(pLabelMat, i);
 			}
 		}
 
-		for(int i=0; i<task_num; ++i)
+		for(long i=0; i<task_num; ++i)
 		{
 			yDist[2*i+y[i]]+=1.0/sample_num;
-			//double lambda = calc_lambda(pLabelMat, i);
-			// xVec[i] += log(lambda)/sample_num;
+			double lambda = calc_lambda(pLabelMat, i);
+			xVec[i] += log(lambda)/sample_num;
 		}
 
 
 		p0 += (double)beta[0]/(beta[0]+beta[1])/sample_num;
 
-		for(int j=0; j<worker_num; ++j)
+		for(long j=0; j<worker_num; ++j)
 		{
 			pVec[j] += (double)alpha[2*j]/(alpha[2*j]+alpha[2*j+1])/sample_num;
 		}
 	}
 
-	//printf("\n%d\t%d\t%f\n", beta[0], beta[1], p0);
-	for(int i=0; i<task_num; ++i)
+	//prlongf("\n%d\t%d\t%f\n", beta[0], beta[1], p0);
+	/*
+	for(long i=0; i<task_num; ++i)
 	{
 		xVec[i] = log(p0/(1-p0));
-		for(int j=0; j<worker_num; ++j)
+		for(long j=0; j<worker_num; ++j)
 		{
 			if(pLabelMat[i*worker_num+j]==1)
 			{
@@ -277,9 +279,9 @@ double infer(int *pLabelMat)
 				xVec[i] += log((1-pVec[j])/pVec[j]);
 			}
 		}
-	}
+	}*/
 
-	for(int i=0; i<task_num; ++i)
+	for(long i=0; i<task_num; ++i)
 	{
 		double p = (yDist[2*i]>=yDist[2*i+1])?yDist[2*i]:yDist[2*i+1];
 		accuracy += p;

@@ -1,8 +1,8 @@
 # Inference module is responsible to infer the state of workers and calculate rewards
 import abc
 import numpy as np
-import InferModuleX
 import InferModuleSC
+# import InferModuleX
 #from scipy.special import gammaln
 #import time
 
@@ -52,7 +52,7 @@ class InferBase(object):
         """Test the inference module"""
         return
 
-
+"""
 class GibbsSampling(InferBase):
 
     def __init__(self, _task_num: int, _worker_num: int, _class_num: int, _true_label_num: int = 0):
@@ -89,7 +89,7 @@ class GibbsSampling(InferBase):
         self.ex_accuracy /= (self.task_num-self.true_label_num)
         accuracy /= (self.task_num-self.true_label_num)
         return accuracy
-
+"""
 
 class GibbsSamplingSC(InferBase):
     def __init__(self, _task_num: int, _worker_num: int):
@@ -115,8 +115,8 @@ class GibbsSamplingSC(InferBase):
         accuracy = 0
         for i in range(self.task_num):
             #label = np.argmax(self.y_dist[i, :])
-            #if self.x_vec[i]>=0:
-            if self.y_dist[i,0]> self.y_dist[i,1]:
+            if self.x_vec[i]>=0:
+            #if self.y_dist[i,0]> self.y_dist[i,1]:
                 label = 0
             else:
                 label = 1
@@ -126,10 +126,12 @@ class GibbsSamplingSC(InferBase):
         return accuracy
 
     def ex_prob_ratio(self):
-        #abs_log_ratio = np.absolute(self.x_vec)
+        abs_log_ratio = np.absolute(self.x_vec)
         #temp = np.mean(abs_log_ratio)
-        self.ex_accuracy = np.mean(np.max(self.y_dist, axis=1))
+        temp = np.exp(abs_log_ratio)/(1+np.exp(abs_log_ratio))
+        #self.ex_accuracy = np.mean(np.max(self.y_dist, axis=1))
         #self.ex_x = np.exp(temp)/(1+np.exp(temp))
+        self.ex_x = np.mean(temp)
 
 
 
