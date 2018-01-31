@@ -58,7 +58,7 @@ class RWorker(Worker):
 
     def labeling(self, task: Task):
             th = np.random.rand()
-            if th < 0.60:
+            if th < 0.90:
                 return task.true_label
             else:
                 return (3 - task.true_label)
@@ -224,7 +224,10 @@ class CrowdMarket:
         # Set the numbers of tasks and workers
         self.n_task = task_number
         self.n_worker = worker_number
-        self.worker_num_per_task = self.n_worker
+        if isinstance(mech, MechModule.DG13):
+            self.worker_num_per_task = self.n_worker - 1
+        else:
+            self.worker_num_per_task = self.n_worker
         # Generate workers
         self.worker_init()
         # Generate the assign table
@@ -234,10 +237,13 @@ class CrowdMarket:
     def worker_init(self):
         self.worker_list.clear()
         for j in range(self.n_worker):
-            # new_worker = MWUA_Worker(self.mech)
-            # new_worker = RWorker(self.mech)
-            # new_worker = QRWorker(self.mech)
-            new_worker = TRWorker(self.mech,j)
+            if j % 3 == 0:
+                new_worker = MWUA_Worker(self.mech)
+            elif j % 3 ==1:
+                new_worker = RWorker(self.mech)
+            else:
+                new_worker = QRWorker(self.mech)
+            # new_worker = TRWorker(self.mech,j)
             self.worker_list.append(new_worker)
 
     def assign_task(self):
