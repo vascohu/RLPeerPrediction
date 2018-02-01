@@ -46,6 +46,7 @@ Suppose, at time step $t$, worker $i$ finishes $M^{t}_{i}$ tasks.
 Then, the payment for worker $i$ should be
 \begin{equation}
 P^t_i=M_i^t\cdot (a^t r^{t}_i+b)\;\; , \;\; \phi^{t}_i = \tilde{p}^{t}_i - 0.5
+\label{equation:payment}
 \end{equation}
 where we call $\phi^{t}_i$ as worker $i$'s score and $\tilde{p}^{t}_i$ will be calculated by our Bayesian inference algorithm.
 $a^t$ is the scaling factor. 
@@ -182,10 +183,9 @@ Note that, both $W$ and $b$ should be large values, and in this paper, we set $W
 %Also, it is worth mentioning that, for the simplicity of notations, we omit the superscript $t$ in all the equations above.
 
 \subsection{Reinforcement Incentive Adjustment}
-In this subsection, we formally introduce our reinforcement learning algorithm, which adjusts the incentive level at each time step $t$. Stepping back and putting it into the large picture, the reinforcement learning serves as the glue to connect each other component in our framework. As Figure~\ref{layout} shows, the reinforcement learning algorithm takes as input 
+In this subsection, we formally introduce our reinforcement learning algorithm, which adjusts the incentive scaling level at each time step $t$. Stepping back and viewing it under the large picture, the reinforcement learning serves as the glue to connect each other component in our framework. As Figure~\ref{layout} shows, the reinforcement learning algorithm takes as input workers' PoBC, reward signal, and internally its action history, and outputs the current incentive scaling level. Recall, the set consisting of all available scaling levels $\mathcal{A}$, is the action space for our reinforcement learning algorithm, The newly determined incentive scaling level (i.e. the most recent action) gets plugged back into the payment rule, and by following formula~(\ref{equation:payment}) payments to each worker are decided. \yitao{what is the reward here, and how it is calculated}
+\paragraph{State Representation}
 
-\subsubsection{State Representation}
+\paragraph{Q-function Approximation}
 
-\subsubsection{Q-function Approximation}
-
-\subsubsection{Policy Construction}
+\paragraph{Policy Construction}
