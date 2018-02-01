@@ -16,7 +16,8 @@ T = 200
 EP = 25
 
 # np.random.seed(0)
-
+'''This area for the one-step test of our mechanism'''
+'''
 CrowdModule.Task.p=0.5
 CrowdModule.TRWorker.P_H = 0.5
 num_exp = 1000
@@ -32,7 +33,7 @@ X = np.zeros(shape=(11, num_exp))
 Y = np.zeros(shape=(11, num_exp))
 Z = np.zeros(shape=(11, num_exp))
 pay = np.zeros(shape=(1, num_exp))
-file_name = 'NewExp1.pkl'
+file_name = 'NewExp2.pkl'
 for i in range(11):
     CrowdModule.TRWorker.P_H = 0.5 + i*0.05
     #CrowdModule.Task.p = 0.05 + 0.05 * i
@@ -71,8 +72,10 @@ pickle.dump(Z, f)
 #pickle.dump(pay, f)
 f.close()
 '''
+
+
 # The incentive mechanism
-mech = MechModule.DG13()
+mech = MechModule.BayesMech()#MechModule.DG13()#
 
 # The crowd market
 mkt = CrowdModule.CrowdMarket(task_num, worker_num, mech)
@@ -82,7 +85,7 @@ infer = InferModule.GibbsSamplingSC(task_num, worker_num)
 
 # The RL module
 # rl = RLModule.TOSarsa(EP)
-# rl = RLModule.EpSGPS(EP)
+rl = RLModule.EpSGPS(EP)
 # rl = RLModule.Simple()
 
 
@@ -97,11 +100,11 @@ infer = InferModule.GibbsSamplingSC(task_num, worker_num)
 # print(infer.ex_accuracy)
 
 a = 0
-s = [0, 0]
+s = 0
 
 rr = []
 RR=[]
-'''
+
 
 '''
 mech.set([10])
@@ -110,7 +113,6 @@ label_mat = mkt.get_label_mat(num_true_label)
 mkt.evolve(reward_mat)
 '''
 
-'''
 rl.explore_prob = 0.2
 
 thefile = open('ResultS3.txt', 'w')
@@ -131,20 +133,26 @@ for i in range(T):
 
         # Set the mechanism
         mech.set([a])
-        # Collect the label matrix
-        label_mat = mkt.get_label_mat(num_true_label)
-        true_label = mkt.get_true_label()
+
         # Decide the payment
-        (pay, reward_mat) = mech.pay(label_mat)
+        if isinstance(mech, MechModule.DG13):
+            label_mat = mkt.get_label_mat(num_true_label)
+            true_label = mkt.get_true_label()
+            (pay, reward_mat) = mech.pay(label_mat)
+            acc = infer.test(label_mat, list(true_label))
+        else:
+            label_mat = mkt.get_label_mat_NTL()
+            true_label = mkt.get_true_label()
+            acc = infer.test(label_mat, list(true_label))
+            (pay, reward_mat) = mech.pay(label_mat, infer.belief)
         mkt.evolve(reward_mat)
-        # Inference
-        acc = infer.test(label_mat, list(true_label))
         r = infer.reward(pay)
         accR += r
         accRR += infer.real_reward(acc, pay)
-        s[0] = (np.mean(infer.belief[0::2])*infer.beta[0]+np.mean(infer.belief[1::2])*infer.beta[1])/np.sum(infer.beta)
+        #s[0] = (np.mean(infer.belief[0::2])*infer.beta[0]+np.mean(infer.belief[1::2])*infer.beta[1])/np.sum(infer.beta)
+        s = np.mean(infer.belief)
         # s[0] = infer.ex_accuracy
-        s[1] = t+1
+        # s[1] = t+1
         # print("Action: ", a, "\t Reward: ", r)
         # print(pay)
         # print(acc, '\t', infer.ex_accuracy)
@@ -185,7 +193,7 @@ acc = infer.test(label_mat, list(true_label))
 print(acc, '\t', infer.ex_accuracy)
 """
 '''
-'''
+
 # Change the incentive level
 mech.B = 0.5
 

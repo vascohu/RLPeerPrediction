@@ -12,3 +12,6 @@
 *cmake-build-debug/*
 *.so
 src/InferModuleSC.cpp
+src/venv/*
+src/DeepRLModule.py*
+src/Result*.txt

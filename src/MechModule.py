@@ -18,7 +18,7 @@ class MechBase(object):
         return
 
     @abc.abstractmethod
-    def pay(self, label_mat: np.matrix):
+    def pay(self, label_mat: np.matrix, p_vec = None):
         """Decide the payment for workers """
         return
 
@@ -36,7 +36,7 @@ class DG13(MechBase):
     def set(self, parameters: list):
         self.B = parameters[0]
 
-    def pay(self, label_mat: np.matrix):
+    def pay(self, label_mat: np.matrix, p_vec = None):
         """Compute the total reward and the detailed rewards for each task"""
         p = 0
         reward_mat = []
@@ -103,7 +103,22 @@ class DG13(MechBase):
         return c
 
 
+class BayesMech(object):
 
+    def set(self, parameters: list):
+        self.B = parameters[0]
 
+    def pay(self, label_mat: np.matrix, p_vec = None):
+        """Compute the total reward and the detailed rewards for each task"""
+        reward_mat = []
+        p = 0
+        for i in range(label_mat.shape[1]):
+            reward_vec = []
+            for j in range(label_mat.shape[0]):
+                if label_mat[j, i] != 0:
+                    reward_vec.append((p_vec[i]-0.5)*self.B)
+            p += np.sum(reward_vec)
+            reward_mat.append(reward_vec)
+        return (p, reward_mat)
 
 
