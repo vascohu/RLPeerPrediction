@@ -170,7 +170,7 @@ Then, the label accuracy $A^t$ and the utility $u^t$ of the data requester satis
 \label{utility}
 \begin{split}
 A^t&=\frac{1}{M}{\sum}_{j=1}^{M}1\left[\tilde{L}^{t}(j)=L^{t}(j)\right]\\
-u^t &= \cdot F(A^t) - \eta {\sum}_{i=1}^{N}P^t_i
+u^t &= F(A^t) - \eta {\sum}_{i=1}^{N}P^t_i
 \end{split}
 \end{equation}
 where $F(\cdot)$ is a non-decreasing monotonic function mapping accuracy to utility and $\eta$ is a
@@ -401,25 +401,24 @@ When $M\gg 1$ and $(2p_H)^{2(N-1)} \geq M$, in any time step $t$, reporting trut
 \end{proposition}
 \begin{proposition}
 \label{RMNE}
-Suppose the conditions in Proposition~\ref{OSEqulibrium} are satisfied. When
+Suppose the conditions in Proposition~\ref{OSEqulibrium} are satisfied. In our reinforcement learning algorithm, when $\tilde{Q}(s,a)$ approaches the real $Q(s,a)$ and
 \begin{equation}
 \label{Condition}
-{\min}_{a,b\in\mathcal{A}}|a-b|\cdot MNp_H\geq (1-\rho)^{-1} K_{\epsilon} \epsilon
+\eta \zeta \cdot  {\min}_{a,b\in\mathcal{A}}|a-b|> \frac{F(1)-F(1-\psi)}{1-\rho}
 \end{equation}
 always reporting truthfully ($r^{t}_i \equiv 0$) and exerting high efforts ($e^{t}_i\equiv 1$) is the payment-maximizing strategy for any worker $i$ in the long term if the other workers all follow this strategy.
 In other words, always reporting truthfully and exerting high efforts is a Nash equilibrium for all workers.
 \end{proposition}
-Proposition~\ref{OSEqulibrium} relies on proving the convergence of our Bayesian inference algorithm, namely $\tilde{p}_i^t\rightarrow p_i^t$.
-Proposition~\ref{RMNE} introduces a novel idea about the anti-manipulation of the reinforcement learning algorithm.
+The proof of Proposition~\ref{OSEqulibrium} relies on the convergence of our Bayesian inference algorithm, namely $\tilde{p}_i^t\rightarrow p_i^t$.
+Proposition~\ref{RMNE} provides a novel idea about the game-theoretic analysis of the reinforcement learning algorithm.
 More specifically, in the right-hand side Equation~\ref{Condition},
 \begin{equation}
-\epsilon =2(\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2)[4p_H(1-p_H)]^{\frac{N-1}{2}}
+\psi =2(\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2)[4p_H(1-p_H)]^{\frac{N-1}{2}}
 \end{equation}
 is the upper bound of the label accuracy increment brought by a single worker.
-$K_{\epsilon}={\max}_{0<x\leq \epsilon}F'(1-x)$ maps the accuracy increment into the utility increment of the data requester.
-The coefficient $(1-\rho)^{-1}$ further maps the one-step utility increment into the long-term one. Thus, the right-hand side Equation~\ref{Condition} indicates the upper bound of the utility increment that a single worker can bring.
-On the other hand, ${\min}_{a,b\in\mathcal{A}}|a-b|$ denotes the minimal gap between two available values of the scaling factor $a^t$.
-Thus, the left-hand side Equation~\ref{Condition} actually reveals the lower bound of the payment increment if our reinforcement adjustment algorithm increases the scaling factor.
+Thus, the right-hand side Equation~\ref{Condition} indicates the upper bound of the long-term utility increment that a single worker can bring.
+On the other hand, $\zeta= M(N-1)p_H$ and ${\min}_{a,b\in\mathcal{A}}|a-b|$ denotes the minimal gap between two available values of the scaling factor $a^t$.
+Thus, the left-hand side of Equation~\ref{Condition} is actually the lower bound of the payment increment if our reinforcement adjustment algorithm increases the scaling factor.
 Thereby, if Equation~\ref{Condition} is satisfied, a single worker will always be unable to cause our reinforcement adjustment algorithm to change $a^t$.
 This property ensures always reporting truthfully and exerting high efforts to be a Nash equilibrium, and also prevents the clever manipulation that a worker scarifies short-term benefits for higher payments in the future.
 In the remaining parts of this section, we will provide the details of our proof.
@@ -654,17 +653,72 @@ Thereby, worker $i$ can only get the maximal payment when reporting truthfully a
 %Except for the Nash equilibrium defined in Proposition~\ref{OSEqulibrium}, our mechanism also has other equilibria. We summarize them here:
 
 \subsection{Proof for Proposition~\ref{RMNE}}
-{\color{red}(Add a little about the Q-function.)}\\
-To prove Proposition~\ref{RMNE}, we need to analyze the effects of worker $i$'s strategies on the estimated accuracy $\tilde{A}$.
-Since our analysis holds for any time step, we omit the superscript $t$ in our proof.
-Firstly, from Equation~\ref{vot}, we can know that, when $M\gg 1$,
+{\color{red}
+\begin{equation}
+\label{Qfun}
+Q(s_t, a^t)= {\sum}_{i=0}^{\infty} \rho^{i} u_{t+i}.
+\end{equation}
+\begin{equation}
+Q(s,a) = \bm{k}_t(s,a)^{T} (\bm{K}_t+\sigma^2 \bm{I}_t)^{-1} H_t^{-1} \bm{u}_t
+\end{equation}
+where $\bm{k}_t(s,a) = [k(x, x_0), \ldots, k(x, x_t)]^{T}$, $\bm{K}_t=[\bm{k}_t(s_0,a_0),\ldots,\bm{k}_t(s_t,a_t)]$ and $x=(s,a)$. Besides,
+\begin{equation}
+H_t = \left[
+\begin{array}{ccccc}
+1 & \rho & \rho^2 &\ldots & \rho^{t+1}\\
+0 & 1 & \rho & \ldots & \rho^{t}\\
+0 & 0 & 1 & \ldots & \rho^{t-1} \\
+\vdots & \vdots & \vdots & \ddots& \vdots\\
+0 & 0 & 0 & \ldots & 1
+\end{array}
+\right]
+\end{equation}
+}\\
+
+To prove Proposition~\ref{RMNE}, we need to analyze worker $i$'s effects on our reinforcement learning algorithm.
+If worker $i$ wishes to get higher payments in the long term, he/she must push our reinforcement learning algorithm to at least increase the scaling factor from $a$ to $b>a$ at a certian state $s$.
+In the $\epsilon$-greedy strategy used by our reinforcement learning algorithm, the random selection part is independent of worker $i$.
+Thus, worker $i$ must mislead the greedy part by letting $\tilde{Q}(s,a)\leq \tilde{Q}(s,b)$.
+In this proof, we will show that, under the condition defined in Equation~\ref{Condition}, there does not exist $b\in \mathcal{A}$ that can achieve this objective.
+In other words, our reinforcement learning algorithm will never increase the scaling factor to please a single worker.
+On the other hand, in any time step $t$, worker $i$ will loss some money if $p_i^t<p_H$.
+Thereby, the payment-maximizing strategy for worker $i$ is to report truthfully and exert high efforts in all time steps, which concludes Proposition~\ref{RMNE}.
+
+Since Proposition~\ref{RMNE} requires $\tilde{Q}(s,a)\approx Q(s,a)$ as one of the conditions, we now focus on proving that $Q(s,a)- Q(s,b) >0$ always holds.
+Suppose all workers except for worker $i$ report truthfully and exert high efforts in all time steps.
+According to Equations~\ref{utility} and \ref{Qfun}, we can have $Q(s,a)- Q(s,b) \geq  X(a)-X(b) + Y$, where 
+\begin{equation}
+X(a)={\sum}_{k=0}^{\infty}\rho^{k}\cdot \mathbb{E}F(\tilde{A}^{k+t}|s_t= s^{*}, a^t=a)
+\end{equation}
+denotes the expected long-term utility that we get from the labels.
+$Y= \eta M(N-1)p_H (b-a)>0$ denotes the payment increment for workers except worker $i$.
+To attract our reinforcement learning algorithm to increase the scaling factor, worker $i$ must increase $p_i^t$ when $a^t$ is increased from $a$ to $b$.
+Otherwise, we will get less accurate labels with higher payments, which is impossible for the greedy strategy used in our reinforcement learning algorithm.
+In this case, the payment for worker $i$ will also increase.
+However, we do not know $p_i$. Thus, we regard the payment increment as $0$ when deriving the lower bound of $Q(s,a)- Q(s,b)$.
+
+% \frac{F_u-F_l}{1-\rho} - \eta \zeta (b-a)
+%
+%When $t\gg 1$, we can neglect the effects of the end-point and make the approximation that $H_t^{-1} \bm{u}_t\approx \bm{U}_t$, where the vector of the long-term cumulative utility $\bm{U}_t=[U(0), U(1),\ldots, U(t)]$.
+%Due to the random selection part of the $\epsilon$-greedy strategy, there should be many state-action combinations in the neighborhood of $(s^*,a)$ and $(s^*,b)$ that have been tested by our reinforcement learning algorithm.
+%These data will play the dominant role in the Gaussian process regression that
+%\begin{equation}
+%Q(s^*,a) = \bm{k}_t(s^*,a)^{T} (\bm{K}_t+\sigma^2 \bm{I}_t)^{-1} \bm{U}_t.
+%\end{equation}
+%Thus, if we can prove that $U(t,a^t=a)>U(t,a^t=b)$ holds for any time step and $b\in \mathcal{A}$, we can concldue that $Q(s^*,a)\leq Q(s^*,b)$ is impossible.
+%
+%
+%the long-term utility $U(t)$, which consists of the utility got from the labels and lost in the payments.
+
+Here, to bound $X(a)-X(b)$, we analyze the effects of worker $i$ on the estimated accuracy $\tilde{A}$.
+Since our analysis is satisfied in all time steps, we omit the time step $t$ for the simplicity of notations.
+From Equation~\ref{vot}, we can know that, when $M\gg 1$, the estimated accuracy $\tilde{A}$ satisfies
 \begin{equation}
 \label{accP}
 \tilde{A} \approx 1-\mathbb{E}g(\tilde{\sigma}_j)\;\;,\;\; g(\tilde{\sigma}_j)=1/(1+e^{|\tilde{\sigma}_j|}).
 \end{equation}
-Suppose all workers except for worker $i$ report truthfully and exert high efforts in all time steps.
-From the proof of Proposition~\ref{OSEqulibrium}, we can know that $\tilde{p}^{t}_i \approx p^{t}_i$ when the conditions in Proposition~\ref{OSEqulibrium} are satisfied.
-In this case, according to Equation~\ref{ProbRatio}, we can know the log-ratio $\tilde{\sigma}_j(p_i)$ satisfies
+From the proof of Proposition~\ref{OSEqulibrium}, we can know that $\tilde{p}^{t}_i \approx p^{t}_i$.
+In this case, according to Equation~\ref{ProbRatio}, we can have
 \begin{equation}
 \label{ProbRatioApp}
 \tilde{\sigma}_j(p_i)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_i^{\delta_{ij1}-\delta_{ij2}}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right).
@@ -679,7 +733,8 @@ where $\lambda_i=p_i/(1-p_i)$ and $\lambda_H=p_H/(1-p_H)$.
 %\tilde{\sigma}_j(p_i)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_i^{\delta_{ij1}-\delta_{ij2}}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right).
 %\end{equation}
 
-Then, we focus on the lower bound of $\tilde{A}$ when worker $i$ reports randomly, namely $p_i=0.5$. According to Lemma~\ref{Su-Concave2} in the supplementary file, we can know that 
+Considering the case that worker $i$ exert low efforts and reports randomly, namely $p_i=0.5$, we can eliminate $\lambda_i$ from Equation~\ref{ProbRatioApp} because $\lambda_i=1$.
+Furthermore, according to Lemma~\ref{Su-Concave2} in the supplementary file, we can know that 
 $g(\tilde{\sigma}_j)< e^{\tilde{\sigma}_j}$ and $g(\tilde{\sigma}_j)< e^{-\tilde{\sigma}_j}$ both hold.
 Thus, we build a more tight upper bound of $g(\tilde{\sigma}_j)$ by dividing all the combinations of $\delta_{kj1}$ and $\delta_{kj2}$ in Equation~\ref{ProbRatioApp} into two sets and using the smaller one of $e^{\tilde{\sigma}_j}$ and $e^{-\tilde{\sigma}_j}$ in each set.
 By using this method, if the true label is $1$, we can have $\mathbb{E}_{[L(j)=1]}g(\tilde{\sigma}_j)< q_1+q_2$, where
@@ -702,20 +757,25 @@ where $c_{\tau}=\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2$. Similarly,
 \mathbb{E}_{[L(j)=2]}g(\tilde{\sigma}_j) < c_{\tau}[4p_H(1-p_H)]^{\frac{N-1}{2}}.
 \end{split}
 \end{equation}
-Thereby, $\tilde{A}>1-2c_{\tau}[4p_H(1-p_H)]^{\frac{N-1}{2}}=1-\epsilon$.
+Thereby, $\tilde{A}>1-2c_{\tau}[4p_H(1-p_H)]^{\frac{N-1}{2}}=1-\psi$.
 
 
-Next, we consider another case where worker $i$ exerts high efforts but reports falsely, namely $p_i=1-p_H$. In this case, we can rewrite Equation~\ref{ProbRatioApp} as
+We then consider another case where worker $i$ exerts high efforts but reports falsely, namely $p_i=1-p_H$. In this case, we can rewrite Equation~\ref{ProbRatioApp} as
 \begin{equation}
 \tilde{\sigma}_j(1-p_H)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_H^{x-y}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right).
 \end{equation}
-where $x=\delta_{ij2}$ and $y=\delta_{ij1}$. Since $p_i=1-p_H$, $x$ and $y$ has the same distribution as $\delta_{kj1}$ and $\delta_{kj2}$. Thus, the distribution of $\tilde{\sigma}_j(1-p_H)$ is actually the same as $\tilde{\sigma}_j(p_H)$.
-In other words, since Proposition~\ref{OSEqulibrium} ensures worker $i$'s PoBC to be accurately estimated, our Bayesian inference algorithm uses the information provided by worker $i$ via flipping the label when $p_i<0.5$.
-Thus, $p_i=0.5$ will lower $\tilde{A}$ the most because worker $i$ provides no information about the true label in this case.
-On the other hand, $\tilde{A}<1.0$ always holds.
-Thereby, the upper bound of the benefit brought by worker $i$ in any time step is to improve $\tilde{A}$ from $1-\epsilon$ to $1$.
-Correspondingly, the utility of the data requester in one time step will increase at most $K_{\epsilon} \epsilon$, where $K_{\epsilon}={\max}_{0<x\leq \epsilon}F'(1-x)$.
-Furthermore, for the long-term cumulative utility $U(t)$, we can know it increases at most $(1-\rho)^{-1}K_{\epsilon} \epsilon$.
+where $x=\delta_{ij2}$ and $y=\delta_{ij1}$. Since $p_i=1-p_H$, $x$ and $y$ actually has the same distribution as $\delta_{kj1}$ and $\delta_{kj2}$. Thus, the distribution of $\tilde{\sigma}_j(1-p_H)$ is actually the same as $\tilde{\sigma}_j(p_H)$.
+In other words, since Proposition~\ref{OSEqulibrium} ensures $p_i$ to be accurately estimated, our Bayesian inference algorithm uses the information provided by worker $i$ via flipping the label when $p_i<0.5$.
+Thus, $p_i=0.5$ actually lowers $\tilde{A}$ to the utmost because worker $i$ provides no information about the true label in this case.
+Thus, $\tilde{A}\geq 1-\psi$ always holds.
+On the other hand, $\tilde{A}\leq 1.0$ also always holds.
+Considering $F(\cdot)$ is a non-decreasing monotonic function, we can get $X(a)\geq (1-\rho)^{-1}F(1-\psi)$ while $X(b) \leq (1-\rho)^{-1}F(1)$.
+Thereby, when Equation~\ref{Condition} is satisfied, $X(a)-X(b)+Y>0$ always holds, which concludes Proposition~\ref{RMNE}.
+%
+%
+%the upper bound of the benefit brought by worker $i$ in any time step is to improve $\tilde{A}$ from $1-\epsilon$ to $1$.
+%Correspondingly, the utility of the data requester in one time step will increase at most $K_{\epsilon} \epsilon$, where $K_{\epsilon}={\max}_{0<x\leq \epsilon}F'(1-x)$.
+%Furthermore, for the long-term cumulative utility $U(t)$, we can know it increases at most $(1-\rho)^{-1}K_{\epsilon} \epsilon$.
 
 %the accuracy upper bound when worker $i$ report truthfully and exert high efforts $(p_i=p_H)$. According to Lemma~\ref{Su-Concave1} in the supplementary file, we know that $g(x)=e^{x}(1+e^{x})^{-1}$ is a concave function for $x\in [0,+\infty)$. By Jensen's inequality, we can have $\mathbb{E}A\leq g(\mathbb{E}|\tilde{\sigma}_j|)$. If the real true label of task $j$ is $1$, to ensure $\mathbb{E}[m/M]$ to approach $0$, the log-ratio $\tilde{\sigma}_j$ must approach $+\infty$ with probability $1$. Thus, we can discard the absolute operation and get 
 %\begin{equation}
@@ -793,7 +853,7 @@ Furthermore, for the long-term cumulative utility $U(t)$, we can know it increas
 %{\max}_{p_i}[F(u^t(p_i))-F(u^t(p_i))]= K_u f(p_H).
 %\end{equation}
 
-{\color{red} (Conncet with the Q function) Suppose, due to the manipulation of worker $j$, our reinforcement mechanism learns to increase the scaling factor $a$ by $\xi$ to incentivize higher efforts of worker $j$. In this case, our mechanism will at least pay more money to $N$ workers at the current step. The payment, which is the second term of the utility function described in Equation~\ref{utility}, should increase at least by $NM \xi p_H$. On the other hand, taking the long-term effects into consideration, we can know worker $j$'s effects can help increase our utility by $M(1-\rho)^{-1}K_{\epsilon} \epsilon$. Considering $\xi\geq \min_{a,b\in \mathcal{A}}(a-b)$, we can know that $NM \xi p_H\geq M(1-\rho)^{-1}K_{\epsilon} \epsilon$. In other words, the increment of our current payment will always larger than the long-term utility increment. Thus, our mechanism will not change the action because of worker $j$'s manipulation. In this case, worker $j$ will lose his money because of a lower $\tilde{p}^t_j$, which concludes Proposition~\ref{RMNE}.}
+%{\color{red} (Conncet with the Q function) Suppose, due to the manipulation of worker $j$, our reinforcement mechanism learns to increase the scaling factor $a$ by $\xi$ to incentivize higher efforts of worker $j$. In this case, our mechanism will at least pay more money to $N$ workers at the current step. The payment, which is the second term of the utility function described in Equation~\ref{utility}, should increase at least by $NM \xi p_H$. On the other hand, taking the long-term effects into consideration, we can know worker $j$'s effects can help increase our utility by $M(1-\rho)^{-1}K_{\epsilon} \epsilon$. Considering $\xi\geq \min_{a,b\in \mathcal{A}}(a-b)$, we can know that $NM \xi p_H\geq M(1-\rho)^{-1}K_{\epsilon} \epsilon$. In other words, the increment of our current payment will always larger than the long-term utility increment. Thus, our mechanism will not change the action because of worker $j$'s manipulation. In this case, worker $j$ will lose his money because of a lower $\tilde{p}^t_j$, which concludes Proposition~\ref{RMNE}.}
 
 
 
