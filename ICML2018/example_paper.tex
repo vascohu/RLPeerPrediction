@@ -653,13 +653,27 @@ Thereby, worker $i$ can only get the maximal payment when reporting truthfully a
 %Except for the Nash equilibrium defined in Proposition~\ref{OSEqulibrium}, our mechanism also has other equilibria. We summarize them here:
 
 \subsection{Proof for Proposition~\ref{RMNE}}
-{\color{red}
 \begin{equation}
 \label{Qfun}
-Q(s_t, a^t)= {\sum}_{i=0}^{\infty} \rho^{i} u_{t+i}.
+Q(s_t, a^t)= {\sum}_{i=0}^{\infty} \rho^{i} \cdot \mathbb{E}u_{t+i}
+\end{equation}
+\begin{equation}
+Q(s_t, a^t)= \mathbb{E}u_{t}+\rho\cdot Q(s_{t+1}, a^{t+1})
 \end{equation}
 \begin{equation}
 Q(s,a) = \bm{k}_t(s,a)^{T} (\bm{K}_t+\sigma^2 \bm{I}_t)^{-1} H_t^{-1} \bm{u}_t
+\end{equation}
+\begin{equation}
+u_{t} = Q(s_t,a^t)-\rho Q(s_{t+1}, a^{t+1}) + N(s_t, s_{t+1})
+\end{equation}
+\begin{equation}
+a^{t} = 
+\left\{
+\begin{array}{lc}
+\arg\max_a Q(s_t,a) & \mathrm{Probability }\;1-\epsilon\\
+\mathrm{Random\ } a\in\mathcal{A} & \mathrm{Probability }\;\epsilon
+\end{array}
+\right.
 \end{equation}
 where $\bm{k}_t(s,a) = [k(x, x_0), \ldots, k(x, x_t)]^{T}$, $\bm{K}_t=[\bm{k}_t(s_0,a_0),\ldots,\bm{k}_t(s_t,a_t)]$ and $x=(s,a)$. Besides,
 \begin{equation}
@@ -673,7 +687,7 @@ H_t = \left[
 \end{array}
 \right]
 \end{equation}
-}\\
+\\
 
 To prove Proposition~\ref{RMNE}, we need to analyze worker $i$'s effects on our reinforcement learning algorithm.
 If worker $i$ wishes to get higher payments in the long term, he/she must push our reinforcement learning algorithm to at least increase the scaling factor from $a$ to $b>a$ at a certian state $s$.
