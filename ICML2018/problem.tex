@@ -30,7 +30,7 @@ After collecting the labels from the workers, the data requester will infer the 
 Denote the the inferred true label of task $j$ by $\tilde{L}^{t}(j)$.
 Then, the label accuracy $A^t$ and the utility $u^t$ of the data requester satisfy
 \begin{equation}
-\label{utility}
+\label{equqation:utility}
 \begin{split}
 A^t&=\frac{1}{M}{\sum}_{j=1}^{M}1\left[\tilde{L}^{t}(j)=L^{t}(j)\right]\\
 u^t &= F(A^t) - \eta {\sum}_{i=1}^{N}P^t_i
@@ -42,7 +42,7 @@ tunable parameter balancing label quality and costs. Intuitively, the $F(\cdot)$
 The number of tasks in crowdsourcing is often very large, and the interaction between tasks and workers may last for hundreds of time steps.
 Thus, we introduce the cumulative utility $U(t)$ of the data requester from the current step $t$ as
 \begin{equation}
-U(t)={\sum}_{k=t}^{\infty}\rho^{k-t}u^t
+U(t)={\sum}_{k=t}^{\infty}\gamma^{k-t}u^t
 \end{equation}
-where $0\leq \rho< 1$ is the discount factor which determines the importance of future utilities.
+where $0\leq \gamma< 1$ is the discount factor which determines the importance of future utilities.
 The objective of our study is to maximize $U(t)$ by optimally designing the payment rule and the ex-post adjustment algorithm of the payment rule, which we call as the incentive mechanism.
