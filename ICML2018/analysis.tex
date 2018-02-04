@@ -9,26 +9,32 @@ When $M\gg 1$ and $(2p_H)^{2(N-1)} \geq M$, in any time step $t$, reporting trut
 Suppose the conditions in Proposition~\ref{OSEqulibrium} are satisfied. In our reinforcement learning algorithm, when $\tilde{Q}(s,a)$ approaches the real $Q(s,a)$ and
 \begin{equation}
 \label{Condition}
-\eta \zeta \cdot  {\min}_{a,b\in\mathcal{A}}|a-b|> \frac{F(1)-F(1-\psi)}{1-\rho}
+\begin{split}
+&\eta M(N-1)p_H \min_{a,b\in\mathcal{A}}|a-b|> \frac{F(1)-F(1-\psi)}{1-\rho}\\
+&\quad\;\;\psi =2(\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2)[4p_H(1-p_H)]^{\frac{N-1}{2}}
+\end{split}
 \end{equation}
 always reporting truthfully ($r^{t}_i \equiv 0$) and exerting high efforts ($e^{t}_i\equiv 1$) is the payment-maximizing strategy for any worker $i$ in the long term if the other workers all follow this strategy.
 In other words, always reporting truthfully and exerting high efforts is a Nash equilibrium for all workers.
 \end{proposition}
 The proof of Proposition~\ref{OSEqulibrium} relies on the convergence of our Bayesian inference algorithm, namely $\tilde{p}_i^t\rightarrow p_i^t$.
-Proposition~\ref{RMNE} provides a novel idea about the game-theoretic analysis of the reinforcement learning algorithm.
-More specifically, in the right-hand side Equation~\ref{Condition},
-\begin{equation}
-\psi =2(\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2)[4p_H(1-p_H)]^{\frac{N-1}{2}}
-\end{equation}
-is the upper bound of the label accuracy increment brought by a single worker.
-Thus, the right-hand side Equation~\ref{Condition} indicates the upper bound of the long-term utility increment that a single worker can bring.
-On the other hand, $\zeta= M(N-1)p_H$ and ${\min}_{a,b\in\mathcal{A}}|a-b|$ denotes the minimal gap between two available values of the scaling factor $a^t$.
-Thus, the left-hand side of Equation~\ref{Condition} is actually the lower bound of the payment increment if our reinforcement adjustment algorithm increases the scaling factor.
-Thereby, if Equation~\ref{Condition} is satisfied, a single worker will always be unable to cause our reinforcement adjustment algorithm to change $a^t$.
-This property ensures always reporting truthfully and exerting high efforts to be a Nash equilibrium, and also prevents the clever manipulation that a worker scarifies short-term benefits for higher payments in the future.
-In the remaining parts of this section, we will provide the details of our proof.
-It is also worth noting that we prove over 10 lemmas as the foundation of our proof.
-Due to the space limitation, we put them all in the supplementary file.
+To prove Proposition~\ref{RMNE}, we need to bound the effects of a single worker on our reinforcement learning algorithm.
+This analysis provides a novel tool to prevent self-interested agents from manipulating reinforcement learning algorithm.
+
+
+%More specifically, in the right-hand side Equation~\ref{Condition},
+%\begin{equation}
+%\psi =2(\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2)[4p_H(1-p_H)]^{\frac{N-1}{2}}
+%\end{equation}
+%is the upper bound of the label accuracy increment brought by a single worker.
+%Thus, the right-hand side Equation~\ref{Condition} indicates the upper bound of the long-term utility increment that a single worker can bring.
+%On the other hand, $\zeta= M(N-1)p_H$ and ${\min}_{a,b\in\mathcal{A}}|a-b|$ denotes the minimal gap between two available values of the scaling factor $a^t$.
+%Thus, the left-hand side of Equation~\ref{Condition} is actually the lower bound of the payment increment if our reinforcement adjustment algorithm increases the scaling factor.
+%Thereby, if Equation~\ref{Condition} is satisfied, a single worker will always be unable to cause our reinforcement adjustment algorithm to change $a^t$.
+%This property ensures always reporting truthfully and exerting high efforts to be a Nash equilibrium, and also prevents the clever manipulation that a worker scarifies short-term benefits for higher payments in the future.
+%In the remaining parts of this section, we will provide the details of our proof.
+%It is also worth noting that we prove over 10 lemmas as the foundation of our proof.
+%Due to the space limitation, we put them all in the supplementary file.
 
 \subsection{Proof for Proposition~\ref{OSEqulibrium}}
 After the workers report their labels, the payment in our incentive mechanism is only decided by $\tilde{p}^t_i$ which only depends on the labels in the current step.
@@ -116,19 +122,17 @@ Meanwhile, $\hat{\beta}_1=x_0+z_0+1$, $\hat{\beta}_2=y_0+w_0+1$, $\hat{\alpha}_{
 When the $m$ tasks of which the posterior true label is wrong are given, we can know that $x_i\sim \mathrm{Bin}(n, p_i)$ and $w_i\sim \mathrm{Bin}(m, p_i)$, where $\mathrm{Bin}(\cdot)$ denotes the binomial distribution.
 In addition, $x_i$ and $y_i$ are independent of $w_i$, $z_i$ and $\xi_{k\neq i}$.
 Also, $w_i$ and $z_i$ are independent of $x_i$ and $y_i$ and $\xi_{k\neq i}$.
-Thus, we can further obtain $P(m)\approx 2^{-(N+1)(M+1)}Z^{-1}\cdot C_{M}^{m}Y(m)$, where
+Thus, we can further obtain $P(m)\approx \hat{Z}^{-1}\cdot C_{M}^{m}Y(m)$, where
 \begin{equation}
 \label{PDist}
 \begin{split}
 &Y(m) =e^{\log H(m,p_0;M,0)+\sum_{i=1}^{N}\log H(m,p_i;M,1)}\\
 &H(m,p;M,t)={\sum}_{x=0}^{n}{\sum}_{w=0}^{m} 2^{M+1}C_{n}^{x}C_{m}^{w}\times\\
-&\quad p^{x+w}(1-p)^{y+z}B(x+z+1+t,y+w+1).
+&\quad p^{x+w}(1-p)^{y+z}B(x+z+1+t,y+w+1)
 \end{split}
 \end{equation}
-Besides, considering $\sum_{m=1}^{M} P(m)=1$, we can know that
-\begin{equation}
-2^{-(N+1)(M+1)}\cdot Z\approx{\sum}_{m=1}^{M}C_{M}^{m}Y(m).
-\end{equation}
+and $\hat{Z}=2^{-(N+1)(M+1)}Z$.
+Considering $\sum_{m=1}^{M} P(m)=1$, we can know that $\hat{Z}\approx{\sum}_{m=1}^{M}C_{M}^{m}Y(m)$.
 
 The biggest challenge of computing $P(m)$ exists in the analysis of function $H(m,p;M,t)$ which we put in the supplementary file because of the space limitation. 
 Here, we directly use the obtained lower and upper bounds of the $H$ function (Lemmas~\ref{Su-LowBound1} and \ref{Su-UpBound1}) and can have
@@ -258,28 +262,6 @@ Thereby, worker $i$ can only get the maximal payment when reporting truthfully a
 %Except for the Nash equilibrium defined in Proposition~\ref{OSEqulibrium}, our mechanism also has other equilibria. We summarize them here:
 
 \subsection{Proof for Proposition~\ref{RMNE}}
-{\color{red}
-\begin{equation}
-\label{Qfun}
-Q(s_t, a^t)= {\sum}_{i=0}^{\infty} \rho^{i} u_{t+i}.
-\end{equation}
-\begin{equation}
-Q(s,a) = \bm{k}_t(s,a)^{T} (\bm{K}_t+\sigma^2 \bm{I}_t)^{-1} H_t^{-1} \bm{u}_t
-\end{equation}
-where $\bm{k}_t(s,a) = [k(x, x_0), \ldots, k(x, x_t)]^{T}$, $\bm{K}_t=[\bm{k}_t(s_0,a_0),\ldots,\bm{k}_t(s_t,a_t)]$ and $x=(s,a)$. Besides,
-\begin{equation}
-H_t = \left[
-\begin{array}{ccccc}
-1 & \rho & \rho^2 &\ldots & \rho^{t+1}\\
-0 & 1 & \rho & \ldots & \rho^{t}\\
-0 & 0 & 1 & \ldots & \rho^{t-1} \\
-\vdots & \vdots & \vdots & \ddots& \vdots\\
-0 & 0 & 0 & \ldots & 1
-\end{array}
-\right]
-\end{equation}
-}\\
-
 To prove Proposition~\ref{RMNE}, we need to analyze worker $i$'s effects on our reinforcement learning algorithm.
 If worker $i$ wishes to get higher payments in the long term, he/she must push our reinforcement learning algorithm to at least increase the scaling factor from $a$ to $b>a$ at a certian state $s$.
 In the $\epsilon$-greedy strategy used by our reinforcement learning algorithm, the random selection part is independent of worker $i$.
