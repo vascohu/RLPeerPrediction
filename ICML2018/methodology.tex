@@ -83,22 +83,34 @@ Here, we assume Dirichlet priors $\textrm{Dir}(\cdot)$ for $p_i$ and $\bm{\tau}$
 \begin{equation}
 [p_{i}, 1-p_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2})\;,\; \bm{\tau}\sim \textrm{Dir}(\beta_{1},\beta_{2}).
 \end{equation}
-Then, the joint distribution of $\mathcal{L}$, $\bm{L}$, $\bm{p}$ and $\bm{\tau}$ satisfies
+Then, the joint distribution of $\mathcal{L}$ and $\bm{L}$ satisfies
 \begin{equation}
 \label{JointDist2}
-\begin{split}
-&P(\mathcal{L},\bm{L},\bm{p}, \bm{\tau}|\bm{\alpha}, \bm{\beta})=P(\mathcal{L},\bm{L}|\bm{p}, \bm{\tau})\cdot P(\bm{p}, \bm{\tau}|\bm{\alpha}, \bm{\beta})\\
-&=\frac{1}{B(\bm{\beta})}\prod_{k=1}^{K}\tau_k^{\hat{\beta}_k-1}\cdot\prod_{i=1}^{N}\frac{1}{B(\bm{\alpha})}p_i^{\hat{\alpha}_{i1}-1}(1-p_i)^{\hat{\alpha}_{i2}-1}
-\end{split}
+P(\mathcal{L},\bm{L})={\int}_{\bm{p},\bm{\tau}}P(\mathcal{L},\bm{L}|\bm{p}, \bm{\tau})\cdot P(\bm{p}, \bm{\tau})\mathrm{d}\bm{p}\mathrm{d}\bm{\tau}.
 \end{equation}
-where $\bm{\alpha}=[\alpha_1,\alpha_2]$, $\bm{\beta}=[\beta_1,\beta_2]$ and
+Following Bayes' theorem, we can know that
+\begin{equation}
+\label{PostDist}
+P(\bm{L}|\mathcal{L})=P(\mathcal{L},\bm{L})/P(\mathcal{L})\propto B(\hat{\bm{\beta}}){\prod}_{i=1}^{N}B(\hat{\bm{\alpha}}_{i}). 
+\end{equation}
+%
+%\begin{equation}
+%\label{JointDist2}
+%\begin{split}
+%&P(\mathcal{L},\bm{L},\bm{p}, \bm{\tau}|\bm{\alpha}, \bm{\beta})=P(\mathcal{L},\bm{L}|\bm{p}, \bm{\tau})\cdot P(\bm{p}, \bm{\tau}|\bm{\alpha}, \bm{\beta})\\
+%&=\frac{1}{B(\bm{\beta})}\prod_{k=1}^{K}\tau_k^{\hat{\beta}_k-1}\cdot\prod_{i=1}^{N}\frac{1}{B(\bm{\alpha})}p_i^{\hat{\alpha}_{i1}-1}(1-p_i)^{\hat{\alpha}_{i2}-1}
+%\end{split}
+%\end{equation}
+where $\hat{\bm{\alpha}}=[\hat{\alpha}_1,\hat{\alpha}_2]$, $\hat{\bm{\beta}}=[\hat{\beta}_1,\hat{\beta}_2]$ and
 \begin{equation}
 \begin{split}
-&\hat{\alpha}_{i1}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta_{ijk}\xi_{jk}+\alpha_{1}\\
-&\hat{\alpha}_{i2}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta_{ij(3-k)}\xi_{jk}+\alpha_{2}\\
-&\hat{\beta}_k={\sum}_{j=1}^{M}\xi_{jk}+\beta_{k}.
+&\hat{\alpha}_{i1}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta_{ijk}\xi_{jk}+2\alpha_{1}-1\\
+&\hat{\alpha}_{i2}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta_{ij(3-k)}\xi_{jk}+2\alpha_{2}-1\\
+&\hat{\beta}_k={\sum}_{j=1}^{M}\xi_{jk}+2\beta_{k}-1.
 \end{split}
 \end{equation}
+Besides, $B(x,y)=(x-1)!(y-1)!/(x+y-1)!$ denotes the beta function. The convergence of our inference algorithm requires $\alpha_1>\alpha_2$.
+To simplify the theoretical analysis, we set $\alpha_1=1.5$ and $\alpha_2=1$ in this paper.
 %\begin{equation}
 %\begin{split}
 %&\hat{\alpha}^{t}_{i1}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta^{t}_{ijk}\xi^{t}_{jk}+\alpha_{1}\\
@@ -106,23 +118,22 @@ where $\bm{\alpha}=[\alpha_1,\alpha_2]$, $\bm{\beta}=[\beta_1,\beta_2]$ and
 %&\hat{\beta}^{t}_k={\sum}_{j=1}^{M}\xi^{t}_{jk}+\beta_{k}.
 %\end{split}
 %\end{equation}
-Besides, $B(x,y)=(x-1)!(y-1)!/(x+y-1)!$ denotes the beta function.
-The convergence of our inference algorithm requires $\alpha_1>\alpha_2$.
-To simplify the theoretical analysis, we set $\alpha_1=1.5$ and $\alpha_2=1$ in this paper.
-Meanwhile, we employ the uniform distribution for $\bm{\tau}$ by setting $\beta_1=\beta_2=1$.
-In this case, we can conduct marginalization via integrating Equation~\ref{JointDist2} over $\bm{p}$ and $\bm{\tau}$ as
-\begin{equation}
-\label{marginalization}
-\begin{split}
-P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})=\frac{B(\hat{\bm{\beta}})}{B(\bm{\beta})}\cdot {\prod}_{i=1}^{N}\frac{B(\hat{\bm{\alpha}}^{*}_{i})}{[B(\bm{\alpha})]^2}
-\end{split}
-\end{equation}
-where $\hat{\bm{\alpha}}^{*}_i=[\hat{\alpha}_{i1}+0.5,\hat{\alpha}_{i2}]$ and $\hat{\bm{\beta}}=[\hat{\beta}_1,\hat{\beta}_2]$. Following Bayes' theorem, we can know that
-\begin{equation}
-\label{PostDist}
-P(\bm{L}|\mathcal{L})=\frac{P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})}{P(\mathcal{L}|\bm{\alpha}, \bm{\beta})}\propto B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}^{*}_{i}). 
-\end{equation}
-
+%Besides, $B(x,y)=(x-1)!(y-1)!/(x+y-1)!$ denotes the beta function.
+%The convergence of our inference algorithm requires $\alpha_1>\alpha_2$.
+%To simplify the theoretical analysis, we set $\alpha_1=1.5$ and $\alpha_2=1$ in this paper.
+%Meanwhile, we employ the uniform distribution for $\bm{\tau}$ by setting $\beta_1=\beta_2=1$.
+%In this case, we can conduct marginalization via integrating Equation~\ref{JointDist2} over $\bm{p}$ and $\bm{\tau}$ as
+%\begin{equation}
+%\label{marginalization}
+%\begin{split}
+%P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})=\frac{B(\hat{\bm{\beta}})}{B(\bm{\beta})}\cdot {\prod}_{i=1}^{N}\frac{B(\hat{\bm{\alpha}}^{*}_{i})}{[B(\bm{\alpha})]^2}
+%\end{split}
+%\end{equation}
+%where $\hat{\bm{\alpha}}^{*}_i=[\hat{\alpha}_{i1}+0.5,\hat{\alpha}_{i2}]$ and $\hat{\bm{\beta}}=[\hat{\beta}_1,\hat{\beta}_2]$. Following Bayes' theorem, we can know that
+%\begin{equation}
+%\label{PostDist}
+%P(\bm{L}|\mathcal{L})=\frac{P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})}{P(\mathcal{L}|\bm{\alpha}, \bm{\beta})}\propto B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}^{*}_{i}). 
+%\end{equation}
 
 \begin{algorithm}[tb]
    \caption{Gibbs sampling for crowdsourcing}
@@ -157,12 +168,12 @@ Since Gibbs sampling requires a burn-in process, we need to discard the first $b
 Thus, we can estimate worker $i$'s PoBC $p_i$ as
 \begin{equation}
 \label{p_infer}
-\tilde{p}_{i}=\frac{\sum_{s=b+1}^{W}\left[\alpha_{1}+\sum_{j=1}^{M}\mathbbm{1}(L^{(s)}(j)=L_{i}(j))\right]}{(W-b)\cdot(\alpha_{1}+\alpha_{2}+M)}
+\tilde{p}_{i}=\frac{\sum\limits_{s=b+1}^{W}\left[2\alpha_{1}-1+\sum\limits_{j=1}^{M}\mathbbm{1}(L^{(s)}(j)=L_{i}(j))\right]}{(W-b)\cdot(2\alpha_{1}+2\alpha_{2}-2+M)}
 \end{equation}
 and the distribution of true labels $\bm{\tau}$ as
 \begin{equation}
 \label{tau_infer}
-\tilde{\tau}_{k}=\frac{\sum_{s=b+1}^{W}\left[\beta_{1}+\sum_{j=1}^{M}\mathbbm{1}(L^{(s)}(j)=k)\right]}{(W-b)\cdot(\beta_{1}+\beta_{2}+M)}.
+\tilde{\tau}_{k}=\frac{\sum_{s=b+1}^{W}\left[2\beta_{1}-1+\sum_{j=1}^{M}\mathbbm{1}(L^{(s)}(j)=k)\right]}{(W-b)\cdot(2\beta_{1}+2\beta_{2}-2+M)}.
 \end{equation}
 Furthermore, we define the log-ratio of task $j$ as
 \begin{equation}
