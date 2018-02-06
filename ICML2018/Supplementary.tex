@@ -52,6 +52,8 @@
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
+\usepackage{xr-hyper}
+\externaldocument[MF-]{main}
 \icmltitlerunning{Supplementary File}
 
 \begin{document}
@@ -107,6 +109,7 @@
 %\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
 %\printAffiliationsAndNotice{} % otherwise use the standard text.
 \section{Basic Lemmas}
+We firstly present some lemmas for our paper.
 \begin{lemma}
 \label{MoGene}
 If $x\sim \mathrm{Bin}(n,p)$, $\mathbb{E}t^x= \left(1-p+tp\right)^{n}$ holds for any $t>0$, where $\mathrm{Bin}(\cdot)$ is the binomial distribution.
@@ -321,6 +324,80 @@ which concludes the second inequality of Lemma~\ref{Concave3}.
 \end{lemma}
 
 
+\section{Proof for Proposition 3}
+Denote the prior distribution of $\bm{\theta}$ by $\pi$. Then,
+\begin{align}
+&P(\mathcal{L}|\bm{\alpha}, \bm{\beta})= {\prod}_{j=1}^{M}P_{\bm{\theta}}(\bm{x}_j) \int e^{[-M\cdot d_{KL}]} \mathrm{d}\pi(\hat{\bm{\theta}})\\
+&d_{KL}=\frac{1}{M}\sum_{j=1}^{M}\log \frac{P_{\bm{\theta}}(\bm{x}_j)}{P_{\bm{\hat{\theta}}}(\bm{x}_j)}\rightarrow \mathrm{KL}[P_{\bm{\theta}}(\bm{x}),P_{\bm{\hat{\theta}}}(\bm{x})]
+\end{align}
+where $\bm{x}_j$ denotes the labels generated for task $j$. The KL divergence $\mathrm{KL}[\cdot, \cdot]$, which denotes the expectation of the log-ratio between two probability distributions, is a constant for the given $\bm{\theta}$ and $\hat{\bm{\theta}}$.
+Thus, $\int e^{[-M\cdot d_{KL}]} \mathrm{d}\pi(\hat{\bm{\theta}})=C_{L}(M)$.
+In addition, when $M\rightarrow \infty$, we can also have $\sum 1(\bm{x}_j=\bm{x})\rightarrow M \cdot P_{\bm{\theta}}(\bm{x})$, which concludes Proposition~3.
+
+\section{Proof for Proposition 4}
+Firstly, we introduce a set of variables to describe the real true labels and the collected labels.
+Among the $n$ tasks of which the posterior true label is correct,
+\begin{itemize}[noitemsep,topsep=0pt]
+\item $x_0$ and $y_0$ denote the number of tasks of which the real true label is $1$ and $2$, respectively.
+\item $x_i$ and $y_i$ denote the number of tasks of which worker $i$'s label is correct and wrong, respectively.
+\end{itemize}
+Also, among the remaining $m=M-n$ tasks, 
+\begin{itemize}[noitemsep,topsep=0pt]
+\item $w_0$ and $z_0$ denote the number of tasks of which the real true label is $1$ and $2$, respectively.
+\item $w_i$ and $z_i$ denote the number of tasks of which worker $i$'s label is correct and wrong, respectively.
+\end{itemize}
+Thus, we can have $x_i+y_i=n$ and $w_i+z_i=m$. Besides, we use $\xi_i$ to denote the combination $(x_i,y_i,w_i, z_i)$.
+
+To compute the expectation of $m/M$, we need to analyze the probability distribution of $m$. According to Equation~\ref{MF-PostDist}, we can know that $P(m)$ satisfies
+\begin{equation}
+P(m) \approx \frac{C_{M}^{m}}{Z} \sum_{\xi_0,\ldots, \xi_N}\prod_{i=0}^{N}P(\xi_i|m) B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}^{*}_{i})
+\end{equation}
+where $Z=C_pC_L{\prod}_{\bm{x}} [P_{\bm{\theta}}(\bm{x})]^{M\cdot P_{\bm{\theta}}(\bm{x})}$ is independent of $\xi_i$ and $m$.
+Meanwhile, $\hat{\beta}_1=x_0+z_0+1$, $\hat{\beta}_2=y_0+w_0+1$, $\hat{\alpha}_{i1}=x_i+z_i+2$ and $\hat{\alpha}_{i2}=x_i+z_i+1$.
+When the $m$ tasks of which the posterior true label is wrong are given, we can know that $x_i\sim \mathrm{Bin}(n, p_i)$ and $w_i\sim \mathrm{Bin}(m, p_i)$, where $\mathrm{Bin}(\cdot)$ denotes the binomial distribution.
+In addition, $x_i$ and $y_i$ are independent of $w_i$, $z_i$ and $\xi_{k\neq i}$.
+Also, $w_i$ and $z_i$ are independent of $x_i$ and $y_i$ and $\xi_{k\neq i}$.
+Thus, we can further obtain $P(m)\approx \hat{Z}^{-1}\cdot C_{M}^{m}Y(m)$, where
+\begin{equation}
+\label{PDist}
+\begin{split}
+&Y(m) =e^{\log H(m,p_0;M,0)+\sum_{i=1}^{N}\log H(m,p_i;M,1)}\\
+&H(m,p;M,t)={\sum}_{x=0}^{n}{\sum}_{w=0}^{m} 2^{M+1}C_{n}^{x}C_{m}^{w}\times\\
+&\quad p^{x+w}(1-p)^{y+z}B(x+z+1+t,y+w+1)
+\end{split}
+\end{equation}
+and $\hat{Z}=2^{-(N+1)(M+1)}Z$.
+Considering $\sum_{m=1}^{M} P(m)=1$, we can know that $\hat{Z}\approx{\sum}_{m=1}^{M}C_{M}^{m}Y(m)$.
+
+The biggest challenge of computing $P(m)$ exists in analyzing function $H(m,p;M,t)$ which we put in Section 4 of this file. 
+Here, we directly use the obtained lower and upper bounds  depicted in Lemmas~\ref{LowBound1} and \ref{UpBound1} and can have
+\begin{equation}
+\left\{
+\begin{array}{lc}
+e^{C-{K}_l m}\lesssim Y(m) \lesssim e^{C-K_u m} & 2m\leq M\\
+e^{C+\delta-{K}_l  n}\lesssim Y(m) \lesssim e^{C+\delta-K_u n} & 2m>M
+\end{array}
+\right.
+\end{equation}
+where $C=H(0,p_0;M,0)+\sum_{i=1}^{N}H(0,p_i;M,1)$ and
+\begin{equation*}
+\begin{split}
+&K_l = {\sum}_{i=0}^{N}\log \hat{\lambda}_{i}\;,\; K_u =  2{\sum}_{i=0}^{N}\log \left(2\hat{p}_i\right)\\
+&\delta = \Delta\cdot \log(M)+{\sum}_{i=1}^{N}(-1)^{1(p_i>0.5)}\phi(\hat{p}_i)\\
+&\hat{\lambda}_i=\max\left\{\frac{p_i}{\bar{p}_i+\frac{1}{M}},\frac{\bar{p}_i}{p_i+\frac{1}{M}}\right\}
+\;,\;\phi (p) =\log\frac{2p-1}{p}.
+\end{split}
+\end{equation*}
+Besides, we set a convention that $\phi(p)=0$ when $p=0.5$. Thereby, the expectations of $m$ and $m^2$ satisfy
+\begin{align}
+\mathbb{E}[m] \lesssim \frac{\sum_{m=0}^{M}me^{-K_u m}+\sum_{m=0}^{M}me^{\delta-K_u n}}{\sum_{m=0}^{k}e^{-K_l m}+\sum_{m=k+1}^{M}e^{\delta-K_l n}}
+\label{ExM1}\\
+\mathbb{E}[m^2] \lesssim \frac{\sum_{m=0}^{M}m^2e^{-K_u m}+\sum_{m=0}^{M}m^2e^{\delta-K_u n}}{\sum_{m=0}^{k}e^{-K_l m}+\sum_{m=k+1}^{M}e^{\delta-K_l n}} \label{ExM2}
+\end{align}
+where $k=\lfloor M/2 \rfloor$.
+By using Lemmas~\ref{Sum2}, \ref{Sum3}, \ref{Sum5} and \ref{Sum6}, we can know the upper bounds of the numerator in Equations~\ref{ExM1} and \ref{ExM2} are $M(\varepsilon+e^{\delta})(1+\varepsilon)^{M-1}$ and $[M^2\varepsilon^2+M\varepsilon+e^{\delta}(M^2+M\varepsilon)](1+\varepsilon)^{M-2}$, respectively, where $\varepsilon=e^{-K_u}$. On the other hand, by using Lemma~\ref{Sum4}, we can obtain the lower bound of the denominator as $(1+e^{\delta})[1-e^{-c(\omega)M}](1+\omega)^{M}$, where $\omega=e^{-K_l}$ and $c(\omega)=0.5(1-\omega)^2(1+\omega)^{-2}$.
+Considering $M\gg 1$, we can make the approximation that $e^{-c(\omega)M}\approx 0$ and $(1+e^\delta)\varepsilon/M\approx 0$. Besides, $(1+\omega)^{M}\geq 1$ holds because $\omega\geq 0$. In this case, Proposition~4 can be concluded by combining the upper bound of the numerator and the lower bound of the denominator.
+
 \section{H function analysis}
 Here, we present our analysis on the $H$ function defined in the proof of Proposition~1.
 Firstly, we can have:
@@ -378,11 +455,11 @@ The lower bound can be calculated as
 \begin{equation*}
 \log H(m,p)\gtrsim \left\{
     \begin{array}{cl}
-    H(0,p)- \underline{k}m& 2m\leq M\\
-    H(M,p)- \underline{k}n& 2m>M
+    H(0,p)- k_l \cdot m& 2m\leq M\\
+    H(M,p)- k_l \cdot n& 2m>M
     \end{array}\right.
 \end{equation*}
-where $\underline{k}=\log\left(\max\left\{p/(\bar{p}+M^{-1}),\bar{p}/(p+M^{-1})\right\}\right)$.
+where $k_l=\log\left(\max\left\{p/(\bar{p}+M^{-1}),\bar{p}/(p+M^{-1})\right\}\right)$.
 \end{lemma}
 \begin{lemma}
 \label{UpBound1}
@@ -390,11 +467,11 @@ The upper bound can be calculated as
 \begin{equation*}
 \log H(m,p)\lesssim \left\{
     \begin{array}{cl}
-    H(0,p)- \overline{k}m& 2m\leq M\\
-    H(M,p)- \overline{k}n& 2m>M
+    H(0,p)- k_u\cdot m& 2m\leq M\\
+    H(M,p)- k_u\cdot n& 2m>M
     \end{array}\right.
 \end{equation*}
-where $n=M-m$ and $\overline{k}=2\log\left(2\cdot \max\left\{p,\bar{p}\right\}\right)$.
+where $n=M-m$ and $k_u=2\log\left(2\cdot \max\left\{p,\bar{p}\right\}\right)$.
 \begin{proof}
 By Lemma~\ref{MidPoint}, $\log H(m, 0.5;M,1)\equiv 0$, which proves the above three lemmas for the case that $p=0.5$. Considering the symmetry ensured by Lemma~\ref{Symmetry}, we thus focus on the case that $p>0.5$ in the following proof and transform $H(m,p)$ into the following formulation
 \begin{equation}
@@ -484,79 +561,6 @@ Then, substituting $x$ as $1-v$ concludes Lemma~\ref{Ratio0}.
 \end{proof}
 \end{lemma}
 
-\section{Proof for Proposition 3}
-Denote the prior distribution of $\bm{\theta}$ by $\pi$. Then,
-\begin{align}
-&P(\mathcal{L}|\bm{\alpha}, \bm{\beta})= {\prod}_{j=1}^{M}P_{\bm{\theta}}(\bm{x}_j) \int e^{[-M\cdot d_{KL}]} \mathrm{d}\pi(\hat{\bm{\theta}})\\
-&d_{KL}=\frac{1}{M}\sum_{j=1}^{M}\log \frac{P_{\bm{\theta}}(\bm{x}_j)}{P_{\bm{\hat{\theta}}}(\bm{x}_j)}\rightarrow \mathrm{KL}[P_{\bm{\theta}}(\bm{x}),P_{\bm{\hat{\theta}}}(\bm{x})]
-\end{align}
-where $\bm{x}_j$ denotes the labels generated for task $j$. The KL divergence $\mathrm{KL}[\cdot, \cdot]$, which denotes the expectation of the log-ratio between two probability distributions, is a constant for the given $\bm{\theta}$ and $\hat{\bm{\theta}}$.
-Thus, $\int e^{[-M\cdot d_{KL}]} \mathrm{d}\pi(\hat{\bm{\theta}})=C_{L}(M)$.
-In addition, when $M\rightarrow \infty$, we can also have $\sum 1(\bm{x}_j=\bm{x})\rightarrow M \cdot P_{\bm{\theta}}(\bm{x})$, which concludes Proposition~3.
-
-\section{Proof for Proposition 4}
-Firstly, we introduce a set of variables to describe the real true labels and the collected labels.
-Among the $n$ tasks of which the posterior true label is correct,
-\begin{itemize}[noitemsep,topsep=0pt]
-\item $x_0$ and $y_0$ denote the number of tasks of which the real true label is $1$ and $2$, respectively.
-\item $x_i$ and $y_i$ denote the number of tasks of which worker $i$'s label is correct and wrong, respectively.
-\end{itemize}
-Also, among the remaining $m=M-n$ tasks, 
-\begin{itemize}[noitemsep,topsep=0pt]
-\item $w_0$ and $z_0$ denote the number of tasks of which the real true label is $1$ and $2$, respectively.
-\item $w_i$ and $z_i$ denote the number of tasks of which worker $i$'s label is correct and wrong, respectively.
-\end{itemize}
-Thus, we can have $x_i+y_i=n$ and $w_i+z_i=m$. Besides, we use $\xi_i$ to denote the combination $(x_i,y_i,w_i, z_i)$.
-
-To compute the expectation of $m/M$, we need to analyze the probability distribution of $m$. According to Equation~\ref{PostDist}, we can know that $P(m)$ satisfies
-\begin{equation}
-P(m) \approx \frac{C_{M}^{m}}{Z} \sum_{\xi_0,\ldots, \xi_N}\prod_{i=0}^{N}P(\xi_i|m) B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}^{*}_{i})
-\end{equation}
-where $Z=C_pC_L{\prod}_{\bm{x}} [P_{\bm{\theta}}(\bm{x})]^{M\cdot P_{\bm{\theta}}(\bm{x})}$ is independent of $\xi_i$ and $m$.
-Meanwhile, $\hat{\beta}_1=x_0+z_0+1$, $\hat{\beta}_2=y_0+w_0+1$, $\hat{\alpha}_{i1}^{*}=x_i+z_i+2$ and $\hat{\alpha}_{i2}^{*}=x_i+z_i+1$.
-When the $m$ tasks of which the posterior true label is wrong are given, we can know that $x_i\sim \mathrm{Bin}(n, p_i)$ and $w_i\sim \mathrm{Bin}(m, p_i)$, where $\mathrm{Bin}(\cdot)$ denotes the binomial distribution.
-In addition, $x_i$ and $y_i$ are independent of $w_i$, $z_i$ and $\xi_{k\neq i}$.
-Also, $w_i$ and $z_i$ are independent of $x_i$ and $y_i$ and $\xi_{k\neq i}$.
-Thus, we can further obtain $P(m)\approx \hat{Z}^{-1}\cdot C_{M}^{m}Y(m)$, where
-\begin{equation}
-\label{PDist}
-\begin{split}
-&Y(m) =e^{\log H(m,p_0;M,0)+\sum_{i=1}^{N}\log H(m,p_i;M,1)}\\
-&H(m,p;M,t)={\sum}_{x=0}^{n}{\sum}_{w=0}^{m} 2^{M+1}C_{n}^{x}C_{m}^{w}\times\\
-&\quad p^{x+w}(1-p)^{y+z}B(x+z+1+t,y+w+1)
-\end{split}
-\end{equation}
-and $\hat{Z}=2^{-(N+1)(M+1)}Z$.
-Considering $\sum_{m=1}^{M} P(m)=1$, we can know that $\hat{Z}\approx{\sum}_{m=1}^{M}C_{M}^{m}Y(m)$.
-
-The biggest challenge of computing $P(m)$ exists in the analysis of function $H(m,p;M,t)$ which we put in the supplementary file because of the space limitation. 
-Here, we directly use the obtained lower and upper bounds of the $H$ function (Lemmas~\ref{Su-LowBound1} and \ref{Su-UpBound1}) and can have
-\begin{equation}
-\left\{
-\begin{array}{lc}
-e^{C-{K}_l m}\lesssim Y(m) \lesssim e^{C-K_u m} & 2m\leq M\\
-e^{C+\delta-{K}_l  n}\lesssim Y(m) \lesssim e^{C+\delta-K_u n} & 2m>M
-\end{array}
-\right.
-\end{equation}
-where $C=H(0,p_0;M,0)+\sum_{i=1}^{N}H(0,p_i;M,1)$ and
-\begin{equation*}
-\begin{split}
-&K_l = {\sum}_{i=0}^{N}\log \hat{\lambda}_{i}\;,\; K_u =  2{\sum}_{i=0}^{N}\log \left(2\hat{p}_i\right)\\
-&\delta = \Delta\cdot \log(M)+{\sum}_{i=1}^{N}(-1)^{1(p_i>0.5)}\phi(\hat{p}_i)\\
-&\hat{\lambda}_i=\max\left\{\frac{p_i}{\bar{p}_i+\frac{1}{M}},\frac{\bar{p}_i}{p_i+\frac{1}{M}}\right\}
-\;,\;\phi (p) =\log\frac{2p-1}{p}.
-\end{split}
-\end{equation*}
-Besides, we set a convention that $\phi(p)=0$ when $p=0.5$. Thereby, the expectations of $m$ and $m^2$ satisfy
-\begin{align}
-\mathbb{E}[m] \lesssim \frac{\sum_{m=0}^{M}me^{-K_u m}+\sum_{m=0}^{M}me^{\delta-K_u n}}{\sum_{m=0}^{k}e^{-K_l m}+\sum_{m=k+1}^{M}e^{\delta-K_l n}}
-\label{ExM1}\\
-\mathbb{E}[m^2] \lesssim \frac{\sum_{m=0}^{M}m^2e^{-K_u m}+\sum_{m=0}^{M}m^2e^{\delta-K_u n}}{\sum_{m=0}^{k}e^{-K_l m}+\sum_{m=k+1}^{M}e^{\delta-K_l n}} \label{ExM2}
-\end{align}
-where $k=\lfloor M/2 \rfloor$.
-By using Lemmas~\ref{Su-Sum2}, \ref{Su-Sum3}, \ref{Su-Sum5} and \ref{Su-Sum6}, we can know the upper bounds of the numerator in Equations~\ref{ExM1} and \ref{ExM2} are $M(\varepsilon+e^{\delta})(1+\varepsilon)^{M-1}$ and $[M^2\varepsilon^2+M\varepsilon+e^{\delta}(M^2+M\varepsilon)](1+\varepsilon)^{M-2}$, respectively, where $\varepsilon=e^{-K_u}$. On the other hand, by using Lemma~\ref{Su-Sum4}, we can obtain the lower bound of the denominator as $(1+e^{\delta})[1-e^{-c(\omega)M}](1+\omega)^{M}$, where $\omega=e^{-K_l}$ and $c(\omega)=0.5(1-\omega)^2(1+\omega)^{-2}$.
-Considering $M\gg 1$, we can make the approximation that $e^{-c(\omega)M}\approx 0$ and $(1+e^\delta)\varepsilon/M\approx 0$. Besides, $(1+\omega)^{M}\geq 1$ holds because $\omega\geq 0$. In this case, Proposition~4 can be concluded by combining the upper bound of the numerator and the lower bound of the denominator.
 %
 %In this case, we can conclude the first inequality of Proposition~\ref{ConvBound} by combining these two bounds. Furthermore, by using Lemmas~\ref{Su-Sum5} and \ref{Su-Sum6} in the supplementary file, we can know that
 %\begin{equation}
