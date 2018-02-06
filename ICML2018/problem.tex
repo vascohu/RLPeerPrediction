@@ -1,6 +1,6 @@
 \section{Problem Formulation}
 \label{PF}
-This paper focuses on typical crowdsourcing problems. To be more specific, at each time step $t$, one data requester asks $N \geq 3$ candidate workers to label $M$ tasks with binary answer space $\left\{1,2\right\}$. We use $L^t_i(j)$ to denote the label worker $i$ generates for task $j$ at time $t$. For simplicity of computation, we reserve $L^t_i(j) = 0$ if  $j$ is not assigned to $i$.
+This paper focuses on typical crowdsourcing problems. To be more specific, at each time step $t$, one data requester asks $N \geq 3$ candidate workers to label $M$ tasks with binary answer space $\left\{1,2\right\}$. We use $L^t_i(j)$ to denote the label worker $i$ generates for task $j$ at time $t$. For simplicity of computation, we reserve $L^t_i(j) = 0$ if  $j$ is not assigned to $i$. Furthermore, we use $\mathcal{L}$ and $\bm{L}$ to denote the set of ground-truth labels and  the aggregate collected labels respectively.
 
 %The generated label $L^{t}_{i}(j)$ depends both on the ground-truth label $L^{t}(j)$ and worker $i$'s effort level $e^{t}_i$ and reporting strategy $r^{t}_i$.
 %Any worker $i$ can potentially have two effort levels, High ($e^{t}_i=1$) and Low ($e^{t}_i=0$).
@@ -22,12 +22,12 @@ The generated label $L^{t}_{i}(j)$ depends both on the ground-truth $\mathcal{L}
 %Any worker $i$ can potentially have two effort levels, High ($e^{t}_i=1$) and Low ($e^{t}_i=0$).
 %Also, he/she can decide either to truthfully report his observation $r^{t}_i = 1$ or to revert the answer $r^{t}_i = 0$.
 %Workers may act differently for different tasks. 
-At any given time for any task, workers at their will adopt an arbitrary combination of effort level and report strategy. We thus define $e^{t}_i\in[0,1]$ and $r^{t}_i\in[0,1]$ as worker $i$'s probability of exerting high efforts and reporting truthfully for task $j$ %at time $t$ 
-respectively. Furthermore, following \citet{dasgupta2013crowdsourced,liu2017sequential}, we assume that tasks are homogeneous and workers share the same probability of generating the correct labels if they exert the same level of efforts. We denote the probability as $p_{H}$ and $p_{L}$ respectively. Note we require $p_{H} > p_{L} \geq 0.5$, where $0.5$ is used if workers randomly label the tasks. Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task is 
+At any given time for any task, workers at their will adopt an arbitrary combination of effort level and report strategy. We thus define $\textsf{eft}^{t}_i\in[0,1]$ and $\textsf{rpt}^{t}_i\in[0,1]$ as worker $i$'s probability of exerting high efforts and reporting truthfully for task $j$ %at time $t$ 
+respectively. Furthermore, following \citet{dasgupta2013crowdsourced,liu2017sequential}, we assume that tasks are homogeneous and workers share the same probability of generating the correct labels if they exert the same level of efforts. We denote the probability as $\mathbb{P}_{H}$ and $\mathbb{P}_{L}$ respectively. Note we require $\mathbb{P}_{H} > \mathbb{P}_{L} \geq 0.5$, where $0.5$ is used if workers randomly label the tasks. Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task is 
 \begin{equation}
 \begin{split}
-p^{t}_i  = &~~r^{t}_i e^{t}_i p_{H}+ (1-r^{t}_i) e^{t}_i (1-p_{ H})\\
-&+r^{t}_i (1-e^{t}_i) p_{L}+(1-r^{t}_i) (1-e^{t}_i) (1-p_{L})
+\mathbb{P}^{t}_i  &= ~\textsf{rpt}^{t}_i \textsf{eft}^{t}_i \mathbb{P}_{H}+ (1-\textsf{rpt}^{t}_i) \textsf{eft}^{t}_i (1-\mathbb{P}_{ H})+\\
+&~~\textsf{rpt}^{t}_i (1-\textsf{eft}^{t}_i) \mathbb{P}_{L}+(1-\textsf{rpt}^{t}_i) (1-\textsf{eft}^{t}_i) (1-\mathbb{P}_{L})
 \end{split}
 \end{equation}
 
@@ -51,8 +51,8 @@ tunable parameter balancing label quality and costs. Intuitively, $F(\cdot)$ fun
 The number of tasks in crowdsourcing is often very large, and the interaction between tasks and workers may last for hundreds of time steps.
 Thus, we introduce the cumulative utility $U(t)$ of the data requester from the current step $t$ as
 \begin{equation}
-U(t)={\sum}_{k=t}^{\infty}\gamma^{k-t}u^t
+U^t={\sum}_{k=1}^{\infty}\gamma^{k}u^{t+k}
 \end{equation}
 where $0\leq \gamma< 1$ is the discount rate for future utilities.
-The objective of our study is to maximize $U(t)$ by optimally designing % the payment rule and the ex-post adjustment algorithm of the payment rule, which we call as 
+The objective of our study is to maximize $U^t$ by optimally designing % the payment rule and the ex-post adjustment algorithm of the payment rule, which we call as 
 the incentive mechanism.

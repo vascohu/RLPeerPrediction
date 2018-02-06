@@ -40,13 +40,13 @@ The Bayesian inference algorithm is responsible for estimating the true labels, 
 
 
 \subsection{Payment Rule}
-Suppose, at time step $t$, worker $i$ finishes $M^{t}_{i}$ tasks.
-Then, the payment for worker $i$ should be
+Suppose, at time step $t$, worker $i$ finishes $m^{t}_i$ tasks. For any given time $t$, all $m^{t}_i$s as a whole must satisfy $\sum_i m^t_i= M$. Then the payment for worker $i$ at time $t$ is
 \begin{equation}
-P^t_i=M_i^t\cdot (a^t \phi^{t}_i+b)\;\; , \;\; \phi^{t}_i = \tilde{p}^{t}_i - 0.5
+\textsf{effort}
+P^t_i=m^t_i\cdot (a^t s^{t}_i+b)\;\; , \;\; s^{t}_i = \tilde{p}^{t}_i - 0.5
 \label{equation:payment}
 \end{equation}
-where we call $\phi^{t}_i$ as worker $i$'s score and $\tilde{p}^{t}_i$ will be calculated by our Bayesian inference algorithm.
+where $\phi^{t}_i$ denotes worker $i$'s score and $\tilde{p}^{t}_i$ will be calculated by our Bayesian inference algorithm.
 $a^t$ is the scaling factor. 
 It is determined by our reinforcement adjustment algorithm at the beginning of step $t$.
 We denote all the available values of $a^t$ as set $\mathcal{A}$.
@@ -218,13 +218,13 @@ Recall that the data requester's implicit utility at each time $t$ only depends 
 $$
 \phi(s) = \frac{1}{N} \cdot \sum_{k=1}^2 Pr(L=k) \cdot \sum_{i=1}^N c_{ikk}.
 $$
-Further recall, when deciding the scaling level $a_t$ the data requester does not observe the latest labelling and thus cannot estimate the current $\phi(s_t)$ via Bayesian inference. Due to this one-step delay, we have to build our state representation using the previous observation. Since most workers would only change their effort levels and reporting strategies after receiving a new incentive, there exists some imperfect mapping function $\phi(s_{t}) \approx f(\phi(s_{t-1}),a_{t-1})$. Putting into another perspective, the combination of $\phi(s_{t-1},a_{t-1}$ also reflects our best knowledge of the current state. Utilizing this implicit function, we formally introduce an augmented state representation for our RL algorithm
+Further recall, when deciding the scaling level $a_t$ the data requester does not observe the latest labelling and thus cannot estimate the current $\phi(s_t)$ via Bayesian inference. Due to this one-step delay, we have to build our state representation using the previous observation. Since most workers would only change their effort levels and reporting strategies after receiving a new incentive, there exists some imperfect mapping function $\phi(s_{t}) \approx f(\phi(s_{t-1}),a_{t-1})$. Putting into another perspective, the combination of $\phi(s_{t-1})$ and $a_{t-1}$ also reflects our best knowledge of the current state. Utilizing this implicit function, we formally introduce an augmented state representation for our RL algorithm
 $$
 \hat{s_t} = \langle \phi(s_{t-1}), a_{t-1} \rangle .
 $$
 Since the data requester never possesses the ground truth for each task, the utility $u_t$ is not accurately observed. Also $\hat{s_t}$ is not accurate, as the mapping function can not be perfect. Combining both together, it would not be a surprise that some noise that cannot be directly learned exists in our state-action value function. As section~\ref{PF} mentions, according to the central limit theorem, these noise can be modeled using Gaussian process. To be more specific, we calculate our temporal difference (TD) as 
 $$
-r_t \approx Q^\pi(\hat{s_t}, a_t) - \gamma V^\pi(\hat{s_{t+1}}) + \epsilon_t $$
+r_t \approx Q^\pi(\hat{s_t}, a_t) - \gamma V^\pi(\hat{s}_{t+1}) + \epsilon_t $$
 where the noise $\epsilon $ follows a Gaussian process $\mathcal{N}(\hat{s_t},\hat{s_{t+1}})$. Note we gain two benefits doing so. First, it greatly simplifies our derivation of the update for the Q-function. Secondly, our empirical results later show that this Gaussian approximation has achieved robust performance under different worker models.  
 
 Under the Gaussian process approximation, we can put all the observed rewards and the corresponding $Q$-function up to the current step $t$ together and obtain
