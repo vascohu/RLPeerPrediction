@@ -2,45 +2,57 @@
 \label{PF}
 This paper focuses on typical crowdsourcing problems. To be more specific, at each time step $t$, one data requester asks $N \geq 3$ candidate workers to label $M$ tasks with binary answer space $\left\{1,2\right\}$. We use $L^t_i(j)$ to denote the label worker $i$ generates for task $j$ at time $t$. For simplicity of computation, we reserve $L^t_i(j) = 0$ if  $j$ is not assigned to $i$.
 
+%The generated label $L^{t}_{i}(j)$ depends both on the ground-truth label $L^{t}(j)$ and worker $i$'s effort level $e^{t}_i$ and reporting strategy $r^{t}_i$.
+%Any worker $i$ can potentially have two effort levels, High ($e^{t}_i=1$) and Low ($e^{t}_i=0$).
+%Also, he/she can decide either to truthfully report his observation $r^{t}_i = 1$ or to revert the answer $r^{t}_i = 0$.
+%Workers may act differently for different tasks. 
+%We thus define $e^{t}_i\in[0,1]$ and $r^{t}_i\in[0,1]$ as worker $i$'s probability of exerting high efforts and being truthful, respectively.
+%In this case, worker $i$'s probability of being correct (PoBC) can be computed as
+%\begin{equation}
+%\begin{split}
+%&p^{t}_i=r^{t}_i e^{t}_i p_{i, H}+r^{t}_i (1-e^{t}_i) p_{i, L}+\\
+%&(1-r^{t}_i) e^{t}_i (1-p_{i, H})+(1-r^{t}_i) (1-e^{t}_i) (1-p_{i, L})
+%\end{split}
+%\end{equation}
+%where $p_{i, H}$ and $p_{i, L}$ denote worker $i$'s probability of observing the correct label when exerting high and low efforts, respectively.
+%Following \cite{dasgupta2013crowdsourced,liu2017sequential}, we assume that the tasks are homogeneous and the workers share the same set of $p_{i, H}, p_{i, L}$, denoting by $p_H, p_L$, and $p_{H}>p_{L}= 0.5$.
+%Here, $p^t_i=0.5$ means that worker $i$ randomly selects a label to report.
 
-The generated label $L^{t}_{i}(j)$ depends both on the ground-truth label $L^{t}(j)$ and worker $i$'s effort level $e^{t}_i$ and reporting strategy $r^{t}_i$.
-Any worker $i$ can potentially have two effort levels, High ($e^{t}_i=1$) and Low ($e^{t}_i=0$).
-Also, he/she can decide either to truthfully report his observation $r^{t}_i = 1$ or to revert the answer $r^{t}_i = 0$.
-Workers may act differently for different tasks. 
-We thus define $e^{t}_i\in[0,1]$ and $r^{t}_i\in[0,1]$ as worker $i$'s probability of exerting high efforts and being truthful, respectively.
-In this case, worker $i$'s probability of being correct (PoBC) can be computed as
+The generated label $L^{t}_{i}(j)$ depends both on the ground-truth $\mathcal{L}(j)$ and worker $i$'s internal state, which mainly consists of two components, effort level (high or low) and reporting strategy (truthful or deceitful).
+%Any worker $i$ can potentially have two effort levels, High ($e^{t}_i=1$) and Low ($e^{t}_i=0$).
+%Also, he/she can decide either to truthfully report his observation $r^{t}_i = 1$ or to revert the answer $r^{t}_i = 0$.
+%Workers may act differently for different tasks. 
+At any given time for any task, workers at their will adopt an arbitrary combination of effort level and report strategy. We thus define $e^{t}_i\in[0,1]$ and $r^{t}_i\in[0,1]$ as worker $i$'s probability of exerting high efforts and reporting truthfully for task $j$ %at time $t$ 
+respectively. Furthermore, following \citet{dasgupta2013crowdsourced,liu2017sequential}, we assume that tasks are homogeneous and workers share the same probability of generating the correct labels if they exert the same level of efforts. We denote the probability as $p_{H}$ and $p_{L}$ respectively. Note we require $p_{H} > p_{L} \geq 0.5$, where $0.5$ is used if workers randomly label the tasks. Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task is 
 \begin{equation}
 \begin{split}
-&p^{t}_i=r^{t}_i e^{t}_i p_{i, H}+r^{t}_i (1-e^{t}_i) p_{i, L}+\\
-&(1-r^{t}_i) e^{t}_i (1-p_{i, H})+(1-r^{t}_i) (1-e^{t}_i) (1-p_{i, L})
+p^{t}_i  = &~~r^{t}_i e^{t}_i p_{H}+ (1-r^{t}_i) e^{t}_i (1-p_{ H})\\
+&+r^{t}_i (1-e^{t}_i) p_{L}+(1-r^{t}_i) (1-e^{t}_i) (1-p_{L})
 \end{split}
 \end{equation}
-where $p_{i, H}$ and $p_{i, L}$ denote worker $i$'s probability of observing the correct label when exerting high and low efforts, respectively.
-Following \cite{dasgupta2013crowdsourced,liu2017sequential}, we assume that the tasks are homogeneous and the workers share the same set of $p_{i, H}, p_{i, L}$, denoting by $p_H, p_L$, and $p_{H}>p_{L}= 0.5$.
-Here, $p^t_i=0.5$ means that worker $i$ randomly selects a label to report.
 
-The data requester needs to pay each worker some money as the incentive for providing labels.
-We denote the payment for worker $i$ at step $t$ as $P^{t}_{i}$.
-At the beginning of each time step, the data requester promises the workers a certain rule of payment determination which acts the contract between two sides and cannot be changed until the next time step.
-The workers are self-interested and may change their reporting strategies ($e^t_i$ and $r^t_i$) according to the payment rule.
-Workers' different reporting strategies will lead to the different values of workers' PoBCs and finally different levels of label quality.
-After collecting the labels from the workers, the data requester will infer the true labels by using a certain inference algorithm, and \cite{zheng2017truth} provide a good survey of existing inference algorithms.
-Denote the the inferred true label of task $j$ by $\tilde{L}^{t}(j)$.
-Then, the label accuracy $A^t$ and the utility $u^t$ of the data requester satisfy
+At each time $t$, the data requester pays worker $i$ some money $P^{t}_{i}$ as the incentive for providing labels.
+At the beginning of each time step, the two parties mutually agree to a certain rule of payment determination, which would not be changed until the next time step.
+%the data requester promises the workers a certain rule of payment determination which acts the contract between two sides and cannot be changed until the next time step.
+The workers are self-interested and may change their internal states according to the incentive. It is no surprise that workers' different internal sates would lead to different PoBCs and finally different label qualities.
+After collecting the generated labels, it is a common procedure for the data requester to infer true labels $\tilde{L}^t(j)$ by running some inference algorithm. Please refer \citet{zheng2017truth} for a good survey of the existing inference algorithms.
+%Denote the the inferred true label of task $j$ by $\tilde{L}^{t}(j)$.
+The aggregate accuracy $A^t$ and the data requester's utility $u^t$ satisfy
 \begin{equation}
 \label{equqation:utility}
 \begin{split}
-A^t&=\frac{1}{M}{\sum}_{j=1}^{M}1\left[\tilde{L}^{t}(j)=L^{t}(j)\right]\\
+A^t&=\frac{1}{M}{\sum}_{j=1}^{M}1\left[\tilde{L}^{t}(j)=\mathcal{L}(j)\right]\\
 u^t &= F(A^t) - \eta {\sum}_{i=1}^{N}P^t_i
 \end{split}
 \end{equation}
 where $F(\cdot)$ is a non-decreasing monotonic function mapping accuracy to utility and $\eta$ is a
-tunable parameter balancing label quality and costs. Intuitively, the $F(\cdot)$ function needs to be non-deceasing as higher accuracy is preferred.
+tunable parameter balancing label quality and costs. Intuitively, $F(\cdot)$ function is usually non-deceasing as higher accuracy is preferred.
 
 The number of tasks in crowdsourcing is often very large, and the interaction between tasks and workers may last for hundreds of time steps.
 Thus, we introduce the cumulative utility $U(t)$ of the data requester from the current step $t$ as
 \begin{equation}
 U(t)={\sum}_{k=t}^{\infty}\gamma^{k-t}u^t
 \end{equation}
-where $0\leq \gamma< 1$ is the discount factor which determines the importance of future utilities.
-The objective of our study is to maximize $U(t)$ by optimally designing the payment rule and the ex-post adjustment algorithm of the payment rule, which we call as the incentive mechanism.
+where $0\leq \gamma< 1$ is the discount rate for future utilities.
+The objective of our study is to maximize $U(t)$ by optimally designing % the payment rule and the ex-post adjustment algorithm of the payment rule, which we call as 
+the incentive mechanism.
