@@ -34,10 +34,9 @@ respectively. Furthermore, following \citet{dasgupta2013crowdsourced,liu2017sequ
 At each time $t$, the data requester pays worker $i$ some money $P^{t}_{i}$ as the incentive for providing labels.
 At the beginning of each time step, the two parties mutually agree to a certain rule of payment determination, which would not be changed until the next time step.
 %the data requester promises the workers a certain rule of payment determination which acts the contract between two sides and cannot be changed until the next time step.
-The workers are self-interested and may change their internal states according to the incentive. It is no surprise that workers' different internal sates would lead to different PoBCs and finally different label qualities.
-After collecting the generated labels, it is a common procedure for the data requester to infer true labels $\tilde{L}^t(j)$ by running some inference algorithm. Please refer \citet{zheng2017truth} for a good survey of the existing inference algorithms.
+The workers are self-interested and may change their internal states according to the incentive. It is no surprise that workers' different internal sates would lead to different PoBCs and finally different qualities of labels. After collecting the generated labels, it is a common procedure for the data requester to infer true labels $\tilde{L}^t(j)$ by running some inference algorithm. Please refer \citet{zheng2017truth} for a good survey of the existing inference algorithms.
 %Denote the the inferred true label of task $j$ by $\tilde{L}^{t}(j)$.
-The aggregate accuracy $A^t$ and the data requester's utility $u^t$ satisfy
+The aggregate label accuracy $A^t$ and the data requester's utility $u^t$ satisfy
 \begin{equation}
 \label{equation:utility}
 \begin{split}
