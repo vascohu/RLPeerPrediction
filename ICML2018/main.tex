@@ -60,7 +60,7 @@
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
-\icmltitlerunning{Bayesian Inference and Reinforcement Learning For Incentive Mechanism Design In Crowdsourcing}
+\icmltitlerunning{Bayesian Inference and Reinforcement Learning for Incentive Mechanism Design in Crowdsourcing}
 
 \begin{document}
 
@@ -107,17 +107,17 @@
 
 \begin{abstract}
 In crowdsourcing, incentive mechanisms are developed to theoretically ensure that workers will provide high-quality labels.
-Existing incentive mechanisms, which simply compares the reports of workers, cannot fully exploit the information contained in workers' reports.
+Existing incentive mechanisms, which simply compares the reports of workers, cannot fully exploit the information in workers' reports.
 Meanwhile, they heavily rely on an impractical assumption that workers are all fully rational.
 On the other hand, various machine learning algorithms have empirically shown good performance in exploiting the information contained in workers' reports.
-However, due to the lack of theoretical supports, they cannot be used for incentive mechanism design.
+However, due to the lack of theoretical supports, they cannot be used directly for designing incentive to collect high quality data.
 
 In this paper, we propose a novel learning-based incentive mechanism to bridge these two disconnected communities.
-To achieve this objective, we develop a Bayesian inference algorithm to analyze workers' reports, and the incentives are determined based on the inference results.
-In addition, we develop a reinforcement learning algorithm to track workers' response to the incentives and adjust the incentives.
-Then, we prove that our learning-based incentive mechanism can also theoretically ensure that workers will provide high-quality labels.
-Besides, our empirical results show that the Bayesian inference algorithm can improve the robustness and stability of incentives.
-The reinforcement learning algorithm can adapt our mechanism to different worker models and thus boost the utilities of the data requester.
+To achieve this goal, we develop a Bayesian inference algorithm to aggregate workers' reports, and use its inference results to design incentives to offer to workers.
+In addition, we develop a reinforcement learning algorithm to track workers' response to the incentives and adjust the offered incentive levels accordingly.
+We prove that our learning-based incentive mechanism can also theoretically ensure that workers will provide high-quality labels.
+Our empirical results show that the Bayesian inference algorithm can improve the robustness and stability of incentives.
+The reinforcement learning algorithm can adapt our mechanism to different worker models and thus boosts the utilities of the data requester.
 \end{abstract}
 
 \input{introduction}
