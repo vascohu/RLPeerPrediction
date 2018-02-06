@@ -2,29 +2,28 @@
  	\centering
 	\includegraphics[width=0.48\textwidth]{image/Architecture}
 	\vspace*{-8mm}
-    \caption{\label{layout} Layout of our incentive mechanism.}
+    \caption{\label{figure:layout} Layout of our incentive mechanism.}
 \end{figure}
 \section{Incentive Mechanism for Crowdsourcing}
-We present the layout of our incentive mechanism in Figure~\ref{Archi}, where the estimate of a variable is denoted by adding an over-tilde.
-In our incentive mechanism, the Bayesian inference algorithm is responsible for estimating the true labels, workers' PoBCs and the label accuracy based on the collected labels at each time step.
-The payment rule is designed to ensure that reporting truthfully ($r^{t}_i = 0$) and exerting high efforts ($e^{t}_i=1$) is the payment-maximizing strategy for all workers at any time step.
-By doing so, we wish to induce workers to generate high-quality labels and thus improve the label accuracy.
-The reinforcement learning algorithm adjusts the payment rule based on the historical data of payments, workers' PoBCs and the accuracy of aggregate labels.
-In this way, we can optimally balance the utility got from the labels and lost in the payments, which corresponds to $F(A^t)$ and $\sum_{i}P_i^t$ in Equation~\ref{utility}, respectively.
-Besides, our incentive mechanism can ensure that always reporting truthfully ($r^{t}_i \equiv 0$) and exerting high efforts ($e^{t}_i \equiv 1$) is the payment-maximizing strategy for workers in the long term.
-This property prevents the clever manipulation which earns higher long-term benefits by sacrificing short-term ones.
+We present the overall layout of our mechanism in Figure~\ref{figure:layout}, where estimated values are denoted with over-the-head tildes. In this section, we formally introduce the three main components of our design: payment rule, bayesian inference and reinforcement learning (RL).
 
-Nevertheless, there are three challenges to achieve our design. Firstly, our empirical studies reveal that popular inference algorithms may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $q_i^t=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.
-This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
-To reduce the inference bias, we develop our Bayesian inference algorithm by introducing the soft Dirichlet priors to both the true labels and workers' PoBCs.
-In this case, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution at first and then employ Gibbs sampling to conduct inference.
-{\color{red}Secondly, the reinforcement adjustment expects the utility to be accurately calculated so that the direction of adjustment is clear.
-However, both the label accuracy and workers' PoBCs in our incentive mechanism are corrupted by noise.
-Considering that these estimates are calculated as an average over $M$ tasks, the central limit theorem ensures that the inference noise approaches the Gaussian distribution.
-Therefore, to overcome the inference noise, we develop our reinforcement adjustment algorithm based on the Gaussian process.}
-Lastly, the biggest challenge of our study is to prove that our incentive mechanism can ensure that reporting truthfully and exerting high efforts is the payment-maximizing strategy for workers in not only each time step and but also the long term.
-For clarity, we put the theoretical analysis in the next section.
-In this section, we focus on the first two challenges.
+The payment rule is designed to ensure that reporting truthfully and exerting high efforts  is the payment-maximizing strategy for all workers at any given time. Besides, this is also the payment-maximizing strategy for all workers in the long run.
+This property prevents clever manipulations from workers, which bring more long-term benefits to them by sacrificing short-term ones, or the other way around. 
+By doing so, we wish to induce workers to generate high-quality labels. %and thus improve the label accuracy. 
+The Bayesian inference algorithm is responsible for estimating the true labels, workers' PoBCs and the aggregate label accuracy from the collected labels at each time step. It utilizes soft Dirichlet priors and Gibbs sampling to prevent overestimation of accuracy when workers generate poor-quality labels. The reinforcement learning algorithm adjusts the payment rule based on the historical data of payments, workers' PoBCs and aggregate labels' accuracy, aiming to optimally balance the utility gain from high accuracy and loss from larg payments, which corresponds to $F(A^t)$ and $\sum_{i}P_i^t$ in Equation~\ref{equation:utility} respectively.
+
+
+%Nevertheless, there are three challenges to achieve our design. Firstly, our empirical studies reveal that popular inference algorithms may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $q_i^t=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.
+%This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
+%To reduce the inference bias, we develop our Bayesian inference algorithm by introducing the soft Dirichlet priors to both the true labels and workers' PoBCs.
+%In this case, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution at first and then employ Gibbs sampling to conduct inference.
+%{\color{red}Secondly, the reinforcement adjustment expects the utility to be accurately calculated so that the direction of adjustment is clear.
+%However, both the label accuracy and workers' PoBCs in our incentive mechanism are corrupted by noise.
+%Considering that these estimates are calculated as an average over $M$ tasks, the central limit theorem ensures that the inference noise approaches the Gaussian distribution.
+%Therefore, to overcome the inference noise, we develop our reinforcement adjustment algorithm based on the Gaussian process.}
+%Lastly, the biggest challenge of our study is to prove that our incentive mechanism can ensure that reporting truthfully and exerting high efforts is the payment-maximizing strategy for workers in not only each time step and but also the long term.
+%For clarity, we put the theoretical analysis in the next section.
+%In this section, we focus on the first two challenges.
 
 
 %Figure~\ref{Archi} shows the architecture of our incentive framework.
@@ -70,7 +69,11 @@ Besides, $b\geq 0$ is the fixed base payment.
 
 %\footnote{In practice, $M^{t}_{i}$ is often smaller than $M$, and we can introduce $L^{t}_i(j)=0$ to denote that task $j$ is not assigned to worker $i$. The incentive mechanisms developed in this paper can work well in the case where the matrix $[L^{t}_i(j)]$ is sparse. However, to simplify the theoretical analysis, we assume $M^{t}_{i}\equiv M$ in this paper and put the theoretical analysis on the sparse case as our future work.}
 
-Now, we present the details of our inference algorithm. For the simplicity of notations, we omit the superscript $t$ in this subsection. The joint distribution of the collected labels $\mathcal{L}=[L_i(j)]$ and the true labels $\bm{L}=[L(j)]$ satisfies
+In this subsection, we present the details of our inference algorithm. For the simplicity of notations, we omit the superscript $t$ in this subsection. Our empirical studies reveal that popular inference algorithms may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $q_i^t=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.
+%This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
+
+
+ The joint distribution of the collected labels $\mathcal{L}=[L_i(j)]$ and the true labels $\bm{L}=[L(j)]$ satisfies
 \begin{equation}
 \label{JointDist}
 \begin{split}
