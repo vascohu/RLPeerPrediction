@@ -70,27 +70,27 @@ Before designing our own Bayesian inference algorithm, we ran several preliminar
 
  For the simplicity of notations, we omit the superscript $t$ in this subsection.  %This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
 It is not had to figure out the joint distribution of the collected labels $\bm{L}$ and the true labels $\mathcal{L}$ 
-\begin{equation}
+\begin{equation*}
 \label{JointDist}
 \begin{split}
-    &\mathbb{P}(\bm{L}, \mathcal{L}| \bm{p}, \bm{\tau})=\\ &\qquad {\prod}_{j=1}^{M}{\prod}_{k=1}^{K}\left\{\tau_{k}\prod_{i=1}^{N}p_i^{\delta_{ijk}}(1-p_i)^{\delta_{ij(3-k)}} \right\}^{\xi_{jk}}
+    &\mathbb{P}(\bm{L}, \mathcal{L}| \bm{\theta}, \bm{\tau})=\\ &\qquad {\prod}_{j=1}^{M}{\prod}_{k=1}^{2}\left\{\tau_{k}\prod_{i=1}^{N}\mathbb{P}_i^{\delta_{ijk}}(1-\mathbb{P}_i)^{\delta_{ij(3-k)}} \right\}^{\xi_{jk}}
 \end{split}
-\end{equation}
-where $\bm{p}=[p_i]_N$ and $\bm{\tau}=[\tau_1,\tau_2]$. $\tau_1$ and $\tau_2$ denote the distribution of answer $1$ and $2$ among all tasks, respectively.
-Besides,  $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$ and $\xi_{jk}= \mathbbm{1}(L(j)=k)$.
-Here, we assume Dirichlet priors $\textrm{Dir}(\cdot)$ for $p_i$ and $\bm{\tau}$ as
-\begin{equation}
-[p_{i}, 1-p_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2})\;,\; \bm{\tau}\sim \textrm{Dir}(\beta_{1},\beta_{2}).
-\end{equation}
-Then, the joint distribution of $\mathcal{L}$ and $\bm{L}$ satisfies
-\begin{equation}
+\end{equation*}
+where $\bm{\theta}=[\mathbb{P}_1,\ldots, \mathbb{P}_N]$ and $\bm{\tau}=[\tau_1,\tau_2]$. $\tau_1$ and $\tau_2$ denote the distribution of true label $1$ and $2$, respectively.
+Besides,  $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$ and $\xi_{jk}= \mathbbm{1}(\mathcal{L}(j)=k)$.
+Here, we assume Dirichlet priors $\textrm{Dir}(\cdot)$ for $\mathbb{P}_i$ and $\bm{\tau}$ as
+\begin{equation*}
+[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2})\;,\; \bm{\tau}\sim \textrm{Dir}(\beta_{1},\beta_{2}).
+\end{equation*}
+Then, the joint distribution of $\bm{L}$ and $\mathcal{L}$ satisfies
+\begin{equation*}
 \label{JointDist2}
-P(\mathcal{L},\bm{L})={\int}_{\bm{p},\bm{\tau}}P(\mathcal{L},\bm{L}|\bm{p}, \bm{\tau})\cdot P(\bm{p}, \bm{\tau})\mathrm{d}\bm{p}\mathrm{d}\bm{\tau}.
-\end{equation}
-Following Bayes' theorem, we can know that
+\mathbb{P}(\bm{L},\mathcal{L})={\int}_{\bm{\theta},\bm{\tau}}\mathbb{P}(\mathcal{L},\bm{L}|\bm{\theta}, \bm{\tau})\cdot \mathbb{P}(\bm{\theta}, \bm{\tau})\mathrm{d}\bm{\theta}\mathrm{d}\bm{\tau}.
+\end{equation*}
+Following Bayes' theorem, we can derive that
 \begin{equation}
 \label{PostDist}
-P(\bm{L}|\mathcal{L})=P(\mathcal{L},\bm{L})/P(\mathcal{L})\propto B(\hat{\bm{\beta}}){\prod}_{i=1}^{N}B(\hat{\bm{\alpha}}_{i}). 
+\mathbb{P}(\mathcal{L}|\bm{L})=\mathbb{P}(\bm{L},\mathcal{L})/\mathbb{P}(\bm{L})\propto B(\hat{\bm{\beta}}){\prod}_{i=1}^{N}B(\hat{\bm{\alpha}}_{i}). 
 \end{equation}
 %
 %\begin{equation}
@@ -101,13 +101,13 @@ P(\bm{L}|\mathcal{L})=P(\mathcal{L},\bm{L})/P(\mathcal{L})\propto B(\hat{\bm{\be
 %\end{split}
 %\end{equation}
 where $\hat{\bm{\alpha}}=[\hat{\alpha}_1,\hat{\alpha}_2]$, $\hat{\bm{\beta}}=[\hat{\beta}_1,\hat{\beta}_2]$ and
-\begin{equation}
+\begin{equation*}
 \begin{split}
 &\hat{\alpha}_{i1}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta_{ijk}\xi_{jk}+2\alpha_{1}-1\\
 &\hat{\alpha}_{i2}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta_{ij(3-k)}\xi_{jk}+2\alpha_{2}-1\\
 &\hat{\beta}_k={\sum}_{j=1}^{M}\xi_{jk}+2\beta_{k}-1.
 \end{split}
-\end{equation}
+\end{equation*}
 Besides, $B(x,y)=(x-1)!(y-1)!/(x+y-1)!$ denotes the beta function. The convergence of our inference algorithm requires $\alpha_1>\alpha_2$.
 To simplify the theoretical analysis, we set $\alpha_1=1.5$ and $\alpha_2=1$ in this paper.
 %\begin{equation}
@@ -134,6 +134,27 @@ To simplify the theoretical analysis, we set $\alpha_1=1.5$ and $\alpha_2=1$ in 
 %P(\bm{L}|\mathcal{L})=\frac{P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})}{P(\mathcal{L}|\bm{\alpha}, \bm{\beta})}\propto B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}^{*}_{i}). 
 %\end{equation}
 
+%\begin{algorithm}[tb]
+%   \caption{Gibbs sampling for crowdsourcing}
+%   \label{GSC}
+%   \small
+%\begin{algorithmic}[1]
+%   \vspace{0.5mm}
+%   \STATE {\bfseries Input:} the collected labels $\bm{L}$, the number of samples $W$
+%   \STATE {\bfseries Output:} the sample sequence $\mathcal{S}$
+%   \vspace{0.5mm}
+%   \STATE $\mathcal{S}\leftarrow\emptyset$, Initialize $\mathcal{L}$ with the uniform distribution
+%   \FOR{$s=1$ {\bfseries to} $W$}
+%   \FOR{$j=1$ {\bfseries to} $M$}
+%   \STATE $\mathcal{L}(j) \leftarrow 1$ and compute $x_1= B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}_{i})$
+%   \STATE $\mathcal{L}(j) \leftarrow 2$ and compute $x_2= B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}_{i})$
+%   \STATE $\mathcal{L} \leftarrow$ Sample $\{1,2\}$ with $P(1)=x_1/(x_1+x_2)$
+%   \ENDFOR
+%   \STATE Append $\tilde{\mathcal{L}}$ to the sample sequence $\mathcal{S}$
+%   \ENDFOR
+%\end{algorithmic}
+%\end{algorithm}
+
 \begin{algorithm}[tb]
    \caption{Gibbs sampling for crowdsourcing}
    \label{GSC}
@@ -143,44 +164,43 @@ To simplify the theoretical analysis, we set $\alpha_1=1.5$ and $\alpha_2=1$ in 
    \STATE {\bfseries Input:} the collected labels $\bm{L}$, the number of samples $W$
    \STATE {\bfseries Output:} the sample sequence $\mathcal{S}$
    \vspace{0.5mm}
-   \STATE $\mathcal{S}\leftarrow\emptyset$, Initialize $\mathcal{L}$ with the uniform distribution
+   \STATE $\mathcal{S}\leftarrow\emptyset$, Initialize $\tilde{\mathcal{L}}$ with the uniform distribution
    \FOR{$s=1$ {\bfseries to} $W$}
    \FOR{$j=1$ {\bfseries to} $M$}
-   \STATE $\mathcal{L}(j) \leftarrow 1$ and compute $x_1= B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}_{i})$
-   \STATE $\mathcal{L}(j) \leftarrow 2$ and compute $x_2= B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}_{i})$
-   \STATE $\mathcal{L} \leftarrow$ Sample $\{1,2\}$ with $P(1)=x_1/(x_1+x_2)$
+   \STATE Compute $\mathbb{P}[\mathcal{L}(j)=k]$ by letting $\mathcal{L}(-j)=\tilde{\mathcal{L}}(-j)$.
+   \STATE $\tilde{\mathcal{L}}(j) \leftarrow$ Sample $\{1,2\}$ with $\mathbb{P}[\mathcal{L}(j)=k]$
    \ENDFOR
    \STATE Append $\tilde{\mathcal{L}}$ to the sample sequence $\mathcal{S}$
    \ENDFOR
 \end{algorithmic}
 \end{algorithm}
 
-Based on the joint posterior distribution $P(\bm{L}|\mathcal{L})$, we cannot derive an explicit formulation for the true label distribution of task $j$. Hence, we resort to Gibbs sampling for the inference based on $P(\bm{L}|\mathcal{L})$.
+Based on the joint posterior distribution $\mathbb{P}(\mathcal{L}|\bm{L})$, we cannot derive an explicit formulation for the true label distribution of task $j$. Hence, we resort to Gibbs sampling for the inference.
 More specifically, according to Bayes' theorem, we can know the conditional distribution of the true label of task $j$ satisfies
-$P[L(j)|\mathcal{L}, \bm{L}(-j)]\propto P(\bm{L}|\mathcal{L})$.
-In this case, we can generate the samples of the true label vector $\bm{L}$ by using Algorithm~\ref{GSC}.
-At each step of sampling (line 6-8), Algorithm~\ref{GSC} calculates the conditional distribution and generate a new sample of $L(j)$ to replace the old one in $\bm{L}$.
-Through traversing all tasks, Algorithm~\ref{GSC} generates a new sample of the true label vector $\bm{L}$.
-Repeating this process for $W$ times, we can get the required posterior samples of $\bm{L}$, which is sequentially recorded in $\mathcal{S}$.
-Here, we write the $s$-th sample as $\bm{L}^{(s)}$.
-Since Gibbs sampling requires a burn-in process, we need to discard the first $b$ samples in $\mathcal{S}$.
-Thus, we can estimate worker $i$'s PoBC $p_i$ as
+$\mathbb{P}[\mathcal{L}(j)|\bm{L}, \mathcal{L}(-j)]\propto \mathbb{P}(\mathcal{L}|\bm{L})$, where $-j$ denotes all the tasks except for task $j$.
+In this case, we can generate the samples of the true label vector $\mathcal{L}$ by using Algorithm~\ref{GSC}.
+At each step of sampling (line 6-7), Algorithm~\ref{GSC} calculates $\mathbb{P}[\mathcal{L}(j)|\bm{L}, \mathcal{L}(-j)]$ at first and then generates a new sample of $\mathcal{L}(j)$ to replace the old one in $\tilde{\mathcal{L}}$.
+Through traversing all tasks, Algorithm~\ref{GSC} generates a new sample of the true label vector $\mathcal{L}$.
+Repeating this process for $W$ times, we can get the required samples of $\mathcal{L}$, which is recorded in $\mathcal{S}$.
+Here, we write the $s$-th sample as $\tilde{\mathcal{L}}^{(s)}$.
+Since Gibbs sampling requires a burn-in process, we need to discard the first $W_0$ samples in $\mathcal{S}$.
+Thus, we estimate worker $i$'s PoBC $\mathbb{P}_i$ as
 \begin{equation}
 \label{p_infer}
-\tilde{p}_{i}=\frac{\sum\limits_{s=b+1}^{W}\left[2\alpha_{1}-1+\sum\limits_{j=1}^{M}\mathbbm{1}(L^{(s)}(j)=L_{i}(j))\right]}{(W-b)\cdot(2\alpha_{1}+2\alpha_{2}-2+M)}
+\tilde{\mathbb{P}}_{i}=\frac{\sum\limits_{s=W_0+1}^{W}\left[2\alpha_{1}-1+\sum\limits_{j=1}^{M}\mathbbm{1}(\tilde{\mathcal{L}}^{(s)}(j)=L_{i}(j))\right]}{(W-W_0)\cdot(2\alpha_{1}+2\alpha_{2}-2+M)}
 \end{equation}
 and the distribution of true labels $\bm{\tau}$ as
 \begin{equation}
 \label{tau_infer}
-\tilde{\tau}_{k}=\frac{\sum_{s=b+1}^{W}\left[2\beta_{1}-1+\sum_{j=1}^{M}\mathbbm{1}(L^{(s)}(j)=k)\right]}{(W-b)\cdot(2\beta_{1}+2\beta_{2}-2+M)}.
+\tilde{\tau}_{k}=\frac{\sum\limits_{s=W_0+1}^{W}\left[2\beta_{1}-1+\sum\limits_{j=1}^{M}\mathbbm{1}(\tilde{\mathcal{L}}^{(s)}(j)=k)\right]}{(W-W_0)\cdot(2\beta_{1}+2\beta_{2}-2+M)}.
 \end{equation}
 Furthermore, we define the log-ratio of task $j$ as
 \begin{equation}
 \label{ProbRatio}
-\tilde{\sigma}_j=\log\frac{P[L(j)=1]}{P[L(j)=2]}=\log\left(\frac{\tilde{\tau}_1}{\tilde{\tau}_2}\prod_{i=1}^{N}\tilde{\lambda}_i^{\delta_{ij1}-\delta_{ij2}}\right)
+\tilde{\sigma}_j=\log\frac{\mathbb{P}[\mathcal{L}(j)=1]}{\mathbb{P}[\mathcal{L}(j)=2]}=\log\left(\frac{\tilde{\tau}_1}{\tilde{\tau}_2}\prod_{i=1}^{N}\tilde{\lambda}_i^{\delta_{ij1}-\delta_{ij2}}\right)
 \end{equation}
-where $\tilde{\lambda}_i = \tilde{p}_i/(1-\tilde{p}_i)$.
-Then, we decide the true label estimate $\tilde{L}(j)$ as $1$ if $\tilde{\sigma}_j>0$ and as $2$ if $\tilde{\sigma}_j<0$.
+where $\tilde{\lambda}_i = \tilde{\mathbb{P}}_i/(1-\tilde{\mathbb{P}}_i)$.
+Then, we decide the true label estimate $\tilde{\mathcal{L}}(j)$ as $1$ if $\tilde{\sigma}_j>0$ and as $2$ if $\tilde{\sigma}_j<0$.
 Correspondingly, the label accuracy $A$ can be estimated as
 \begin{equation}
 \label{vot}
@@ -188,7 +208,7 @@ Correspondingly, the label accuracy $A$ can be estimated as
 \tilde{A}=\mathbb{E}\left(A \right) = \frac{1}{M}{\sum}_{j=1}^{M}e^{|\tilde{\sigma}_j|}\left(1+e^{|\tilde{\sigma}_j|}\right)^{-1}.
 \end{split}
 \end{equation}
-Note that, both $W$ and $b$ should be large values, and in this paper, we set $W=1000$ and $b=100$.
+Note that, both $W$ and $W_0$ should be large values, and in this paper, we set $W=1000$ and $W_0=100$.
 %Besides, compared the sampling-based inference which directly uses the joint distribution in Equation~\ref{JointDist}, the marginalization operation in Equation~\ref{marginalization} helps us to eliminate all the continuous variables, which can significantly boost the computation efficiency.
 %Also, it is worth mentioning that, for the simplicity of notations, we omit the superscript $t$ in all the equations above.
 
