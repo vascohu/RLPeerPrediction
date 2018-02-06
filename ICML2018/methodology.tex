@@ -5,7 +5,7 @@
     \caption{\label{figure:layout} Layout of our incentive mechanism.}
 \end{figure}
 \section{Incentive Mechanism for Crowdsourcing}
-We present the overall layout of our mechanism in Figure~\ref{figure:layout}, where estimated values are denoted with over-the-head tildes. In this section, we formally introduce the three main components of our design: payment rule, bayesian inference and reinforcement learning (RL).
+We present the overall layout of our mechanism in Figure~\ref{figure:layout}, where estimated values are denoted with over-the-head tildes. In this section, we formally introduce the three main components of our design: payment rule, bayesian inference and reinforcement learning.
 
 The payment rule is designed to ensure that reporting truthfully and exerting high efforts  is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents clever manipulations from workers, which bring more long-term benefits to them by sacrificing short-term ones, or the other way around. 
 By doing so, we wish to induce workers to generate high-quality labels. %and thus improve the label accuracy. 
@@ -42,15 +42,10 @@ The Bayesian inference algorithm is responsible for estimating the true labels, 
 \subsection{Payment Rule}
 Suppose, at time step $t$, worker $i$ finishes $m^{t}_i$ tasks. For any given time $t$, all $m^{t}_i$s as a whole must satisfy $\sum_i m^t_i= M$. Then the payment for worker $i$ at time $t$ is
 \begin{equation}
-\textsf{effort}
-P^t_i=m^t_i\cdot (a^t s^{t}_i+b)\;\; , \;\; s^{t}_i = \tilde{p}^{t}_i - 0.5
+P^t_i=m^t_i\cdot (a^t \textsf{sc}^{t}_i+b)\;\; , \;\; \textsf{sc}^{t}_i = \tilde{\mathbb{P}}^{t}_i - 0.5
 \label{equation:payment}
 \end{equation}
-where $\phi^{t}_i$ denotes worker $i$'s score and $\tilde{p}^{t}_i$ will be calculated by our Bayesian inference algorithm.
-$a^t$ is the scaling factor. 
-It is determined by our reinforcement adjustment algorithm at the beginning of step $t$.
-We denote all the available values of $a^t$ as set $\mathcal{A}$.
-Besides, $b\geq 0$ is the fixed base payment.
+where $\textsf{sc}$ denotes worker $i$'s score, which is proportional to his PoBC $\tilde{\mathbb{P}}^{t}_i$ calculated by the Bayesian inference algorithm. $b\geq 0$ is a constant representing the fixed base payment even if the worker purely returns random labels. We use $a^t \in \mathcal{A}$ to denote the scaling factor, determined by our reinforcement adjustment algorithm at the beginning of every time step $t$. We further assume $\mathcal{A}$ is a finite set.
 
 
 \subsection{Bayesian Inference}
