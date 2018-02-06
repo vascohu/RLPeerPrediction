@@ -34,6 +34,7 @@
 \usepackage{enumitem}
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{definition}{Definition}
 \makeatletter
 \renewenvironment{proof}[1][\proofname]{\par
@@ -50,6 +51,18 @@
   \addvspace{0pt plus 0pt} % some space after
 }
 \makeatother
+
+\ifodd 1
+\newcommand{\rev}[1]{{\color{blue}#1}}%revise of the text
+\newcommand{\com}[1]{\textbf{\color{red}(Yang: #1)}} %comment of the text
+\newcommand{\clar}[1]{\textbf{\color{green}(NEED CLARIFICATION: #1)}}
+\newcommand{\response}[1]{\textbf{\color{magenta}(RESPONSE: #1)}} %response to comment
+\else
+\newcommand{\rev}[1]{#1}
+\newcommand{\com}[1]{}
+\newcommand{\clar}[1]{}
+\newcommand{\response}[1]{}
+\fi
 
 % Supplementary File
 \usepackage{xr-hyper}
