@@ -40,7 +40,7 @@ The Bayesian inference algorithm is responsible for estimating the true labels, 
 
 
 \subsection{Payment Rule}
-Suppose, at time step $t$, worker $i$ finishes $m^{t}_i$ tasks. For any given time $t$, all $m^{t}_i$s as a whole must satisfy $\sum_i m^t_i= M$. Then the payment for worker $i$ at time $t$ is
+Suppose, at time step $t$, worker $i$ finishes $m^{t}_i$ tasks. For any given time $t$, all $m^{t}_i$s as a whole must satisfy $\sum_i m^t_i \gg M$. Then the payment for worker $i$ at time $t$ is
 \begin{equation}
 P^t_i=m^t_i\cdot (a^t \textsf{sc}^{t}_i+b)\;\; , \;\; \textsf{sc}^{t}_i = \tilde{\mathbb{P}}^{t}_i - 0.5
 \label{equation:payment}
