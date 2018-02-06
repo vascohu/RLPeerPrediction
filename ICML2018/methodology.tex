@@ -186,7 +186,7 @@ Here, we write the $s$-th sample as $\tilde{\mathcal{L}}^{(s)}$.
 Since Gibbs sampling requires a burn-in process, we need to discard the first $W_0$ samples in $\mathcal{S}$.
 Thus, we estimate worker $i$'s PoBC $\mathbb{P}_i$ as
 \begin{equation}
-\label{p_infer}
+\label{equation:p_infer}
 \tilde{\mathbb{P}}_{i}=\frac{\sum\limits_{s=W_0+1}^{W}\left[2\alpha_{1}-1+\sum\limits_{j=1}^{M}\mathbbm{1}(\tilde{\mathcal{L}}^{(s)}(j)=L_{i}(j))\right]}{(W-W_0)\cdot(2\alpha_{1}+2\alpha_{2}-2+M)}
 \end{equation}
 and the distribution of true labels $\bm{\tau}$ as
