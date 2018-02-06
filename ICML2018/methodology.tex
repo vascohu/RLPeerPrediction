@@ -4,13 +4,13 @@
 	\vspace*{-8mm}
     \caption{\label{figure:layout} Layout of our incentive mechanism.}
 \end{figure}
+\com{The arrow under scaling factor (figure 1) looks differently from others...}
 \section{Incentive Mechanism for Crowdsourcing}
-We present the overall layout of our mechanism in Figure~\ref{figure:layout}, where estimated values are denoted with over-the-head tildes. In this section, we formally introduce the three main components of our design: payment rule, bayesian inference and reinforcement learning.
-
-The payment rule is designed to ensure that reporting truthfully and exerting high efforts  is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents clever manipulations from workers, which bring more long-term benefits to them by sacrificing short-term ones, or the other way around. 
+We present the overall layout of our mechanism in Figure~\ref{figure:layout}, where estimated values are denoted with over-the-head tildes. In our design, the payment rule is to ensure that reporting truthfully and exerting high efforts  is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents strategic manipulations from workers, which bring more long-term \com{sometimes this is written as long term. we need to unify it to long-term} benefits to them by sacrificing short-term ones, or the other way around. 
 By doing so, we wish to induce workers to generate high-quality labels. %and thus improve the label accuracy. 
 The Bayesian inference algorithm is responsible for estimating the true labels, workers' PoBCs and the aggregate label accuracy from the collected labels at each time step. It utilizes soft Dirichlet priors and Gibbs sampling to prevent overestimation of accuracy when workers generate poor-quality labels. The reinforcement learning algorithm adjusts the payment rule based on the historical data of payments, workers' PoBCs and aggregate labels' accuracy, aiming to optimally balance the utility gain from high accuracy and loss from large payments, which corresponds to $F(A^t)$ and $\sum_{i}P_i^t$ in Equation~\ref{equation:utility} respectively.
 
+In the rest of this section, we formally introduce the three main components of our design: payment rule, bayesian inference and reinforcement learning.
 
 %Nevertheless, there are three challenges to achieve our design. Firstly, our empirical studies reveal that popular inference algorithms may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $q_i^t=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.
 %This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
@@ -40,7 +40,7 @@ The Bayesian inference algorithm is responsible for estimating the true labels, 
 
 
 \subsection{Payment Rule}
-Suppose, at time step $t$, worker $i$ finishes $m^{t}_i$ tasks. For any given time $t$, all $m^{t}_i$s as a whole must satisfy $\sum_i m^t_i \gg M$. Then the payment for worker $i$ at time $t$ is
+Suppose, at time step $t$, worker $i$ finishes $m^{t}_i$ tasks. \com{not clear; is this the number of tasks finished up to time t, or is this the ones finished at exactly time t. It reads as the latter. but then i don't under stand why$\sum_i m^t_i \gg M$. isn't exactly M tasks will be assigned?? }For any given time $t$, all $m^{t}_i$s as a whole must satisfy $\sum_i m^t_i \gg M$. Then the payment for worker $i$ at time $t$ is
 \begin{equation}
 P^t_i=m^t_i\cdot (a^t \textsf{sc}^{t}_i+b)\;\; , \;\; \textsf{sc}^{t}_i = \tilde{\mathbb{P}}^{t}_i - 0.5
 \label{equation:payment}
@@ -65,7 +65,9 @@ where $\textsf{sc}$ denotes worker $i$'s score, which is proportional to his or 
 %\footnote{In practice, $M^{t}_{i}$ is often smaller than $M$, and we can introduce $L^{t}_i(j)=0$ to denote that task $j$ is not assigned to worker $i$. The incentive mechanisms developed in this paper can work well in the case where the matrix $[L^{t}_i(j)]$ is sparse. However, to simplify the theoretical analysis, we assume $M^{t}_{i}\equiv M$ in this paper and put the theoretical analysis on the sparse case as our future work.}
 
 %In this subsection, we present the details of our inference algorithm.
-Before designing our own Bayesian inference algorithm, we ran several preliminary experiments using the existing inference algorithms popularly used by others. Our empirical studies reveal that those popular ones may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$. This heavy bias will cause the data requester's utility $u^t$ to be miscalculated and thus may potentially mislead our reinforcement learning algorithm. To reduce the inference bias, we develop our Bayesian inference algorithm by introducing the soft Dirichlet priors to both the true labels and workers' PoBCs. However, after doing so, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution first and then employ Gibbs sampling to conduct inference.
+Before designing our own Bayesian inference algorithm, we ran several preliminary experiments using the existing inference algorithms popularly used by others. Our empirical studies reveal that those popular ones may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$. This heavy bias will cause the data requester's utility $u^t$ to be miscalculated - this returns bad incentive property, as a worker with much worse accuracy will now enjoy a good estimate. This may also potentially mislead our reinforcement learning algorithm. 
+
+To reduce the inference bias, we develop our Bayesian inference algorithm by introducing the soft Dirichlet priors to both the true labels and workers' PoBCs. However, after doing so, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution first and then employ Gibbs sampling to conduct inference.
 
  For the simplicity of notations, we omit the superscript $t$ in this subsection.  %This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
 It is not had to figure out the joint distribution of the collected labels $\bm{L}$ and the true labels $\mathcal{L}$ 
@@ -86,7 +88,7 @@ Then, the joint distribution of $\bm{L}$ and $\mathcal{L}$ satisfies
 \label{JointDist2}
 \mathbb{P}(\bm{L},\mathcal{L})={\int}_{\bm{\theta},\bm{\tau}}\mathbb{P}(\mathcal{L},\bm{L}|\bm{\theta}, \bm{\tau})\cdot \mathbb{P}(\bm{\theta}, \bm{\tau})\mathrm{d}\bm{\theta}\mathrm{d}\bm{\tau}.
 \end{equation*}
-Following Bayes' theorem, we derive 
+Following Bayes' theorem, we derive the following
 \begin{equation}
 \label{PostDist}
 \mathbb{P}(\mathcal{L}|\bm{L})=\mathbb{P}(\bm{L},\mathcal{L})/\mathbb{P}(\bm{L})\propto B(\hat{\bm{\beta}}){\prod}_{i=1}^{N}B(\hat{\bm{\alpha}}_{i}) 
@@ -211,7 +213,7 @@ For good inference accuracy, we require both $W$ and $W_0$ to be large values, a
 %Also, it is worth mentioning that, for the simplicity of notations, we omit the superscript $t$ in all the equations above.
 
 \subsection{Reinforcement Incentive Adjustment}
-In this subsection, we formally introduce our reinforcement learning (RL) algorithm, which adjusts the incentive scaling level at each time step $t$. Stepping back and viewing it under the large picture, the reinforcement learning serves as the glue to connect each other component in our framework.
+In this subsection, we formally introduce our reinforcement learning (RL) algorithm, which adjusts the incentive scaling level at each time step $t$ ($a^t$ in Equation \ref{equation:payment}). Stepping back and viewing it under the big picture, the reinforcement learning serves as the glue to connect each other component in our framework.
 
 In an RL problem, an agent interacts with an unknown environment and attempts to maximize its utility \citep{Sutton98,Szepesvari10}. The environment is commonly formalized as a Markov Decision Process (MDP) defined as $\mathcal{M} = \langle \mathcal{S}, \mathcal{A}, \mathcal{R}, \mathcal{P}, \gamma\rangle$. At time $t$ the agent is in state $s_t \in \mathcal{S}$ where it takes an action $a_t \in \mathcal{A}$ leading to the next state $s_{t+1} \in \mathcal{S}$ according to the transition probability kernel $\mathcal{P}$, which encodes $\mathbb{P}(s_{t+1}\mid s_t,a_t)$. In most RL problems, $\mathcal{P}$ is unknown to the agent. The agent's goal is to learn the optimal policy, a conditional distribution $\pi(a \mid s)$ that  maximizes the sate value function 
 $$
@@ -220,7 +222,7 @@ $$
 The  crowdsourcing problem we aim to tackle in this paper can perfectly fit into this RL formalization. To be more specific, the data requester is the agent and it interacts with workers (i.e. the environment); incentive scaling levels are actions; %the entity consisting of all workers and their internal efforts and reporting strategies forms the environment; 
 the implicit utility after paying workers (see Formula~\ref{equation:utility}) is reward; how workers respond to different incentives and potentially change their internal states thereafter forms the transition kernel, which is unknown to the data requester; what incentive scaling level to be picked at each time $t$ given workers' labelling constructs the policy, which needs to be learned by the data requester.
 
- Besides presented as the overall layout of our mechanism, Figure~\ref{figure:layout} also visualizes how our RL algorithm interacts with the environment and the rest of the framework;  it takes as input workers' PoBC, reward signal, and internally its action history, and outputs the current incentive scaling level. The latest determined incentive scaling level gets plugged back into the payment rule, and by following formula~(\ref{equation:payment}), the exact payment to each worker is decided.  
+ Besides presented as the overall layout of our mechanism, Figure~\ref{figure:layout} also visualizes how our RL algorithm interacts with the environment and the rest of the framework;  it takes as input workers' PoBC, reward signal, and internally its action history, and outputs the current incentive scaling level. The latest determined incentive scaling level gets plugged back into the payment rule, and by following formula~(\ref{equation:payment}), the exact payment to each worker is then decided.  
  
 As a critical step towards improving a given polict, it is a standard practice for RL algorithms to learn a state-action value function (i.e. Q-function), denoted:
 $$
@@ -237,9 +239,11 @@ Further recall, when deciding the current incentive scaling level $a_t$, the dat
 $$
 \hat{s_t} = \langle \phi(s_{t-1}), a_{t-1} \rangle .
 $$
-Since the data requester never possesses the ground truth for each task, the utility $u^t$ is not accurately observed. Also $\hat{s_t}$ cannot be accurate.% as the mapping function can not be perfect. 
+Since the data requester never possesses the ground-truth for each task, the utility $u^t$ is not accurately observed. Also note $\hat{s_t}$ is hardly perfectly accurate. % as the mapping function can not be perfect. 
 Combining both together, it would not be a surprise to observe some noise that cannot be directly learned in our state-action value function. 
-Recall Formula~\ref{vot} shows that the estimated accuracy is calculated as an average across all $M$ tasks. 
+
+
+Recall Equation~\ref{vot} shows that the estimated accuracy is calculated as an average across all $M$ tasks. 
 As for most crowdsourcing problems $M$ is a large number, we leverage the central limit theorem to justify our modelling of the noise using a Gaussian process.
 To be more specific, we calculate the temporal difference (TD) error as 
 $$
@@ -260,3 +264,5 @@ Q(s,a) = \bm{k}(s,a) ^{\mathrm{T}}(\bm{K} ^{\mathrm{T}}+\bm{\sigma}^2)^{-1}\bm{H
 where $\bm{k}(s,a)=[k((s,a), (s_1,a_1)),\ldots, k((s,a), (s_t,a_t))]^{\mathrm{T}}$ and $\bm{K}=[\bm{k}(s_1,a_1),\ldots,\bm{k}(s_t,a_t)]$. Here, we use $k(\cdot, \cdot)$ to denote the Gaussian kernel.
 To avoid the size of $\bm{k}$ and $\bm{K}$ to increase infinitely, we also employ the sparse approximation to discard some historical data, and the details of this approximation technique can be found in \cite{gasic2014gaussian}.
 Furthermore, we use the classic $\epsilon$-greedy method to construct policy from the learned Q-function.
+
+\com{Summarize the RL algorithm into an algorithm block. it will be much clear to reviewers.}
