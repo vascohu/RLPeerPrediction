@@ -5,7 +5,7 @@ import sys
 
 from itertools import product
 
-num_time_steps = 21
+num_time_steps = 28
 task_num = 100
 worker_num = 10
 num_true_label = 0

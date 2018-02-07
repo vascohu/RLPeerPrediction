@@ -14,7 +14,7 @@ task_num = 100
 worker_num = 10
 num_true_label = 0
 T = 500
-EP = 21
+EP = 28
 
 # np.random.seed(0)
 '''This area for the one-step test of our mechanism'''
@@ -74,7 +74,7 @@ pickle.dump(Z, f)
 f.close()
 '''
 
-for workerType in ['rational','QR','MWUA']:
+for workerType in ['MWUA','rational','QR']:
     # The incentive mechanism
     mech = MechModule.BayesMech()
     #mech = MechModule.DG13()#
