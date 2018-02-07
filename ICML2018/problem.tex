@@ -32,11 +32,13 @@ Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task 
 &\textsf{rpt}^{t}_i \cdot(1-\textsf{eft}^{t}_i) \mathbb{P}_{L}+(1-\textsf{rpt}^{t}_i) \cdot(1-\textsf{eft}^{t}_i) (1-\mathbb{P}_{L})
 \end{split}
 \end{equation}
-Suppose we assign $m^{t}_i$ tasks to worker $i$ at $t$, his utility is 
-\begin{equation}
-u_i^t=P_i^t - m^{t}_i \cdot c_H (\mathbb{P}_i^t-0.5)
-\end{equation}
-where $P^{t}_{i}$ denotes our payment to worker $i$ at step $t$ (see Section~\ref{payment} for details).\footnote{$\sum_i m^t_i = M$.}
+We assign $m^{t}_i\leq M$ tasks to worker $i$ at step $t$. Then, his/her utility will be $u_i^t=P_i^t - m^{t}_i \cdot c_H\cdot (\mathbb{P}_i^t-0.5)$, where $P^{t}_{i}$ denotes our payment to worker $i$ at step $t$ (see Section~\ref{payment}).
+
+%Suppose we assign $m^{t}_i$ tasks to worker $i$ at $t$, his utility is 
+%\begin{equation}
+%u_i^t=P_i^t - m^{t}_i \cdot c_H (\mathbb{P}_i^t-0.5)
+%\end{equation}
+%where $P^{t}_{i}$ denotes our payment to worker $i$ at step $t$ (see Section~\ref{payment} for details).
  
 At the beginning of each step, the data requester and workers mutually agree to a certain rule of payment determination, which would not be changed until the next time step.
 %the data requester promises the workers a certain rule of payment determination which acts the contract between two sides and cannot be changed until the next time step.
