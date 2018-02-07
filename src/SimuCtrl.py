@@ -138,7 +138,8 @@ for workerType in ['MWUA','rational','QR']:
             mkt.evolve(reward_mat)
             r = infer.reward(pay)
             accR += r
-            accRR += infer.real_reward(acc, pay)
+            realReward = infer.real_reward(acc,pay)
+            accRR += realReward
             #s[0] = (np.mean(infer.belief[0::2])*infer.beta[0]+np.mean(infer.belief[1::2])*infer.beta[1])/np.sum(infer.beta)
             s = np.mean(infer.belief)
             # s[0] = infer.ex_accuracy
