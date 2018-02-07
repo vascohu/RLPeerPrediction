@@ -34,7 +34,9 @@
 \usepackage{enumitem}
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{lemmas}
+\newcounter{lemmas}
+\newtheorem{lemma}[lemmas]{Lemma}
 \newtheorem{definition}{Definition}
 \makeatletter
 \renewenvironment{proof}[1][\proofname]{\par

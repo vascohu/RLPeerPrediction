@@ -4,11 +4,10 @@
 	\vspace*{-8mm}
     \caption{\label{figure:layout} Layout of our incentive mechanism.}
 \end{figure}
-\com{The arrow under scaling factor (figure 1) looks differently from others...}
 \section{Incentive Mechanism for Crowdsourcing}
-We present the overall layout of our mechanism in Figure~\ref{figure:layout}, where estimated values are denoted with over-the-head tildes. In our design, the payment rule is to ensure that reporting truthfully and exerting high efforts  is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents strategic manipulations from workers, which bring more long-term \com{sometimes this is written as long term. we need to unify it to long-term} benefits to them by sacrificing short-term ones, or the other way around. 
+We present the overall layout of our mechanism in Figure~\ref{figure:layout}, where estimated values are denoted with over-the-head tildes. In our design, the payment rule is to ensure that reporting truthfully and exerting high efforts  is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents strategic manipulations from workers, which bring more long-term benefits to them by sacrificing short-term ones, or the other way around. 
 By doing so, we wish to induce workers to generate high-quality labels. %and thus improve the label accuracy. 
-The Bayesian inference algorithm is responsible for estimating the true labels, workers' PoBCs and the aggregate label accuracy from the collected labels at each time step. It utilizes soft Dirichlet priors and Gibbs sampling to prevent overestimation of accuracy when workers generate poor-quality labels. The reinforcement learning algorithm adjusts the payment rule based on the historical data of payments, workers' PoBCs and aggregate labels' accuracy, aiming to optimally balance the utility gain from high accuracy and loss from large payments, which corresponds to $F(A^t)$ and $\sum_{i}P_i^t$ in Equation~\ref{equation:utility} respectively.
+The Bayesian inference algorithm is responsible for estimating the true labels, workers' PoBCs and the aggregate label accuracy from the collected labels at each time step. It utilizes soft Dirichlet priors and Gibbs sampling to prevent overestimation of accuracy when workers generate poor-quality labels. The reinforcement learning algorithm adjusts the payment rule based on the historical data of payments, workers' PoBCs and aggregate labels' accuracy, aiming to optimally balance the utility gain from high accuracy and loss from large payments, which corresponds to $F(A^t)$ and $\sum_{i}P_i^t$ in Eqn.\ref{equation:utility} respectively.
 
 In the rest of this section, we formally introduce the three main components of our design: payment rule, bayesian inference and reinforcement learning.
 
@@ -40,9 +39,9 @@ In the rest of this section, we formally introduce the three main components of 
 
 
 \subsection{Payment Rule}
-Suppose, at time step $t$, worker $i$ finishes $m^{t}_i$ tasks. \com{not clear; is this the number of tasks finished up to time t, or is this the ones finished at exactly time t. It reads as the latter. but then i don't under stand why$\sum_i m^t_i \gg M$. isn't exactly M tasks will be assigned?? }For any given time $t$, all $m^{t}_i$s as a whole must satisfy $\sum_i m^t_i \gg M$. Then the payment for worker $i$ at time $t$ is
+Then the payment for worker $i$ at time $t$ is
 \begin{equation}
-P^t_i=m^t_i\cdot (a^t \textsf{sc}^{t}_i+b)\;\; , \;\; \textsf{sc}^{t}_i = \tilde{\mathbb{P}}^{t}_i - 0.5
+P^t_i=m^t_i\cdot (a^t \cdot \textsf{sc}^{t}_i+b)\;\; , \;\; \textsf{sc}^{t}_i = \tilde{\mathbb{P}}^{t}_i - 0.5
 \label{equation:payment}
 \end{equation}
 where $\textsf{sc}$ denotes worker $i$'s score, which is proportional to his or her PoBC $\tilde{\mathbb{P}}^{t}_i$ calculated by the Bayesian inference algorithm. $b\geq 0$ is a constant representing the fixed base payment even if the worker purely returns random labels. We use $a^t \in \mathcal{A}$ to denote the scaling factor, determined by our reinforcement adjustment algorithm at the beginning of every time step $t$. We further assume $\mathcal{A}$ is a finite set.
@@ -213,7 +212,7 @@ For good inference accuracy, we require both $W$ and $W_0$ to be large values, a
 %Also, it is worth mentioning that, for the simplicity of notations, we omit the superscript $t$ in all the equations above.
 
 \subsection{Reinforcement Incentive Adjustment}
-In this subsection, we formally introduce our reinforcement learning (RL) algorithm, which adjusts the incentive scaling level at each time step $t$ ($a^t$ in Equation \ref{equation:payment}). Stepping back and viewing it under the big picture, the reinforcement learning serves as the glue to connect each other component in our framework.
+In this subsection, we formally introduce our reinforcement learning (RL) algorithm, which adjusts the incentive scaling level at each time step $t$ ($a^t$ in Eqn.\ref{equation:payment}). Stepping back and viewing it under the big picture, the reinforcement learning serves as the glue to connect each other component in our framework.
 
 In an RL problem, an agent interacts with an unknown environment and attempts to maximize its utility \citep{Sutton98,Szepesvari10}. The environment is commonly formalized as a Markov Decision Process (MDP) defined as $\mathcal{M} = \langle \mathcal{S}, \mathcal{A}, \mathcal{R}, \mathcal{P}, \gamma\rangle$. At time $t$ the agent is in state $s_t \in \mathcal{S}$ where it takes an action $a_t \in \mathcal{A}$ leading to the next state $s_{t+1} \in \mathcal{S}$ according to the transition probability kernel $\mathcal{P}$, which encodes $\mathbb{P}(s_{t+1}\mid s_t,a_t)$. In most RL problems, $\mathcal{P}$ is unknown to the agent. The agent's goal is to learn the optimal policy, a conditional distribution $\pi(a \mid s)$ that  maximizes the sate value function 
 $$
@@ -243,7 +242,7 @@ Since the data requester never possesses the ground-truth for each task, the uti
 Combining both together, it would not be a surprise to observe some noise that cannot be directly learned in our state-action value function. 
 
 
-Recall Equation~\ref{vot} shows that the estimated accuracy is calculated as an average across all $M$ tasks. 
+Recall Eqn.~\ref{vot} shows that the estimated accuracy is calculated as an average across all $M$ tasks. 
 As for most crowdsourcing problems $M$ is a large number, we leverage the central limit theorem to justify our modelling of the noise using a Gaussian process.
 To be more specific, we calculate the temporal difference (TD) error as 
 $$
