@@ -258,7 +258,7 @@ Due to the Gaussian process assumption of the residual, $\bm{N}\sim \mathcal{N}(
 The hat matrix $\bm{H}$ satisfies that $\bm{H}(k,k)=1$ and $\bm{H}(k,k+1)=-\gamma$ for $k=1,\ldots, t$.
 Then, by using the online Gaussian process regression algorithm~\cite{engel2005reinforcement}, we can effectively learn the Q-function as
 \begin{equation}
-Q(s,a) = \bm{k}(s,a) ^{\mathrm{T}}(\bm{K} ^{\mathrm{T}}+\bm{\sigma}^2)^{-1}\bm{H}\bm{r}
+Q(s,a) = \bm{k}(s,a) ^{\mathrm{T}}(\bm{K} +\bm{\sigma}^2)^{-1}\bm{H}\bm{r}
 \end{equation}
 where $\bm{k}(s,a)=[k((s,a), (s_1,a_1)),\ldots, k((s,a), (s_t,a_t))]^{\mathrm{T}}$ and $\bm{K}=[\bm{k}(s_1,a_1),\ldots,\bm{k}(s_t,a_t)]$. Here, we use $k(\cdot, \cdot)$ to denote the Gaussian kernel.
 To avoid the size of $\bm{k}$ and $\bm{K}$ to increase infinitely, we also employ the sparse approximation to discard some historical data, and the details of this approximation technique can be found in \cite{gasic2014gaussian}.
