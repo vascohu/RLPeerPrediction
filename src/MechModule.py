@@ -116,7 +116,7 @@ class BayesMech(object):
             reward_vec = []
             for j in range(label_mat.shape[0]):
                 if label_mat[j, i] != 0:
-                    reward_vec.append((p_vec[i]-0.5)*self.B)
+                    reward_vec.append((p_vec[j,i]-0.5)*self.B)
             p += np.sum(reward_vec)
             reward_mat.append(reward_vec)
         return (p, reward_mat)

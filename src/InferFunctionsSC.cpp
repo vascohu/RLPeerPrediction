@@ -16,6 +16,7 @@ sfmt_t sfmt;
 long *y;
 long *alpha;
 long *beta;
+double *pDist;
 
 double *yDist;
 double *pVec;
@@ -23,13 +24,14 @@ double *xVec;
 double p0;
 
 
-void init_class(long _task_num, long _worker_num, double *_yDist, double *_pVec, double *_xVec)
+void init_class(long _task_num, long _worker_num, double *_yDist, double *_pVec, double *_xVec, double *_pDist)
 {
 	task_num = _task_num;
 	worker_num = _worker_num;
 	yDist = _yDist;
 	pVec = _pVec;
 	xVec = _xVec;
+	pDist = _pDist;
 
 	sfmt_init_gen_rand(&sfmt, 1234);
 
@@ -235,6 +237,14 @@ double infer(long *pLabelMat)
 		pVec[j] = 0.0;
 	}
 
+	for(long i=0; i<task_num; ++i)
+	{
+		for(long j=0; j<worker_num;++j)
+		{
+			pDist[i*worker_num+j] = 0;
+		}
+	}
+
 	p0 = 0;
 
 	for(long t=0; t<sample_num; ++t)
@@ -256,6 +266,17 @@ double infer(long *pLabelMat)
 
 
 		p0 += (double)beta[0]/(beta[0]+beta[1])/sample_num;
+
+		for(long i=0; i<task_num; ++i)
+		{
+			for(long j=0; j<worker_num; ++j)
+			{
+				if(y[i]==pLabelMat[i*worker_num+j]-1)
+				{
+					pDist[i*worker_num+j] += 1.0/sample_num;
+				}
+			}
+		}
 
 		for(long j=0; j<worker_num; ++j)
 		{

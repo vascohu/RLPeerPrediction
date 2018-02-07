@@ -66,8 +66,9 @@ class InferBase(object):
 #         self.y_dist = np.zeros(shape=(self.task_num-self.true_label_num, self.class_num))
 #         self.b = np.zeros(shape=self.alpha.shape)
 #         self.belief = np.zeros(2 * self.worker_num)
+#         self.p_dist = np.zeros(self.task_num, self.worker_num)
 #         InferModuleX.init_classX(self.task_num, self.worker_num, self.class_num, self.true_label_num,
-#                                 self.sample, self.alpha, self.beta, self.y_dist, self.b)
+#                                 self.sample, self.alpha, self.beta, self.y_dist, self.b, self.p_dist)
 #
 #     def infer(self, label_mat: np.matrix, true_label: list = None):
 #         InferModuleX.infer(label_mat, np.asarray(true_label))
@@ -98,7 +99,8 @@ class GibbsSamplingSC(InferBase):
         self.y_dist = np.zeros(shape=(_task_num, 2))
         self.p_vec = np.zeros(shape=(_worker_num))
         self.x_vec = np.zeros(shape=(_task_num))
-        InferModuleSC.init_classX(self.task_num, self.worker_num, self.y_dist, self.p_vec, self.x_vec)
+        self.p_dist = np.zeros(shape=(self.task_num, self.worker_num))
+        InferModuleSC.init_classX(self.task_num, self.worker_num, self.y_dist, self.p_vec, self.x_vec, self.p_dist)
 
     def __del__(self):
         pass

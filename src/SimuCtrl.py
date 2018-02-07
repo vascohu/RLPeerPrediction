@@ -13,7 +13,7 @@ import pickle
 task_num = 100
 worker_num = 10
 num_true_label = 0
-T = 200
+T = 500
 EP = 21
 
 # np.random.seed(0)
@@ -74,113 +74,93 @@ pickle.dump(Z, f)
 f.close()
 '''
 
+for workerType in ['rational','QR','MWUA']:
+    # The incentive mechanism
+    mech = MechModule.BayesMech()
+    #mech = MechModule.DG13()#
 
-# The incentive mechanism
-mech = MechModule.BayesMech()
-#mech = MechModule.DG13()#
+    # The crowd market
+    mkt = CrowdModule.CrowdMarket(task_num, worker_num, mech, workerType)
 
-# The crowd market
-mkt = CrowdModule.CrowdMarket(task_num, worker_num, mech, sys.argv[1])
+    # The inference
+    infer = InferModule.GibbsSamplingSC(task_num, worker_num)
 
-# The inference
-infer = InferModule.GibbsSamplingSC(task_num, worker_num)
-
-# The RL module
-# rl = RLModule.TOSarsa(EP)
-rl = RLModule.EpSGPS(EP)
-# rl = RLModule.Simple()
-
-
-# label_mat = mkt.get_label_mat_NTL()
-# true_label = mkt.get_true_label()
+    # The RL module
+    # rl = RLModule.TOSarsa(EP)
+    rl = RLModule.EpSGPS(EP)
+    # rl = RLModule.Simple()
 
 
-# accuracy = infer.test(label_mat, true_label)
-#print(true_label)
-# print(accuracy)
-# print(infer.p_vec)
-# print(infer.ex_accuracy)
-
-a = 0
-s = 0
-
-rr = []
-RR=[]
+    # label_mat = mkt.get_label_mat_NTL()
+    # true_label = mkt.get_true_label()
 
 
-'''
-mech.set([10])
-label_mat = mkt.get_label_mat(num_true_label)
-(pay, reward_mat) = mech.pay(label_mat)
-mkt.evolve(reward_mat)
-'''
+    # accuracy = infer.test(label_mat, true_label)
+    #print(true_label)
+    # print(accuracy)
+    # print(infer.p_vec)
+    # print(infer.ex_accuracy)
 
-rl.explore_prob = 0.2
+    a = 0
+    s = 0
+    rl.explore_prob = 0.2
 
-thefile = open('rl_' + sys.argv[1]+'.txt', 'w')
+    thefile = open('rl_' + workerType+'.txt', 'w')
 
-for i in range(T):
-    print(">>>>>>>>>>>>Round: %i"% i)
-    mkt.worker_init()
-    accR = 0
-    accRR = 0
-    rl.explore_prob *= 0.99
-    for t in range(EP):
-        #print("Step: ", t+1)
-        # Get the action
-        if t==0:
-            a = rl.decide(start=True)
-        else:
-            a = rl.decide(start=False)
+    for i in range(T):
+        print(">>>>>>>>>>>>Round: %i"% i)
+        mkt.worker_init()
+        accR = 0
+        accRR = 0
+        rl.explore_prob *= 0.99
+        for t in range(EP):
+            #print("Step: ", t+1)
+            # Get the action
+            if t==0:
+                a = rl.decide(start=True)
+            else:
+                a = rl.decide(start=False)
 
-        # Set the mechanism
-        mech.set([a])
+            # Set the mechanism
+            mech.set([a])
 
-        # Decide the payment
-        if isinstance(mech, MechModule.DG13):
-            label_mat = mkt.get_label_mat(num_true_label)
-            true_label = mkt.get_true_label()
-            (pay, reward_mat) = mech.pay(label_mat)
-            acc = infer.test(label_mat, list(true_label))
-        else:
-            label_mat = mkt.get_label_mat_NTL()
-            true_label = mkt.get_true_label()
-            acc = infer.test(label_mat, list(true_label))
-            (pay, reward_mat) = mech.pay(label_mat, infer.belief)
-        mkt.evolve(reward_mat)
-        r = infer.reward(pay)
-        accR += r
-        accRR += infer.real_reward(acc, pay)
-        #s[0] = (np.mean(infer.belief[0::2])*infer.beta[0]+np.mean(infer.belief[1::2])*infer.beta[1])/np.sum(infer.beta)
-        s = np.mean(infer.belief)
-        # s[0] = infer.ex_accuracy
-        # s[1] = t+1
-        # print("Action: ", a, "\t Reward: ", r)
-        # print(pay)
-        # print(acc, '\t', infer.ex_accuracy)
+            # Decide the payment
+            if isinstance(mech, MechModule.DG13):
+                label_mat = mkt.get_label_mat(num_true_label)
+                true_label = mkt.get_true_label()
+                (pay, reward_mat) = mech.pay(label_mat, infer.p_dist)
+                acc = infer.test(label_mat, list(true_label))
+            else:
+                label_mat = mkt.get_label_mat_NTL()
+                true_label = mkt.get_true_label()
+                acc = infer.test(label_mat, list(true_label))
+                (pay, reward_mat) = mech.pay(label_mat, infer.p_dist)
+            mkt.evolve(reward_mat)
+            r = infer.reward(pay)
+            accR += r
+            accRR += infer.real_reward(acc, pay)
+            #s[0] = (np.mean(infer.belief[0::2])*infer.beta[0]+np.mean(infer.belief[1::2])*infer.beta[1])/np.sum(infer.beta)
+            s = np.mean(infer.belief)
+            # s[0] = infer.ex_accuracy
+            # s[1] = t+1
+            # print("Action: ", a, "\t Reward: ", r)
+            # print(pay)
+            # print(acc, '\t', infer.ex_accuracy)
 
-        #print("State: ", rl.z, "Action: ", a, "Reward: ", r)
-        # Observation
-        if t==EP-1:
-            rl.observe(a, r, s, terminal=True)
-        elif t==1:
-            rl.observe(a, r, s, start=True)
-            # rl.decide(start=False)
-        else:
-            rl.observe(a, r, s)
-    #print(accR)
-    #print(accRR)
-    rr.append(accR)
-    RR.append(accRR)
-    thefile.write("%s\t%s\n" % (accR, accRR))
-    # for (h,r) in zip(rl.Hist, rl.R):
-    #    print(h, "  >>>  ",r )
+            #print("State: ", rl.z, "Action: ", a, "Reward: ", r)
+            # Observation
+            if t==EP-1:
+                rl.observe(a, r, s, terminal=True)
+            elif t==1:
+                rl.observe(a, r, s, start=True)
+            else:
+                rl.observe(a, r, s)
+        #print(accR)
+        #print(accRR)
+        thefile.write("%s\t%s\n" % (accR, accRR))
+        thefile.flush()
 
-    #print("The reward is ", accR, "\n\n")
-print(rr)
-print(RR)
-
-thefile.close()
+    thefile.close()
 
 """
 # Change the incentive level
@@ -207,7 +187,6 @@ true_label = mkt.get_true_label()
 acc = infer.test(label_mat[:, 0:-1], list(true_label))
 print(acc, '\t', infer.ex_accuracy)
 '''
-
 
 
 

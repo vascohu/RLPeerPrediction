@@ -40,7 +40,7 @@ class Worker(object):
 
     # The mirror of the incentive mechanism
     mirror_of_mech = None
-    high_effort_cost = 0.05
+    high_effort_cost = 0.02
 
     @abc.abstractmethod
     def labeling(self, task: Task):

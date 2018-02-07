@@ -31,7 +31,7 @@ for action_sequence in product([0,1,2,3], repeat=7):
         label_mat = mkt.get_label_mat_NTL()
         true_label = mkt.get_true_label()
         acc = infer.test(label_mat, list(true_label))
-        (pay, reward_mat) = mech.pay(label_mat, infer.belief)
+        (pay, reward_mat) = mech.pay(label_mat, infer.p_dist)
         mkt.evolve(reward_mat)
         r = infer.reward(pay)
         accR += r
