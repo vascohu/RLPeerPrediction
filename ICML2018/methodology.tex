@@ -39,7 +39,8 @@ In the rest of this section, we formally introduce the three main components of 
 
 
 \subsection{Payment Rule}
-Then the payment for worker $i$ at time $t$ is
+\label{payment}
+We wish our payment rule to balance between how many tasks a worker is assigned and how good his or her labelling is. As so we design the payment for worker $i$ at time $t$ as
 \begin{equation}
 P^t_i=m^t_i\cdot (a^t \cdot \textsf{sc}^{t}_i+b)\;\; , \;\; \textsf{sc}^{t}_i = \tilde{\mathbb{P}}^{t}_i - 0.5
 \label{equation:payment}

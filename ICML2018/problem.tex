@@ -23,8 +23,8 @@ The generated label $L^{t}_{i}(j)$ depends both on the ground-truth $\mathcal{L}
 %Also, he/she can decide either to truthfully report his observation $r^{t}_i = 1$ or to revert the answer $r^{t}_i = 0$.
 %Workers may act differently for different tasks. 
 At any given time for any task, workers at their will adopt an arbitrary combination of effort level and report strategy. We thus define $\textsf{eft}^{t}_i\in[0,1]$ and $\textsf{rpt}^{t}_i\in[0,1]$ as worker $i$'s probability of exerting high efforts and reporting truthfully for task $j$ %at time $t$ 
-respectively. Furthermore, following existing literature \citet{dasgupta2013crowdsourced,liu2017sequential}, we assume that tasks are homogeneous and workers share the same probability of generating the correct labels if they exert the same level of efforts. We denote the probability as $\mathbb{P}_{H}$ and $\mathbb{P}_{L}$ respectively. Note we require $\mathbb{P}_{H} > \mathbb{P}_{L} = 0.5$.
-Besides, exerting low efforts has cost $c_{L}=0$, whereas exerting high efforts has cost $c_{H}\geq 0$.
+respectively. Furthermore, following existing literature \citet{dasgupta2013crowdsourced,liu2017sequential}, we assume that tasks are homogeneous and workers share the same probability of generating the correct labels if they exert the same level of efforts. We denote the probability as $\mathbb{P}_{H}$ and $\mathbb{P}_{L}$ respectively. Note we require $\mathbb{P}_{H} > \mathbb{P}_{L} = 0.5$, where 0.5 is used when workers randomly label tasks.
+Besides, we further assume the cost for any worker $i$ to exert low efforts is $c_{L} = 0$, whereas exerting high efforts is $c_{H} \geq 0$.\footnote{We make such assumption for simplicity. Our analysis can be extended to the case where both $c_{L},  c_{H} \geq 0$, as long as $c_{H} \geq c_{L}$.}
 Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task is 
 \begin{equation}
 \begin{split}
@@ -32,11 +32,11 @@ Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task 
 &\textsf{rpt}^{t}_i \cdot(1-\textsf{eft}^{t}_i) \mathbb{P}_{L}+(1-\textsf{rpt}^{t}_i) \cdot(1-\textsf{eft}^{t}_i) (1-\mathbb{P}_{L})
 \end{split}
 \end{equation}
-If we assign $m^{t}_i$ tasks to worker $i$, then worker $i$'s utility is
+Suppose we assign $m^{t}_i$ tasks to worker $i$ at $t$, his utility is 
 \begin{equation}
-u_i^t=P_i^t - m^{t}_i \cdot c_H (\mathbb{P}_i^t-0.5)
+u_i^t=P_i^t - m^{t}_i \cdot c_H (\mathbb{P}_i^t-0.5)\footnote{Note $\sum_i m^t_i = M$.}
 \end{equation}
-where $P^{t}_{i}$ denotes our payment for worker $i$ at step $t$.
+where $P^{t}_{i}$ denotes our payment to worker $i$ at step $t$ (see Section~\ref{payment} for details).
  
 At the beginning of each step, the data requester and workers mutually agree to a certain rule of payment determination, which would not be changed until the next time step.
 %the data requester promises the workers a certain rule of payment determination which acts the contract between two sides and cannot be changed until the next time step.
