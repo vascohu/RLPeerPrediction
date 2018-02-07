@@ -23,21 +23,26 @@ The generated label $L^{t}_{i}(j)$ depends both on the ground-truth $\mathcal{L}
 %Also, he/she can decide either to truthfully report his observation $r^{t}_i = 1$ or to revert the answer $r^{t}_i = 0$.
 %Workers may act differently for different tasks. 
 At any given time for any task, workers at their will adopt an arbitrary combination of effort level and report strategy. We thus define $\textsf{eft}^{t}_i\in[0,1]$ and $\textsf{rpt}^{t}_i\in[0,1]$ as worker $i$'s probability of exerting high efforts and reporting truthfully for task $j$ %at time $t$ 
-respectively. Furthermore, following existing literature \citet{dasgupta2013crowdsourced,liu2017sequential}, we assume that tasks are homogeneous and workers share the same probability of generating the correct labels if they exert the same level of efforts. We denote the probability as $\mathbb{P}_{H}$ and $\mathbb{P}_{L}$ respectively. Note we require $\mathbb{P}_{H} > \mathbb{P}_{L} \geq 0.5$. Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task is 
+respectively. Furthermore, following existing literature \citet{dasgupta2013crowdsourced,liu2017sequential}, we assume that tasks are homogeneous and workers share the same probability of generating the correct labels if they exert the same level of efforts. We denote the probability as $\mathbb{P}_{H}$ and $\mathbb{P}_{L}$ respectively. Note we require $\mathbb{P}_{H} > \mathbb{P}_{L} = 0.5$.
+Besides, exerting low efforts has cost $c_{L}=0$, whereas exerting high efforts has cost $c_{H}\geq 0$.
+Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task is 
 \begin{equation}
 \begin{split}
 &\mathbb{P}^{t}_i  = ~\textsf{rpt}^{t}_i \cdot\textsf{eft}^{t}_i \mathbb{P}_{H}+ (1-\textsf{rpt}^{t}_i)\cdot \textsf{eft}^{t}_i (1-\mathbb{P}_{ H})+\\
 &\textsf{rpt}^{t}_i \cdot(1-\textsf{eft}^{t}_i) \mathbb{P}_{L}+(1-\textsf{rpt}^{t}_i) \cdot(1-\textsf{eft}^{t}_i) (1-\mathbb{P}_{L})
 \end{split}
 \end{equation}
-\com{cost for effort exertion??}
-
-At each time $t$, the data requester pays worker $i$ some money $P^{t}_{i}$ as the incentive for providing labels.
-At the beginning of each time step, the two parties mutually agree to a certain rule of payment determination, which would not be changed until the next time step.
+If we assign $m^{t}_i$ tasks to worker $i$, then worker $i$'s utility is
+\begin{equation}
+u_i^t=P_i^t - m^{t}_i \cdot c_H (\mathbb{P}_i^t-0.5)
+\end{equation}
+where $P^{t}_{i}$ denotes our payment for worker $i$ at step $t$.
+ 
+At the beginning of each step, the data requester and workers mutually agree to a certain rule of payment determination, which would not be changed until the next time step.
 %the data requester promises the workers a certain rule of payment determination which acts the contract between two sides and cannot be changed until the next time step.
-The workers are self-interested and may change their internal states according to the incentive. It is no surprise that workers' different internal sates would lead to different PoBCs and finally different qualities of labels. After collecting the generated labels, it is a common procedure for the data requester to infer true labels $\tilde{L}^t(j)$ by running some inference algorithm. Please refer to \citet{zheng2017truth} for a good survey of the existing inference algorithms.
+The workers are self-interested and may change their internal states according to the expected utility $\mathbb{E}u_i^t$ he/she can get. It is no surprise that workers' different internal sates would lead to different PoBCs and finally different qualities of labels. After collecting the generated labels, it is a common procedure for the data requester to infer true labels $\tilde{L}^t(j)$ by running some inference algorithm.
+%Please refer to \citet{zheng2017truth} for a good survey of the existing inference algorithms.
 %Denote the the inferred true label of task $j$ by $\tilde{L}^{t}(j)$.
-
 The aggregate label accuracy $A^t$ and the data requester's utility $u^t$ satisfy
 \begin{equation}
 \label{equation:utility}
