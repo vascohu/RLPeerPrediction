@@ -34,12 +34,12 @@ for i in range(4):
         r = infer.reward(pay)
         accR += r
         accRR += infer.real_reward(acc, pay)
-        thefile.write("%s\t%s\n" % (accR, accRR))
-        thefile.flush()
-        if max_cumulative_real_reward == None or accRR > max_cumulative_real_reward:
-            max_cumulative_real_reward = accRR
-        if max_cumulative_infered_reward == None or accR > max_cumulative_infered_reward:
-            max_cumulative_infered_reward = accR
+    thefile.write("%s\t%s\n" % (accR, accRR))
+    thefile.flush()
+    if max_cumulative_real_reward == None or accRR > max_cumulative_real_reward:
+        max_cumulative_real_reward = accRR
+    if max_cumulative_infered_reward == None or accR > max_cumulative_infered_reward:
+        max_cumulative_infered_reward = accR
 
 thefile.write("max_cumulative_infered_reward %s\n" % max_cumulative_infered_reward)
 thefile.write("max_cumulative_real_reward %s\n" % max_cumulative_real_reward)
