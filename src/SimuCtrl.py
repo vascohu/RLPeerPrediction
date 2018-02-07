@@ -14,7 +14,7 @@ task_num = 100
 worker_num = 10
 num_true_label = 0
 T = 200
-EP = 24
+EP = 21
 
 # np.random.seed(0)
 '''This area for the one-step test of our mechanism'''

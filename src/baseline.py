@@ -5,7 +5,7 @@ import sys
 
 from itertools import product
 
-num_time_steps = 24
+num_time_steps = 21
 task_num = 100
 worker_num = 10
 num_true_label = 0
@@ -19,7 +19,7 @@ thefile = open("baseline_" + sys.argv[1]+".txt", 'w')
 max_cumulative_real_reward = None
 max_cumulative_infered_reward = None
 
-for action_sequence in product([0,1,2,3], repeat=8):
+for action_sequence in product([0,1,2,3], repeat=7):
     mkt.worker_init()
     a = None
     accR = 0
@@ -34,8 +34,8 @@ for action_sequence in product([0,1,2,3], repeat=8):
         (pay, reward_mat) = mech.pay(label_mat, infer.belief)
         mkt.evolve(reward_mat)
         r = infer.reward(pay)
-    accR += r
-    accRR += infer.real_reward(acc, pay)
+        accR += r
+        accRR += infer.real_reward(acc, pay)
     thefile.write("%s\t%s\n" % (accR, accRR))
     thefile.flush()
     if max_cumulative_real_reward == None or accRR > max_cumulative_real_reward:
