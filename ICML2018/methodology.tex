@@ -185,12 +185,12 @@ Here, we write the $s$-th sample as $\tilde{\mathcal{L}}^{(s)}$.
 Since Gibbs sampling requires a burn-in process, we discard the first $W_0$ samples in $\mathcal{S}$. After doing so, we estimate worker $i$'s PoBC $\mathbb{P}_i$ as
 \begin{equation}
 \label{equation:p_infer}
-\tilde{\mathbb{P}}_{i}=\frac{\sum\limits_{s=W_0+1}^{W}\left[2\alpha_{1}-1+\sum\limits_{j=1}^{M}\mathbbm{1}(\tilde{\mathcal{L}}^{(s)}(j)=L_{i}(j))\right]}{(W-W_0)\cdot(2\alpha_{1}+2\alpha_{2}-2+M)}
+\tilde{\mathbb{P}}_{i}=\frac{\sum\limits_{s=W_0+1}^{W}\left[2\alpha_{1}-1+\sum\limits_{j=1}^{M}\mathbbm{1}(\tilde{\mathcal{L}}^{(s)}(j)=L_{i}(j))\right]}{(W-W_0)\cdot(2\alpha_{1}+2\alpha_{2}-2+m_i)}
 \end{equation}
 and the distribution of true labels $\bm{\tau}$ as
 \begin{equation}
 \label{tau_infer}
-\tilde{\tau}_{k}=\frac{\sum\limits_{s=W_0+1}^{W}\left[2\beta_{1}-1+\sum\limits_{j=1}^{M}\mathbbm{1}(\tilde{\mathcal{L}}^{(s)}(j)=k)\right]}{(W-W_0)\cdot(2\beta_{1}+2\beta_{2}-2+M)}.
+\tilde{\tau}_{k}=\frac{\sum\limits_{s=W_0+1}^{W}\left[2\beta_{1}-1+\sum\limits_{j=1}^{M}\mathbbm{1}(\tilde{\mathcal{L}}^{(s)}(j)=k)\right]}{(W-W_0)\cdot(2\beta_{1}+2\beta_{2}-2+m_i)}.
 \end{equation}
 Furthermore, we define the log-ratio of task $j$ as
 \begin{equation}
