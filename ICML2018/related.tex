@@ -5,13 +5,13 @@ Our work is inspired by the following three literatures
 
 \emph{Inference method:} Recently, Inference method have been applied to crowdsourcing settings, aiming to uncover the true labels from multiple noisy reported copies. Notably success include EM method \cite{dawid1979maximum,raykar2010learning,zhang2014spectral}, Variational Inference \cite{liu2012variational,chen2015statistical} and Minimax Entropy Inference~\cite{zhou2012learning,zhou2014aggregating}. Besides, \citet{zheng2017truth} provide a good survey of the existing inference algorithms.
 
-\emph{Reinforcement Learning:} XXX. 
+\emph{Reinforcement Learning:} In RL problems, an agent interacts with an unknown environment and attempts to maximize its cumulative utility \citep{Sutton98,Szepesvari10}. Recently, various RL aglorithms have been developed and sucessfully applied to the interaction with human beings~\cite{engel2005reinforcement,gasic2014gaussian}.
 
-Our work differs from above literature in the connection between incentive design with ML techniques. There have been very few recenct studies that have similar taste as ours.
-For example, to improve the long-term utility of the data requester in crowdsourcing, \citet{liu2017sequential} develop a multi-armed bandit algorithm to adjust the state-of-the-art peer prediction mechanism, DG13~\cite{dasgupta2013crowdsourced}.
-However, both the bandit algorithm and DG13 still need to assume that workers are fully rational and will behave as we desired.
-Instead of randomly choosing a reference worker, \citet{liu2017machine} propose to use supervised learning algorithms to generate the reference reports based on the contextual information of tasks and derive the incentive compatibility conditions for the supervised-learning-based peer prediction mechanisms.
-In this paper, without assuming the contextual information about tasks, we develop an unsupervised-learning algorithm to learn the worker models and true labels from.
+Our work differs from the above literature in the connection between incentive mechanisms with ML. There have been very few recenct studies that have similar taste as ours.
+For example, to improve the utility of the data requester in crowdsourcing, \citet{liu2017sequential} develop a multi-armed bandit algorithm to adjust the state-of-the-art peer prediction mechanism, DG13~\cite{dasgupta2013crowdsourced}.
+However, both the bandit algorithm and DG13 still need to assume that workers are fully rational.
+Instead of randomly choosing a reference worker, \citet{liu2017machine} propose to use supervised learning algorithms to generate the reference reports based on the contextual information of tasks and derive the corresponding IC conditions.
+In this paper, without assuming the contextual information about tasks, we use Bayesian inference to learn workers' states and true labels, which is an unsupervised-learning algorithm.
 %Our payments are determined based on the learned worker models, and we derive the incentive compatibility conditions for our unsupervised-learning-based mechanism.
 
 %This idea has also been s\citet{RMDE,cai2018reinforcement} propose to build incentive mechanisms based on reinforcement learning.
