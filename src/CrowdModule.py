@@ -40,6 +40,7 @@ class Worker(object):
 
     # The mirror of the incentive mechanism
     mirror_of_mech = None
+    high_effort_cost = 0.05
 
     @abc.abstractmethod
     def labeling(self, task: Task):
@@ -82,7 +83,7 @@ class QRWorker(Worker):
     def high_effort_value(self, task: Task):
         """Calculate the high-effort value of a task"""
         '''We regard the cost of high-effort equals the difficult level'''
-        return 0.5*self.mirror_of_mech.B - task.difficulty
+        return 0.5*self.mirror_of_mech.B - task.difficulty - Worker.high_effort_cost
 
     def low_effort_value(self, task: Task):
         """Calculate the low-effort cost of a task"""
@@ -146,7 +147,10 @@ class MWUA_Worker(Worker):
             if len(u[j]) == 0:
                 uu[j] = 0
             else:
-                uu[j] = np.mean(u[j])
+                if j==0:
+                    uu[j] = np.mean(u[j]) - Worker.high_effort_cost
+                else:
+                    uu[j] = np.mean(u[j])
         uu -= np.min(uu)
         for j in range(self.strategy.shape[0]):
             self.strategy[j] *= 1 + uu[j]*self.epsilon
@@ -220,7 +224,10 @@ class CrowdMarket:
     # The mechanism
     mech = None
 
-    def __init__(self, task_number: int, worker_number: int, mech: MechModule.MechBase):
+    # worker type
+    workerType = None
+
+    def __init__(self, task_number: int, worker_number: int, mech: MechModule.MechBase, workerType: str):
         # Set the numbers of tasks and workers
         self.n_task = task_number
         self.n_worker = worker_number
@@ -233,17 +240,24 @@ class CrowdMarket:
         # Generate the assign table
         self.task_assign_table = self.assign_task()
         self.mech = mech
+        self.workerType = workerType
 
     def worker_init(self):
         self.worker_list.clear()
         for j in range(self.n_worker):
-            if j % 3 == 0:
-                new_worker = MWUA_Worker(self.mech)
-            elif j % 3 ==1:
+            if self.workerType == "rational":
                 new_worker = RWorker(self.mech)
-            else:
+            elif self.workerType == "QR":
                 new_worker = QRWorker(self.mech)
-            # new_worker = TRWorker(self.mech,j)
+            elif self.workerType == "MWUA":
+                new_worker = MWUA_Worker(self.mech)
+            else:
+                if j%3 == 0:
+                    new_worker = RWorker(self.mech)
+                elif j%3 == 1:
+                    new_worker = QRWorker(self.mech)
+                else:
+                    new_worker = MWUA_Worker(self.mech)
             self.worker_list.append(new_worker)
 
     def assign_task(self):

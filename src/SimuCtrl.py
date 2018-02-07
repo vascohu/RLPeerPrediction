@@ -75,7 +75,8 @@ f.close()
 
 
 # The incentive mechanism
-mech = MechModule.BayesMech()#MechModule.DG13()#
+mech = MechModule.BayesMech()
+#mech = MechModule.DG13()#
 
 # The crowd market
 mkt = CrowdModule.CrowdMarket(task_num, worker_num, mech)
