@@ -42,7 +42,7 @@ In the rest of this section, we formally introduce the three main components of 
 \label{payment}
 To ensure the incentive compatibility that will be depicted in Section 5, we design the payment for worker $i$ as
 \begin{equation}
-P^t_i=m^t_i\cdot (a^t \cdot \textsf{sc}^{t}_i+b)\;\; , \;\; \textsf{sc}^{t}_i = \tilde{\mathbb{P}}^{t}_i - 0.5
+P^t_i=m^t_i\cdot (a_t \cdot \textsf{sc}^{t}_i+b)\;\; , \;\; \textsf{sc}^{t}_i = \tilde{\mathbb{P}}^{t}_i - 0.5
 \label{equation:payment}
 \end{equation}
 where $\textsf{sc}$ denotes worker $i$'s score, which is proportional to his or her PoBC $\tilde{\mathbb{P}}^{t}_i$ calculated by the Bayesian inference algorithm. $b\geq 0$ is a constant representing the fixed base payment even if the worker purely returns random labels. We use $a^t \in \mathcal{A}$ to denote the scaling factor, determined by our reinforcement adjustment algorithm at the beginning of every time step $t$. We further assume $\mathcal{A}$ is a finite set.
@@ -65,9 +65,7 @@ where $\textsf{sc}$ denotes worker $i$'s score, which is proportional to his or 
 %\footnote{In practice, $M^{t}_{i}$ is often smaller than $M$, and we can introduce $L^{t}_i(j)=0$ to denote that task $j$ is not assigned to worker $i$. The incentive mechanisms developed in this paper can work well in the case where the matrix $[L^{t}_i(j)]$ is sparse. However, to simplify the theoretical analysis, we assume $M^{t}_{i}\equiv M$ in this paper and put the theoretical analysis on the sparse case as our future work.}
 
 %In this subsection, we present the details of our inference algorithm.
-Before designing our own Bayesian inference algorithm, we ran several preliminary experiments using the existing inference algorithms popularly used by others. Our empirical studies reveal that those popular ones may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$. This heavy bias will cause the data requester's utility $u^t$ to be miscalculated - this returns bad incentive property, as a worker with much worse accuracy will now enjoy a good estimate. This may also potentially mislead our reinforcement learning algorithm. 
-
-To reduce the inference bias, we develop our Bayesian inference algorithm by introducing the soft Dirichlet priors to both the true labels and workers' PoBCs. However, after doing so, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution first and then employ Gibbs sampling to conduct inference.
+Before designing our own Bayesian inference algorithm, we ran several preliminary experiments using the existing inference algorithms popularly used by others. Our empirical studies reveal that those popular ones may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$. This heavy bias will cause the data requester's utility $u^t$ to be miscalculated - this returns bad incentive property, as a worker with much worse accuracy will now enjoy a good estimate. This may also potentially mislead our reinforcement learning algorithm. To reduce the inference bias, we develop our Bayesian inference algorithm by introducing the soft Dirichlet priors to both the true labels and workers' PoBCs. However, after doing so, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution first and then employ Gibbs sampling to conduct inference.
 
  For the simplicity of notations, we omit the superscript $t$ in this subsection.  %This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
 It is not had to figure out the joint distribution of the collected labels $\bm{L}$ and the true labels $\mathcal{L}$ 
@@ -212,34 +210,41 @@ For good inference accuracy, we require both $W$ and $W_0$ to be large values, a
 %Besides, compared the sampling-based inference which directly uses the joint distribution in Equation~\ref{JointDist}, the marginalization operation in Equation~\ref{marginalization} helps us to eliminate all the continuous variables, which can significantly boost the computation efficiency.
 %Also, it is worth mentioning that, for the simplicity of notations, we omit the superscript $t$ in all the equations above.
 
-\subsection{Reinforcement Incentive Adjustment}
-In this subsection, we formally introduce our reinforcement learning (RL) algorithm, which adjusts the incentive scaling level at each time step $t$ ($a^t$ in Eqn.\ref{equation:payment}). Stepping back and viewing it under the big picture, the reinforcement learning serves as the glue to connect each other component in our framework.
+\subsection{Reinforcement Learning}
+In this subsection, we formally introduce our reinforcement learning (RL) algorithm, which adjusts the scaling factor at each time step $t$ ($a_t$ in Eqn.\ref{equation:payment}). Stepping back and viewing it under the big picture, the reinforcement learning serves as the glue to connect each other component in our framework.
 
-In an RL problem, an agent interacts with an unknown environment and attempts to maximize its utility \citep{Sutton98,Szepesvari10}. The environment is commonly formalized as a Markov Decision Process (MDP) defined as $\mathcal{M} = \langle \mathcal{S}, \mathcal{A}, \mathcal{R}, \mathcal{P}, \gamma\rangle$. At time $t$ the agent is in state $s_t \in \mathcal{S}$ where it takes an action $a_t \in \mathcal{A}$ leading to the next state $s_{t+1} \in \mathcal{S}$ according to the transition probability kernel $\mathcal{P}$, which encodes $\mathbb{P}(s_{t+1}\mid s_t,a_t)$. In most RL problems, $\mathcal{P}$ is unknown to the agent. The agent's goal is to learn the optimal policy, a conditional distribution $\pi(a \mid s)$ that  maximizes the sate value function 
+In an RL problem, an agent interacts with an unknown environment and attempts to maximize its cumulative utility \citep{Sutton98,Szepesvari10}. The environment is commonly formalized as a Markov Decision Process (MDP) defined as $\mathcal{M} = \langle \mathcal{S}, \mathcal{A}, \mathcal{R}, \mathcal{P}, \gamma\rangle$. At time $t$ the agent is in state $s_t \in \mathcal{S}$ where it takes an action $a_t \in \mathcal{A}$ leading to the next state $s_{t+1} \in \mathcal{S}$ according to the transition probability kernel $\mathcal{P}$, which encodes $\mathbb{P}(s_{t+1}\mid s_t,a_t)$. In most RL problems, $\mathcal{P}$ is unknown to the agent. The agent's goal is to learn the optimal policy, a conditional distribution $\pi(a \mid s)$ that  maximizes the sate value function 
 $$
 V^\pi(s) = \mathbb{E} \left[ \sum_{k=1}^\infty \gamma^k r_{t+k} \mid s_t = s   \right].
 $$
-The  crowdsourcing problem we aim to tackle in this paper can perfectly fit into this RL formalization. To be more specific, the data requester is the agent and it interacts with workers (i.e. the environment); incentive scaling levels are actions; %the entity consisting of all workers and their internal efforts and reporting strategies forms the environment; 
-the implicit utility after paying workers (see Formula~\ref{equation:utility}) is reward; how workers respond to different incentives and potentially change their internal states thereafter forms the transition kernel, which is unknown to the data requester; what incentive scaling level to be picked at each time $t$ given workers' labelling constructs the policy, which needs to be learned by the data requester.
+The  crowdsourcing problem we aim to tackle in this paper can perfectly fit into this RL formalization. To be more specific, the data requester is the agent and it interacts with workers (i.e. the environment); scaling factors are actions; %the entity consisting of all workers and their internal efforts and reporting strategies forms the environment; 
+the utility after paying workers (see Eqn.~\ref{equation:utility}) is the reward; how workers respond to different incentives and potentially change their internal states thereafter forms the transition kernel, which is unobservable; what scaling factor to be picked at each step $t$ given workers' labelling constructs the policy, which needs to be learned.
+Note that, since the real accuracy in Eqn.\ref{equation:utility} cannot be observed, we use the estimated accuracy $\tilde{A}$ in Eqn.\ref{vot} instead, namely
+$$
+r_t=u_t\approx F(\tilde{A}^t) - \eta {\sum}_{i=1}^{N}P^t_i.
+$$
 
- Besides presented as the overall layout of our mechanism, Figure~\ref{figure:layout} also visualizes how our RL algorithm interacts with the environment and the rest of the framework;  it takes as input workers' PoBC, reward signal, and internally its action history, and outputs the current incentive scaling level. The latest determined incentive scaling level gets plugged back into the payment rule, and by following formula~(\ref{equation:payment}), the exact payment to each worker is then decided.  
+Besides, presented as the layout of our mechanism, Figure~\ref{figure:layout} also visualizes how our RL algorithm interacts with the environment and the rest of the framework;  it takes as input workers' PoBC, reward signal, and internally its action history, and outputs the next-step scaling factor.
+
+%The latest determined scaling factor gets plugged back into the payment rule, and by following Eqn.\ref{equation:payment}, the exact payment to each worker is then decided.  
  
-As a critical step towards improving a given polict, it is a standard practice for RL algorithms to learn a state-action value function (i.e. Q-function), denoted:
-$$
-Q^\pi(s,a) = \mathbb{E}\left[ \mathcal{R}(s_t,a_t,s_{t+1}) + \gamma V^\pi(s_{t+1}) \mid s_t = s, a_t = a \right]
-$$
+As a critical step towards improving a given policy, it is a standard practice for RL algorithms to learn a state-action value function (i.e. Q-function), denoted:
+\begin{equation*}
+\begin{split}
+&Q^\pi(s,a) =\\
+& \quad\mathbb{E}\left[ \mathcal{R}(s_t,a_t,s_{t+1}) + \gamma V^\pi(s_{t+1}) \mid s_t = s, a_t = a \right].
+\end{split}
+\end{equation*}
 In real-world problems, in order to achieve better generalization, instead of learning a value for each state-action pair, it is more common to learn an approximate value function: $Q^\pi(s,a; \theta) \approx Q^\pi(s,a)$. A standard approach is to learn a feature-based state representation $\phi(s)$ instead of using the raw state $s$. Due to the popularity of Deep Reinforcement learning, it has been a trend to deploy neural networks to automatically extract high-level features \citep{Silver17,Mnih15}. 
 However, most deep RL methods' success is only demonstrated in domains where the environment is very high-dimensional \citep{}. Unfortunately, this prerequisite does not hold in most crowdsourcing problems, where the number of workers are limited to be fewer than thousands. Due to this fact, we turn our attention to designing a high-quality human-engineered feature representation, which embodies our knowledge of this domain. Several studies also reveal that a carefully designed static feature representation can achieve performance as good as the most sophisticated state-of-the-art deep RL models, even in the most challenging domains \citep{Liang16}.
 
 Recall that the data requester's implicit utility at each time $t$ only depends on the aggregate probability of being correct averaged across the whole worker body. Such observation already points out to a  representation design which guarantees good generalization. To be more specific, we construct our state representation as 
+$\phi(s_t) = \sum_{i=1}^N \mathbb{P}^t_i/N.$
+Further recall, when deciding the current scaling factor $a_t$, the data requester does not observe the latest workers' labelling and thus cannot directly estimate the current $\phi(s_t)$ via Bayesian inference. Due to this one-step delay, we have to build our state representation using the previous observation. Since most workers would only change their effort levels and reporting strategies after receiving a new incentive, there exists some imperfect mapping function $\phi(s_{t}) \approx f(\phi(s_{t-1}),a_{t-1})$. Putting into another perspective, the combination of $\phi(s_{t-1})$ and $a_{t-1}$ also reflects our best knowledge of the current state. Utilizing this implicit function, we formally introduce an augmented state representation for our RL algorithm
 $$
-\phi(s) = \frac{1}{N} \cdot \sum_{k=1}^2 \mathbb{P}(L=k) \cdot \sum_{i=1}^N c_{ikk}.
+\hat{s}_t = \langle \phi(s_{t-1}), a_{t-1} \rangle .
 $$
-Further recall, when deciding the current incentive scaling level $a_t$, the data requester does not observe the latest workers' labelling and thus cannot directly estimate the current $\phi(s_t)$ via Bayesian inference. Due to this one-step delay, we have to build our state representation using the previous observation. Since most workers would only change their effort levels and reporting strategies after receiving a new incentive, there exists some imperfect mapping function $\phi(s_{t}) \approx f(\phi(s_{t-1}),a_{t-1})$. Putting into another perspective, the combination of $\phi(s_{t-1})$ and $a_{t-1}$ also reflects our best knowledge of the current state. Utilizing this implicit function, we formally introduce an augmented state representation for our RL algorithm
-$$
-\hat{s_t} = \langle \phi(s_{t-1}), a_{t-1} \rangle .
-$$
-Since the data requester never possesses the ground-truth for each task, the utility $u^t$ is not accurately observed. Also note $\hat{s_t}$ is hardly perfectly accurate. % as the mapping function can not be perfect. 
+Since the data requester never possesses the ground-truth for each task, the utility $u^t$ is not accurately observed. Also note $\hat{s}_t$ is hardly perfectly accurate. % as the mapping function can not be perfect. 
 Combining both together, it would not be a surprise to observe some noise that cannot be directly learned in our state-action value function. 
 
 
@@ -247,8 +252,8 @@ Recall Eqn.~\ref{vot} shows that the estimated accuracy is calculated as an aver
 As for most crowdsourcing problems $M$ is a large number, we leverage the central limit theorem to justify our modelling of the noise using a Gaussian process.
 To be more specific, we calculate the temporal difference (TD) error as 
 $$
-r_t \approx Q^\pi(\hat{s_t}, a_t) - \gamma V^\pi(\hat{s}_{t+1}) + \epsilon_t $$
-where the noise $\epsilon $ follows a Gaussian process $\mathcal{N}(\hat{s_t},\hat{s_{t+1}})$. Note we gain two benefits doing so. First, it greatly simplifies our derivation of the update for the Q-function. Secondly, our empirical results later show that this Gaussian approximation has achieved robust performance under different worker models.  
+r_t \approx Q^\pi(\hat{s}_t, a_t) - \gamma V^\pi(\hat{s}_{t+1}) + \epsilon_t $$
+where the noise $\epsilon $ follows a Gaussian process $\mathcal{N}(\hat{s}_t,\hat{s}_{t+1})$. Note we gain two benefits doing so. First, it greatly simplifies our derivation of the update for the Q-function. Secondly, our empirical results later show that this Gaussian approximation has achieved robust performance under different worker models.  
 
 Under the Gaussian process approximation, we can put all the observed rewards and the corresponding $Q$-function up to the current step $t$ together and obtain
 \begin{equation}
@@ -259,28 +264,32 @@ Due to the Gaussian process assumption of the residual, $\bm{N}\sim \mathcal{N}(
 The hat matrix $\bm{H}$ satisfies that $\bm{H}(k,k)=1$ and $\bm{H}(k,k+1)=-\gamma$ for $k=1,\ldots, t$.
 Then, by using the online Gaussian process regression algorithm~\cite{engel2005reinforcement}, we can effectively learn the Q-function as
 \begin{equation}
-Q(s,a) = \bm{k}(s,a) ^{\mathrm{T}}(\bm{K} +\bm{\sigma}^2)^{-1}\bm{H}\bm{r}
+\label{equation:update}
+Q(s,a) = \bm{k}(s,a) ^{\mathrm{T}}(\bm{K} +\bm{\sigma}^2)^{-1}\bm{H}^{-1}\bm{r}
 \end{equation}
 where $\bm{k}(s,a)=[k((s,a), (s_1,a_1)),\ldots, k((s,a), (s_t,a_t))]^{\mathrm{T}}$ and $\bm{K}=[\bm{k}(s_1,a_1),\ldots,\bm{k}(s_t,a_t)]$. Here, we use $k(\cdot, \cdot)$ to denote the Gaussian kernel.
-To avoid the size of $\bm{k}$ and $\bm{K}$ to increase infinitely, we also employ the sparse approximation to discard some historical data, and the details of this approximation technique can be found in \cite{gasic2014gaussian}.
 Furthermore, we use the classic $\epsilon$-greedy method to construct policy from the learned Q-function.
+To summarize, we provide a formal description about our reinforcement learning algorihtm in Algorithm~\ref{RAC}.
+Note that, when updating $\bm{K}$, $\bm{H}$ and $\bm{r}$ in line 6, we employ the sparse approximation to discard some historical data so that the size of these matrices and vectors will not increase finitely. The details of this approximation technique can be found in \cite{gasic2014gaussian}.
 
 \begin{algorithm}[tb]
    \caption{RL Algorithm for Crowdsourcing}
-   \label{GSC}
+   \label{RAC}
    \small
 \begin{algorithmic}[1]
-   \vspace{0.5mm}
-   \STATE {\bfseries Input:} the collected labels $\bm{L}$, the number of samples $W$
-   \STATE {\bfseries Output:} the sample sequence $\mathcal{S}$
-   \vspace{0.5mm}
-   \STATE $\mathcal{S}\leftarrow\emptyset$, Initialize $\tilde{\mathcal{L}}$ with the uniform distribution
-   \FOR{$s=1$ {\bfseries to} $W$}
-   \FOR{$j=1$ {\bfseries to} $M$}
-   \STATE Compute $\mathbb{P}[\mathcal{L}(j)=k]$ by letting $\mathcal{L}(-j)=\tilde{\mathcal{L}}(-j)$.
-   \STATE $\tilde{\mathcal{L}}(j) \leftarrow$ Sample $\{1,2\}$ with $\mathbb{P}[\mathcal{L}(j)=k]$
+   \FOR{each episode}
+   \FOR{each step in the episode}
+   \STATE Decide the scaling factor as ($\epsilon$-greedy method)
+			$$\ \ a_t=\left\{
+			\begin{array}{ll}
+				\arg\max_{a\in\mathcal{A}}Q(\hat{s}_t,a) & \mathrm{Probability\ } 1-\epsilon\\
+				\mathrm{Random\ } a\in\mathcal{A} & \mathrm{Probability\ } \epsilon
+			\end{array}						
+			 \right.$$   
+   \STATE Assign tasks and collect labels from the workers
+   \STATE Run Bayesian inference to get $\hat{s}_{t+1}$ and $r_t$
+   \STATE Use $(\hat{s}_t, a_t, r_t)$ to update $\bm{K}$, $\bm{H}$ and $\bm{r}$ in Eqn.\ref{equation:update}
    \ENDFOR
-   \STATE Append $\tilde{\mathcal{L}}$ to the sample sequence $\mathcal{S}$
    \ENDFOR
 \end{algorithmic}
 \end{algorithm}

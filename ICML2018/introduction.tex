@@ -1,71 +1,34 @@
 \section{Introduction}
 The ability to quickly collect large scale and high quality labeled datasets is crucial for Machine Learning (ML), and more generally for Artificial Intelligence. Among all proposed solutions, one of the most promising ones is crowdsourcing \cite{slivkins2014online,difallah2015dynamics,simpson2015language}. The idea is neat - instead of using a centralized amount of efforts, the to-be-labeled tasks are disseminated to a decentralized crowd of workers to parallelize the collection procedure, leveraging the power of human computation. Nonetheless, it has been noted that crowdsourced data often suffers from quality issues, due to its unique feature of no monitoring and no ground-truth verification of workers' contributed data. %cite{waggoner2014output}. 
 
-This quality control challenge has been attempted by two relatively disconnected research communities. From the more ML side, quite a few inference techniques have been developed for inferring true labels from crowdsourced and potentially noisy labels \cite{dawid1979maximum,raykar2010learning,liu2012variational,chen2015statistical,zheng2017truth}. These solutions often work as a one-shot, post-processing procedure facing a static set of workers, whose labeling accuracy is fixed and \emph{informative}. Despite its nice theoretical contribution and empirical success, the above methods ignored the effects of \emph{incentives} when dealing with human inputs. It has been observed both in theory and practice that {\color{red} xxx\cite{liu2017sequential}}, without appropriate incentive, selfish and rational workers can easily chose to contribute low quality, uninformative, or even malicious data. Existing inference algorithms are very vulnerable in these cases - either much more redundant crowdsourced labels will need to be collected (low quality inputs), or the methods will simply fail to work (the case with uninformative and malicious inputs). 
+This quality control challenge has been attempted by two relatively disconnected research communities. From the more ML side, quite a few inference techniques have been developed for inferring true labels from crowdsourced and potentially noisy labels \cite{zheng2017truth}. These solutions often work as a one-shot, post-processing procedure facing a static set of workers, whose labeling accuracy is fixed and \emph{informative}. Despite their empirical success, the above methods ignored the effects of \emph{incentives} when dealing with human inputs. It has been observed both in theory and practice that, without appropriate incentive, selfish and rational workers can easily chose to contribute low quality, uninformative, or even malicious data~\cite{liu2017sequential}. Existing inference algorithms are very vulnerable in these cases - either much more redundant labels will be needed (low quality inputs), or the methods will simply fail to work (the case with uninformative and malicious inputs). 
 
-From the less ML side, the above quality control question has been studied in the context of \emph{incentive mechanism design}. In particular, a family of mechanisms, jointly called \emph{peer prediction}, has been proposed towards addressing above incentive challenges \cite{prelec2004bayesian,gneiting2007strictly,jurca2009mechanisms,witkowski2012peer,radanovic2013robust,dasgupta2013crowdsourced}. Existing peer prediction mechanisms focus on achieving incentive compatibility (IC), which is defined as reporting truthfully a private data, or reporting a high quality data, will maximize the expected payment issued to workers. They achieve IC via comparing the reports between the targeted worker, and a randomly selected reference worker, to bypass the challenge of no ground-truth verification.
+From the less ML side, the above quality control question has been studied in the context of \emph{incentive mechanism design}. In particular, a family of mechanisms, jointly called \emph{peer prediction}, has been proposed towards addressing above incentive challenges \cite{dasgupta2013crowdsourced}. Existing peer prediction mechanisms focus on achieving incentive compatibility (IC), which is defined as reporting truthfully a private data, or reporting a high quality data, will maximize workers' expected utilities. These mechanisms achieve IC via comparing the reports between the targeted worker, and a randomly selected reference worker, to bypass the challenge of no ground-truth verification.
 
 Nonetheless, we note several undesirable properties of existing peer prediction mechanisms.
-Firstly, from the label inference studies~\cite{zheng2017truth}, we can know that all the collected labels are correlated and this correlation contains a wealth of information about the true labels and the quality of workers.
-However, existing peer prediction mechanisms purely rely on the reports of the reference worker, which only represents a limited share of the overall collected information.
-This way of design will inevitably lower the robustness, and meanwhile increase the variance of payment (which is unfavorable in practice.)
+Firstly, from the label inference studies~\cite{zheng2017truth}, we can know that all the collected labels contain a wealth of information about the true labels and workers' states.
+However, existing peer prediction mechanisms purely rely on the labels of the reference worker, which only represents a limited share of the overall collected information.
+%This way of design will inevitably lower the robustness, and meanwhile increase the variance of payment (which is unfavorable in practice.)
 Secondly, existing peer prediction mechanisms simplify workers' responses to the incentive mechanism by assuming that workers are all fully rational and only follow the utility-maximizing strategy.
 However, there have been many studies showing that human agents may be bounded-rational and even keep improving their responding strategies in practice~\cite{simon1982models,mckelvey1995quantal,chastain2014algorithms}.
-%Thus, these peer prediction mechanisms that are fancy in theory may yet perform extremely poor when facing the real human workers.
-
-%The information provided by the reference worker, however, only represents a tiny share of the information.
-%
-%
-%This property will inevitably bring severe negative effects for existing peer prediction mechanisms on the robustness and variance of incentives.
-%Secondly, 
-%
-%First, existing peer prediction mechanisms simplify workers' responses to the incentive mechanism by assuming that workers are all fully rational and only follow the utility-maximizing strategy. However, there is evidence showing that human workers are not always fully rational, and they may deviate from equilibrium strategies. Thus, these peer prediction mechanisms that are fancy in theory may yet fail in practice \cite{}. Secondly, existing mechanisms are not prior-free, meaning that workers' cost in exerting effort to produce high quality data is assumed to be known - this is unlikely to be the case in practice. Thirdly, we find that some other properties of incentives, such as variance of payment, robustness to the environments etc, are often overlooked, as well as the variation of incentives among different types of agents - we suspect partly this is because the existing methods only use a small amount of all collected labels.
 
 
 
-Currently, the connection between ML and incentive mechanism design is far from being satisfactory. In this paper, we propose a \emph{learning-based incentive mechanism}, aiming to merge and extend the techniques in the two areas to address the caveats when they are employed alone, as discussed above.
-The high level idea is as follows: we divide the large dataset into relatively small task packages. At each time step, we employ workers to handle one task package and use a certain inference algorithm to learn the true labels and workers' accuracy in their reports. Then, we use the learned worker accuracy o determine the payments for workers. Meanwhile, driving in the background, we develop a reinforcement learning algorithm to adjust the payments based on workers' historical responses to incentivizes. By doing so, our incentive mechanism can be adapted to different types of workers.
+
+In this paper, we propose a \emph{learning-based incentive mechanism}, aiming to merge and extend the techniques in the two disconnected areas to address the caveats when they are employed alone, as discussed above.
+The high level idea is as follows: we divide the large dataset into relatively small task packages. At each time step, we employ workers to handle one task package and infer the true labels and workers' states from their reports.
+Meanwhile, a reinforcement learning (RL) algorithm is used to mine the connection between workers' state changes and the incentives.
+We determines the payments for workers based on the inference results and the output of the RL algorithm.
+By doing so, we can fully exploit the collected labels, adapt to different types of workers and induce workers to generate high-quality labels.
+
+% Then, we use the learned worker accuracy o determine the payments for workers. Meanwhile, driving in the background, we develop a reinforcement learning algorithm to adjust the payments based on workers' historical responses to incentivizes. By doing so, our incentive mechanism can be adapted to different types of workers.
 
 
-%in above incentive design and inference learning methods in a sequential setting. We chose to go with a sequentially interactive setting, not only because this is often the case in practice, but also we find this setting is extremely suitable for us to leverage reinforcement learning type of sequential learning algorithm to relax our algorithm to an entirely parameter- and model-free setting. 
 
-However, as the first work to combine the label inference and reinforcement learning algorithms with incentive mechanism design, there is a line of challenges. In light of the challenges, we summarize the core contributions of this paper as follows:
-\begin{itemize}
-\item In order to achieve good incentive property and calibrate the accuracy workers' reported information (for training our RL algorithm), there is a need of having an unbiased inference algorithm. Unfortunately this is not the case with existing inference method. We propose a novel one-shot peer prediction mechanism based on Bayesian inference by firstly deriving the explicit posterior distribution of true labels and then employing Gibbs sampling for inference. The most challenging problem of our mechanism is to prove the convergence of above inference method.
-\item Since workers' states and label accuracy both are unobservable, we need to estimate them via the label inference algorithm. However, these estimates, which are the means over all tasks, are approximately corrupted with Gaussian noise. Thus, we develop our reinforcement learning algorithm based on the data-driven Gaussian process regression.
-%\item Existing inference algorithms are severely biased on estimating the label accuracy. This bias is allowed for existing studies because they only care the true labels. However, it will mislead the reinforcement learning algorithm in our mechanism. Thus, we develop a novel Bayesian inference algorithm %
-%
-%both in each time step and the long term. 
-%
-%Machine learning algorithms never consider incentive compatibility.
-%\item In order to learn the right incentive for each agent, we will leverage reinforcement learning as the underlying sequentially interactive algorithm. Nonetheless
-%\begin{itemize}
-%\item The state of RL is missing: due to unobservable workers' work state;
-%\item The reward state, i.e., how well workers respond to each level of offered payment is unbservable: this is again due to no ground-truth, as well as the unobservability of workers' state.
-%\item Possibility of long term manipulation: agents can hope to contribute malicious data in hope of a long term return. 
+However, as the first work to merge these techniques, there is a line of challenges. In light of the challenges, we summarize our core contributions as follows:
+\begin{itemize}[topsep=0pt,  itemsep=0pt]
+\item To support the IC of our mechanism and calibrate the estimates of label accuracy for training our RL algorithm, we develop a novel Bayesian inference algorithm and theoretically prove its convergence.
+\item Since the inference results are approximately corrupted with Gaussian noise, we develop a RL algorithm based on the data-driven Gaussian process regression. Meanwhile, we provide a novel method to prove the long-term IC of reinforcement learning algorihtms.
 \end{itemize}
-Besides, we conduct empirical evaluation, and the results show that our mechanism can improve the robustness and lower the variance of payments. Meanwhile, in the long term, our mechanism significantly increase the utility of the data requester under different worker models, such as fully rational, bounded rational and learning agent models. 
+Besides, we conduct extensive experiments, and the results show that our Bayesian inference algorithm can improve the robustness and lower the variance of payments. Meanwhile, our RL algorithm can significantly increase the utility of the data requester under different worker models, such as fully rational, bounded rational and learning agent models. 
 
-%Addressing above challenges are not technically easy. There is a line of challenges that need to be addressed. We list several key ones here:
-%\begin{itemize}
-%\item In order to achieve good incentive property and calibrate the accuracy workers' reported information, there is a need of having an unbiased inference algorithm. Unfortunately this is not the case with existing inference method. %Also we need to prove the convergence of such an inference algorithm. 
-%\item In order to learn the right incentive for each agent, we will leverage reinforcement learning as the underlying sequentially interactive algorithm. Nonetheless
-%\begin{itemize}
-%\item The state of RL is missing: due to unobservable workers' work state;
-%\item The reward state, i.e., how well workers respond to each level of offered payment is unbservable: this is again due to no ground-truth, as well as the unobservability of workers' state.
-%\item Possibility of long term manipulation: agents can hope to contribute malicious data in hope of a long term return. 
-%\end{itemize}
-%\end{itemize}
-
-
-%We summarize two core contributions in this paper:
-%\begin{itemize}
-%\item We propose a novel one-shot peer prediction mechanism based on Bayesian inference. Since existing Bayesian inference algorithms (e.g. EM estimator and variational inference) for crowdsourcing are biased in principle, we derive the explicit posterior distribution of the true labels and employ Gibbs sampling for inference. The most challenging problem of our mechanism is to prove the convergence of above inference method, and further the incentive compatibility of our mechanism which has never been explored in the literature. 
-%
-%We prove our method can calibrate the accuracy of each agent's reported works, and thus provides strong incentives for workers to exert effort and report truthfully their data. Among all advantages, we note that our method is robust to the existence of low quality but highly correlating signals (e.g., essay length in the peer grading case). Besides, we also empirically show the advantages of our mechanism on the stability and fairness of incentives over existing ones.
-%\item We design the first reinforcement Bayesian inference framework which sequentially interacts with workers, addressing the issues of unobservable states and rewards. It dynamically adjusts the scaling level of our incentive mechanism to maximize the utility of the data requester, as well as to estimate the true states and rewards for each corresponding actions. To avoid assuming a decision-making model for workers, we use the data-driven Gaussian process to represent the scaling level adjustment policy, and online updates our policy according to workers' responses. 
-%
-%We prove a sufficient condition under which the reinforcement learning algorithm we built is robust to long term manipulation of each agent too. Thus we are able to avoid the case where agents are not greedy (or often referred to as simple agents in the literature) and are strategic in reasoning long term returns. This robust to manipulation result only shows the benefits of our reinforcement learning algorithm. We also empirically show its advantages on improving the utility if the data requester over one-shot mechanisms.
-%\end{itemize}
-%
-%The rest of the paper organizes as follows: XXXX.
