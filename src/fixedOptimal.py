@@ -15,18 +15,16 @@ mech = MechModule.BayesMech()
 mkt = CrowdModule.CrowdMarket(task_num, worker_num, mech, sys.argv[1])
 infer = InferModule.GibbsSamplingSC(task_num, worker_num)
 
-thefile = open("baseline_" + sys.argv[1]+".txt", 'w')
+thefile = open("fixed_" + sys.argv[1]+".txt", 'w')
 max_cumulative_real_reward = None
 max_cumulative_infered_reward = None
 
-for action_sequence in product([0,1,2,3], repeat=7):
+for i in range(4):
     mkt.worker_init()
-    a = None
+    a = action_set[i]
     accR = 0
     accRR = 0
     for i in range(num_time_steps):
-        if i % 3 == 0:
-            a = action_set[action_sequence[i//3]]
         mech.set([a])
         label_mat = mkt.get_label_mat_NTL()
         true_label = mkt.get_true_label()

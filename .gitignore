@@ -18,3 +18,4 @@ src/Result*.txt
 ICML2018/_region_.tex
 ICML2018/main.pdf
 AAAI Workshop/aaai18_RPP.pdf
+src/*_*.txt
