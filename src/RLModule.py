@@ -409,7 +409,7 @@ class EpSGPS(RLBase):
             for i, a in enumerate(self.ActionSet):
                 z[-1] = a
                 q[i] = self.gp_predict_Thompson(z)
-            print("Q: ", q)
+            #print("Q: ", q)
             pos = np.argmax(q)
             return RLBase.ActionSet[pos]
         else:
@@ -419,14 +419,14 @@ class EpSGPS(RLBase):
                 for i, a in enumerate(self.ActionSet):
                     z[-1] = a
                     q[i] = self.gp_predict(z)
-                print("Exploring Q: ", q)
+                #print("Exploring Q: ", q)
                 return np.random.choice(RLBase.ActionSet)
             else:
                 q = np.zeros(len(self.ActionSet))
                 for i, a in enumerate(self.ActionSet):
                     z[-1] = a
                     q[i] = self.gp_predict(z)
-                print("Q: ", q)
+                #print("Q: ", q)
                 pos = np.argmax(q)
                 return RLBase.ActionSet[pos]
 
@@ -437,7 +437,7 @@ class EpSGPS(RLBase):
         mean_val = self.mu.T * k_cov
         k0 = self.kernel(np.asarray(x), np.asarray(x))
         varVal = k0 - k_cov.T * self.CV * k_cov
-        print(varVal)
+        #print(varVal)
         # print(meanVal, '\t', varVal)
         # Generate a sample from the prediction
         # return np.random.normal(meanVal, np.sqrt(varVal))
@@ -450,7 +450,7 @@ class EpSGPS(RLBase):
         mean_val = self.mu.T * k_cov
         k0 = self.kernel(np.asarray(x), np.asarray(x))
         varVal = k0 - k_cov.T * self.CV * k_cov
-        print(varVal)
+        #print(varVal)
         # print(meanVal, '\t', varVal)
         # Generate a sample from the prediction
         return np.random.normal(mean_val, np.sqrt(varVal))

@@ -3,6 +3,7 @@ import RLModule
 import InferModule
 import MechModule
 import CrowdModule
+import sys
 import time
 import pickle
 
@@ -79,7 +80,7 @@ mech = MechModule.BayesMech()
 #mech = MechModule.DG13()#
 
 # The crowd market
-mkt = CrowdModule.CrowdMarket(task_num, worker_num, mech)
+mkt = CrowdModule.CrowdMarket(task_num, worker_num, mech, sys.argv[1])
 
 # The inference
 infer = InferModule.GibbsSamplingSC(task_num, worker_num)
@@ -116,16 +117,16 @@ mkt.evolve(reward_mat)
 
 rl.explore_prob = 0.2
 
-thefile = open('ResultS3.txt', 'w')
+thefile = open('rl_' + sys.argv[1]+'.txt', 'w')
 
 for i in range(T):
-    print(">>>>>>>>>>>>Round: \n", i)
+    print(">>>>>>>>>>>>Round: %i"% i)
     mkt.worker_init()
     accR = 0
     accRR = 0
     rl.explore_prob *= 0.99
     for t in range(EP):
-        print("Step: ", t+1)
+        #print("Step: ", t+1)
         # Get the action
         if t==0:
             a = rl.decide(start=True)
@@ -158,7 +159,7 @@ for i in range(T):
         # print(pay)
         # print(acc, '\t', infer.ex_accuracy)
 
-        print("State: ", rl.z, "Action: ", a, "Reward: ", r)
+        #print("State: ", rl.z, "Action: ", a, "Reward: ", r)
         # Observation
         if t==EP-1:
             rl.observe(a, r, s, terminal=True)
@@ -167,8 +168,8 @@ for i in range(T):
             # rl.decide(start=False)
         else:
             rl.observe(a, r, s)
-    print(accR)
-    print(accRR)
+    #print(accR)
+    #print(accRR)
     rr.append(accR)
     RR.append(accRR)
     thefile.write("%s\t%s\n" % (accR, accRR))
