@@ -13,7 +13,7 @@
 % If your build breaks (sometimes temporarily if a hyperlink spans a page)
 % please comment out the following usepackage line and replace
 % \usepackage{icml2018} with \usepackage[nohyperref]{icml2018} above.
-\usepackage{hyperref}
+\usepackage[draft]{hyperref}
 
 % Attempt to make hyperref and algorithmic work together better:
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
@@ -75,13 +75,13 @@
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
-\icmltitlerunning{Inference Aided Reinforcement Learning for Incentive Design in Crowdsourcing}
+\icmltitlerunning{Inference Aided Reinforcement Learning for Incentive Mechanism Design in Crowdsourcing}
 
 \begin{document}
 
 \twocolumn[
 %\icmltitle{Incentive Compatible Reinforcement Bayesian Inference for Crowdsourcing}
-\icmltitle{Inference Aided Reinforcement Learning for\\Incentive Design in Crowdsourcing}
+\icmltitle{Inference Aided Reinforcement Learning for\\Incentive Mechanism Design in Crowdsourcing}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
@@ -111,7 +111,6 @@
 
 %\icmlaffiliation{goo}{Googol ShallowMind, New London, Michigan, USA}
 %\icmlaffiliation{ed}{School of Computation, University of Edenborrow, Edenborrow, United Kingdom}
-
 %\icmlcorrespondingauthor{Cieua Vvvvv}{c.vvvvv@googol.com}
 %\icmlcorrespondingauthor{Eee Pppp}{ep@eden.co.uk}
 
@@ -124,18 +123,14 @@
 ]
 
 \begin{abstract}
-In crowdsourcing, incentive mechanisms are developed to theoretically ensure that workers will provide high-quality labels.
-Existing incentive mechanisms, which simply compares the reports of workers, cannot fully exploit the information in workers' reports.
-Meanwhile, they heavily rely on an impractical assumption that workers are all fully rational.
-On the other hand, various machine learning algorithms have empirically shown good performance in exploiting the information contained in workers' reports.
-However, due to the lack of theoretical supports, they cannot be used directly for designing incentive to collect high quality data.
-
-In this paper, we propose a novel learning-based incentive mechanism to bridge these two disconnected communities.
-To achieve this goal, we develop a Bayesian inference algorithm to aggregate workers' reports, and use its inference results to design incentives to offer to workers.
-In addition, we develop a reinforcement learning algorithm to track workers' response to the incentives and adjust the offered incentive levels accordingly.
-We prove that our learning-based incentive mechanism can also theoretically ensure that workers will provide high-quality labels.
-Our empirical results show that the Bayesian inference algorithm can improve the robustness and stability of incentives.
-The reinforcement learning algorithm can adapt our mechanism to different worker models and thus boosts the utilities of the data requester.
+In crowdsourcing, incentive mechanisms are designed to incentivize self-interested workers to report high-quality labels.
+However, existing mechanisms assume all workers can figure out and will only follow the utility-maximizing strategy, which is impractical.
+Also, they only exploit a tiny part of workers' labels.
+Thus, in this paper, we firstly develop a Bayesian inference algorithm to estimate workers' states by fully exploiting all the collected labels.
+Then, we propose a reinforcement learning algorithm to mine the connection between workers' state changes and the incentives.
+Our mechanism determines the incentives for workers based on the estimates of workers' states and the output of the reinforcement learning algorithm.
+One of our core contributions is to theoretically prove that our mechanism correctly incentivizes workers to report high-quality labels.
+Besides, the empirical results show that our Bayesian inference algorithm can improve the robustness and lower the variance of incentives, and our mechanism performs consistently well when different kinds of workers are tested.
 \end{abstract}
 
 \input{introduction}
