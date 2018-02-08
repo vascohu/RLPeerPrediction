@@ -26,7 +26,6 @@ At any given time for any task, workers at their will adopt an arbitrary combina
 respectively. Furthermore, following existing literature \citet{dasgupta2013crowdsourced,liu2017sequential}, we assume that tasks are homogeneous and workers share the same probability of generating the correct labels if they exert the same level of efforts. We denote the probability as $\mathbb{P}_{H}$ and $\mathbb{P}_{L}$ respectively. Note we require $\mathbb{P}_{H} > \mathbb{P}_{L} = 0.5$, where 0.5 is used when workers randomly label tasks.
 Besides, we further assume the cost for any worker $i$ to exert low efforts is $c_{L} = 0$, whereas exerting high efforts is $c_{H} \geq 0$.\footnote{We make such assumption for simplicity. Our analysis can be extended to the case where both $c_{L},  c_{H} \geq 0$, as long as $c_{H} \geq c_{L}$.}
 Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task is
-\vspace{-3mm}
 \begin{equation}
 \begin{split}
 &\mathbb{P}^{t}_i  = ~\textsf{rpt}^{t}_i \cdot\textsf{eft}^{t}_i \mathbb{P}_{H}+ (1-\textsf{rpt}^{t}_i)\cdot \textsf{eft}^{t}_i (1-\mathbb{P}_{ H})+\\
