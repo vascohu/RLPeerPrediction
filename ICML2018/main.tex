@@ -54,11 +54,6 @@
 }
 \makeatother
 
-\def\thm@space@setup{%
-  \thm@preskip=\topsep
-  \thm@postskip=0.1\thm@preskip % or whatever, if you don't want them to be equal
-}
-
 \ifodd 1
 \newcommand{\rev}[1]{{\color{blue}#1}}%revise of the text
 \newcommand{\com}[1]{\textbf{\color{red}(Yang: #1)}} %comment of the text
@@ -83,8 +78,6 @@
 \icmltitlerunning{Inference Aided Reinforcement Learning for Incentive Mechanism Design in Crowdsourcing}
 
 \begin{document}
-\setlength{\abovedisplayskip}{6pt}
-\setlength{\belowdisplayskip}{6pt}
 
 \twocolumn[
 %\icmltitle{Incentive Compatible Reinforcement Bayesian Inference for Crowdsourcing}
