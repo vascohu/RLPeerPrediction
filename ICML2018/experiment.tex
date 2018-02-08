@@ -9,7 +9,7 @@ In this section, we will demonstrate these benefits via empirically testing thes
 %In this section, we firstly test the one-step performance of our incentive mechanism by comparing it with the state-of-the-art incentive mechanism.
 %Then, we show the advantages of including the reinforcement algorithm via conducting experiments on three representative worker models, including fully rational, bounded rational and self-learning agents.
 
-\subsection{Peroformance Analysis of Bayesian Inference}
+\subsection{Performance Analysis of Bayesian Inference}
 In this subsection, we focus on our Bayesian inference algorithm by fixing the scaling factor $a^t=1$.
 In Figures~\ref{BIM}a-c, we compare the average payments per task for worker $1$ in our incentive mechanism with DG13, the state-of-the-art peer prediction mechanism for binary labels~\cite{dasgupta2013crowdsourced}.
 In all these experiments, we set $M=100$, $N=10$, $\mathbb{P}_H=0.8$, $b=0$ and $m_i^t=M(N-1)/N$.
@@ -36,32 +36,32 @@ From the figure, we can find that, when the quality of labels is very low, the i
 This observation shows that these two estimators become over-optimistic for low-quality labels, which will be disastrous for our RL algorithm.
 Thus, we develop our Bayesian inference algorithm to calibrate the estimates of label accuracy for training our RL algorithm.
 
-\subsection{Empirical Analysis on Reinforcement Learning}
-In this subsection, we focus on investigating whether our RL algorithm consistently manages to learn a good policy to maximize the data requester's cumulative utility $R=\sum_t r_t$ when different kinds of workers are tested.
-Here, we consider three distinct and representative worker models.
-For simplicity of experiments, we assume workers always report truthfully, which limits worker's possible strategies on one task into exerting high and low efforts.
-We provide a formal desription about these models as follows 
+\subsection{Empirical Analysis on RIL}
+In this subsection, we focus on investigating whether the RIL algorithm proposed in Section \ref{RL} consistently manages to learn a good policy to maximize the data requester's cumulative utility $R=\sum_t r_t$. To demonstrate our algorithm's general applicability under different environment, we consider three distinct worker models.
+For simplicity of experiments, we assume workers always report truthfully,  reducing workers' possible strategies on one task into choosing only between high and low efforts.
+We provide a formal description about the three models as follows
 \begin{itemize}[topsep=0pt, partopsep=0pt]
-\item {\bf Rational Workers} alway act to maximize their own utlities. Since our incentive mechanism theoretically ensures that exerting high effort and reporting truthfully is the utility-maximizing strategy for all workers, it is safe to assume workers always do so as long as the payment is high enough to cover the cost.
-\item {\bf Quantal Response (QR) Workers} \citep{mckelvey1995quantal} exert high efforts with the probability 
+\item {\bf Rational} workers alway act to maximize their own utilities. Since our incentive mechanism theoretically ensures that exerting high effort % and reporting truthfully 
+is the utility-maximizing strategy for all workers (proved in Section~\ref{analysis}), it is safe to assume workers always do so as long as the payment is high enough to cover the cost.
+\item {\bf Quantal Response (QR)} workers \citep{mckelvey1995quantal} exert high efforts with the probability 
 $$
 \textsf{eft}_i^t= \frac{\exp(\lambda\cdot  u_{iH}^t)}{\exp(\lambda \cdot u_{iH}^t) + \exp (\lambda \cdot u_{iL}^t)}
 $$
 where $u_{iH}^t$ and $u_{iL}^t$ denote worker $i$'s expected utility after exerting high or low efforts respectively at time $t$. $\lambda$ describe workers' rationality level and we set $\lambda =3$.
 
-\item {\bf Multiplicative Weight Update (MWU) Workers} \citep{chastain2014algorithms} update their probabilities of exerting high efforts at every time step $t$ after receiving the payment as the following equation
+\item {\bf Multiplicative Weight Update (MWU)} workers \citep{chastain2014algorithms} update their probabilities of exerting high efforts at every time step $t$ after receiving the payment as the following equation
 \begin{align*}
 \textsf{eft}_i^{t+1} = \frac{\textsf{eft}_i^t(1+\bar{u}_{\cdot H})}{\textsf{eft}_i^t(\bar{u}_{\cdot H} - \bar{u}_{\cdot L}) + \bar{u}_{\cdot L} + 1}
 \end{align*}
-where $\bar{u}_{\cdot H}$ and $\bar{u}_{\cdot L}$ denote the average utilities got from the asks for which worker $i$ exerts high efforts or low efforts at time $t$ respectively. We initialize $\textsf{eft}_i^0$ as $0.2$.
+where $\bar{u}_{\cdot H}$ and $\bar{u}_{\cdot L}$ denote the average utilities received if exerting high efforts or low efforts at time $t$ respectively. We initialize $\textsf{eft}_i^0$ as $0.2$.
 \end{itemize}
 
 
-In all these experiments, we set $M=100$, $N=10$, $\mathbb{P}_H=0.8$, $b=0$, $c_H=0.02$, the available value set of the scaling factor $\mathcal{A}=\{0.1,1.0,5.0,10\}$, the F function in Eqn.\ref{equation:utility} $F(A)=A^{10}$ and $\eta=0.1$.
-Traditional peer prediction mechanisms are often applied by manually setting a value for the scaling facotrs.
+In all these experiments, we set $M=100$, $N=10$, $\mathbb{P}_H=0.8$, $b=0$, $c_H=0.02$, the available value set of the scaling factor $\mathcal{A}=\{0.1,1.0,5.0,10\}$, the exploration rate $\epsilon = 0.2$ for RIL, $F(A)=A^{10}$ and $\eta=0.1$ for the utility function (Eqn.\ref{equation:utility}).
+Traditional peer prediction mechanisms are often applied by manually setting a value for the scaling factor.
 Since we have show the advantages of using Bayesian inference in Section 6.1, we use our payment rule with the manually adjusted scaling factor as the benchmark. 
-In this case, how the tasks are assinged does not affect the comparision results and thus we let every worker get assigned the whole task set at each step (i.e. $\forall i, m_i^t = M$).
-Besides, for simplicity of experiments, we assume workers always report truthfully. This reduces the number of a worker's possible internal states from $4$ to $2$.
+In this case, how the tasks are assigned does not affect the comparision results and thus we let every worker get assigned the whole task set at each step (i.e. $\forall i, m_i^t = M$).
+%Besides, for simplicity of experiments, we assume workers always report truthfully. This reduces the number of a worker's possible internal states from $4$ to $2$.
 Furthermore, to reduce the influence of outliers, we report the average over 5  trials in all the figures.
 
 %make several assumptions. First, we assume workers always report truthfully. This reduces the number of a worker's possible internal states from 4 to 2. Second, we assume at each time $t$, every worker gets assigned the whole task set (i.e. $\forall i, m_i^t = M$). \yitao{why those assumptions make sense} Furthermore, to reduce the influence of outliers, we report the average over 5  trials. In order to show our method applies to the most general settings, we set up our experiments using 3 different existing worker models:
@@ -143,9 +143,9 @@ Finally, we compare our mechanism with two baselines created by ourselves. The f
 \begin{sc}
 \begin{tabular}{ l | l | l | l }
 Method & Rational & QR & MWU \\ \hline \hline
-Fixed Optimal & 27.58 (0.25) & 21.01 (0.01) & 11.72 (0.51) \\
-Adaptive Optimal & & & \\
-Our Method & 26.23 (0.38) & 21.01 (0.01) & 15.62 (0.41)\\
+Fixed Optimal & 27.584 (.253) & 21.004 (.012) & 11.723 (.514) \\
+Adaptive Optimal & 27.618 (.109) & 21.017 (.004) & 18.475 (.382) \\
+RIL & 26.232 (.386) & 21.016 (.018) & 15.626 (.406)\\
 \end{tabular}
 \end{sc}
 }
