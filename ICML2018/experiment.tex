@@ -62,10 +62,64 @@ Thus, we develop a novel Bayesian inference algorithm which reduces the inferenc
 Up to this point, with the help of multiple experiments' strong results, we have demonstrated the competitiveness of each component of our mechanism. 
 
 \subsection{Reinforcement Learning Performance Analysis}
-In this subsection, we move on to empirically analyze our mechanism as a whole. To be more specific, we focus on investigating whether our reinforcement learning algorithm manages to effectively cooperate with other components, and more importantly, whether it  manages to learn a good policy under this inherently noisy environment to maximize the data requester's cumulative utility $R^t$. We wish this subsection would provide deeper insights for readers into how our mechanism performs.
+In this subsection, we move on to empirically analyze our mechanism as a whole. To be more specific, we focus on investigating whether our reinforcement learning algorithm manages to effectively cooperate with other components, and more importantly, whether it  manages to learn a good policy under this inherently noisy environment to maximize the data requester's cumulative utility $R^t$. Furthermore, we wish this subsection would provide deeper insights for readers into how reinforcement learning would be helpful in constructing a strong incentive mechanism.
 
+For simplicity of experiments, we make several assumptions. First, we assume workers always report truthfully. This reduces the number of a worker's possible internal states from 4 to 2. Second, we assume at each time $t$, every worker gets assigned the whole task set (i.e. $\forall i, m_i^t = M$). \yitao{why those assumptions make sense} Furthermore, to reduce the influence of outliers, we report the average over 5  trials. In order to show our method applies to the most general settings, we set up our experiments using 3 different existing worker models:
+\begin{itemize}
+\item {\bf Rational}: A rational worker alway acts to maximize his or her own utlity. Since our mechanism theoretically ensures that exerting high effort and reporting truthfully is the utility maximizing strategy for all workers, it is safe to assume workers always do so as long as the payment is high enough to cover the cost.
+\item {\bf Quantal Response} \citep{mckelvey1995quantal}: A quantal response (QR) worker exerts high efforts with the probability 
+$$
+\textsf{eft}_i^t= \frac{\exp(\lambda\cdot  u_{iH}^t)}{\exp(\lambda \cdot u_{iH}^t) + \exp (\lambda \cdot u_{iL}^t)}
+$$
+where $u_{iH}^t$ and $u_{iL}^t$ denote worker $i$'s expected utility after exerting high or low efforts respectively at time $t$. $\lambda$ describe workers' rationality level and we set $\lambda =3$ in our experiments.
 
- 
+\item {\bf MWU} \citep{chastain2014algorithms}: A multiplicative weight update (MWU) worker updates his/her probability of exerting high efforts at every time step $t$ after receiving the payment as the following
+\begin{align*}
+\textsf{eft}_i^{t+1} = \frac{\textsf{eft}_i^t(1+\bar{u}_{\cdot H})}{\textsf{eft}(\bar{u}_{\cdot H} - \bar{u}_{\cdot L}) + \bar{u}_{\cdot L} + 1}
+\end{align*}
+where $\bar{u}_{\cdot H}$ and $\bar{u}_{\cdot L}$ denote the average utility if exerting high efforts or low efforts respectively.
+\end{itemize}
+Besides, we set $\mathbb{P}_H = 0.9$, $\mathbb{P}_L = 0.5$ and $c_{H} =0.02$.
+
+The first set of experiments we conduct focuses on the accuracy of the estimation of the data requester's cumulative utility $R_i^t$. Since it is used as the reward signal for our reinforcement learning algorithm, it would not be a surprise that the reliability of the estimation plays a crucial role in determining the well-being of the whole mechanism. As Figure~\ref{figure:rewardError} shows, the estimated value's deviation from the real one is small, regardless of which worker model the experiments run on. \yitao{more analysis on each of them}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.4]{image/rewardError}
+\caption{The gap between the estimation of the data requester's cumulative reward and the real one, smoothed over 5 episodes.}
+\label{figure:rewardError}
+\end{figure}
+
+The next set of experiments is about how quickly our RL algorithm learns. As Figure~\ref{figure:learningCurve} shows, our RL algorithms manages to pick up a \yitao{comment on converging speed}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.4]{image/learningCurve}
+\caption{The learning curve of our mechanism smoothed over 5 episodes.}
+\label{figure:learningCurve}
+\end{figure}
+
+Finally, we compare our mechanism with two baselines created by ourselves. The first one
+
+\begin{table}
+\label{table:performance}
+\caption{A comparison between our mechanism's performance and the two baseline.}
+\vskip 0.15in
+\centering
+{\scriptsize
+\begin{sc}
+\begin{tabular}{ l | l | l | l }
+Method & Rational & QR & MWU \\ \hline \hline
+Fixed Optimal & 27.58 (0.25) & 21.01 (0.01) & 11.72 (0.51) \\
+Adaptive Optimal & & & \\
+Our Method & 26.23 (0.38) & 21.01 (0.01) & 15.62 (0.41)\\
+\end{tabular}
+\end{sc}
+}
+\vskip -0.1in
+\end{table}
+%We plot the deviation of the estimated value from the real one in Figure~\ref{figure:rewardError}
+
 
 
 
