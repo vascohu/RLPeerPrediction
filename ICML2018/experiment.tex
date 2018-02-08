@@ -28,6 +28,7 @@
 \end{figure*}
 
 \section{Empirical Experiments}
+\yitao{To do: better overview for experiments, and need more motivation for 6.1}
 In this section, we firstly test the one-step performance of our incentive mechanism by comparing it with the state-of-the-art incentive mechanism.
 Then, we show the advantages of including the reinforcement algorithm via conducting experiments on three representative worker models, including fully rational, bounded rational and self-learning agents.
 
@@ -57,6 +58,14 @@ The other settings are the same as Figure~\ref{BIM3}.
 From the figure, we can find that, when the quality of labels is very low, the inference bias of the Dawid-Skene and variational inference estimators on the label accuracy can be larger than $0.3$ while the range of the label accuracy is only $[0.5,1.0]$.
 This observation shows that these two estimators become over-optimistic for low-quality labels, which will be disastrous for our reinforcement algorithm.
 Thus, we develop a novel Bayesian inference algorithm which reduces the inference bias for low-quality labels by considering the connection between tasks.
+
+Up to this point, with the help of multiple experiments' strong results, we have demonstrated the competitiveness of each component of our mechanism. 
+
+\subsection{Reinforcement Learning Performance Analysis}
+In this subsection, we move on to empirically analyze our mechanism as a whole. To be more specific, we focus on investigating whether our reinforcement learning algorithm manages to effectively cooperate with other components, and more importantly, whether it  manages to learn a good policy under this inherently noisy environment to maximize the data requester's cumulative utility $R^t$. We wish this subsection would provide deeper insights for readers into how our mechanism performs.
+
+
+ 
 
 
 
