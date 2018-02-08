@@ -22,3 +22,4 @@ src/*_*.txt
 src/errorCurve.py
 src/learningCurve.py
 ICML2018/Supplementary.pdf
+*.zip
