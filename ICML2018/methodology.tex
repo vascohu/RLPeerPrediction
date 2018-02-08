@@ -40,12 +40,12 @@ In the rest of this section, we formally introduce the three main components of 
 
 \subsection{Payment Rule}
 \label{payment}
-To ensure the incentive compatibility that will be depicted in Section 5, we design the payment for worker $i$ as
+To ensure the IC that will be depicted in Section 5, we design the payment for worker $i$'s label on task $j$ as
 \begin{equation}
-P^t_i=m^t_i\cdot (a_t \cdot \textsf{sc}^{t}_i+b)\;\; , \;\; \textsf{sc}^{t}_i = \tilde{\mathbb{P}}^{t}_i - 0.5
+P^t_i(j)=a_t \cdot [\textsf{sc}^{t}_i(j)-0.5]+b
 \label{equation:payment}
 \end{equation}
-where $\textsf{sc}$ denotes worker $i$'s score, which is proportional to his or her PoBC $\tilde{\mathbb{P}}^{t}_i$ calculated by the Bayesian inference algorithm. $b\geq 0$ is a constant representing the fixed base payment even if the worker purely returns random labels. We use $a^t \in \mathcal{A}$ to denote the scaling factor, determined by our reinforcement adjustment algorithm at the beginning of every time step $t$. We further assume $\mathcal{A}$ is a finite set.
+where $\textsf{sc}^{t}_i(j)$ denotes worker $i$'s score on task $j$, which will be calculated by the Bayesian inference algorithm. $b\geq 0$ is a constant representing the fixed base payment even if the worker purely returns random labels. We use $a_t \in \mathcal{A}$ to denote the scaling factor, determined by our reinforcement adjustment algorithm at the beginning of every time step $t$. We further assume $\mathcal{A}$ is a finite set.
 
 
 \subsection{Bayesian Inference}
@@ -182,7 +182,12 @@ At each step of the sampling procedure (line 6-7), Algorithm~\ref{GSC} calculate
 After traversing through all tasks, Algorithm~\ref{GSC} generates a new sample of the true label vector $\mathcal{L}$.
 Repeating this process for $W$ times, we get the required number of samples, which is recorded in $\mathcal{S}$.
 Here, we write the $s$-th sample as $\tilde{\mathcal{L}}^{(s)}$.
-Since Gibbs sampling requires a burn-in process, we discard the first $W_0$ samples in $\mathcal{S}$. After doing so, we estimate worker $i$'s PoBC $\mathbb{P}_i$ as
+Since Gibbs sampling requires a burn-in process, we discard the first $W_0$ samples in $\mathcal{S}$. After doing so, we calcualte worker $i$'s score on task $j$ as
+\begin{equation}
+\label{equaton:score}
+\textsf{sc}^{t}_i(j) = {\sum}_{s=W_0+1}^{W}\mathbbm{1}(\tilde{\mathcal{L}}^{(s)}(j)=L_{i}(j))/(W-W_0)
+\end{equation}
+and estimate worker $i$'s PoBC $\mathbb{P}_i$ as
 \begin{equation}
 \label{equation:p_infer}
 \tilde{\mathbb{P}}_{i}=\frac{\sum\limits_{s=W_0+1}^{W}\left[2\alpha_{1}-1+\sum\limits_{j=1}^{M}\mathbbm{1}(\tilde{\mathcal{L}}^{(s)}(j)=L_{i}(j))\right]}{(W-W_0)\cdot(2\alpha_{1}+2\alpha_{2}-2+m_i)}
@@ -211,8 +216,7 @@ For good inference accuracy, we require both $W$ and $W_0$ to be large values, a
 %Also, it is worth mentioning that, for the simplicity of notations, we omit the superscript $t$ in all the equations above.
 
 \subsection{Reinforcement Learning}
-In this subsection, we formally introduce our RL algorithm, which adjusts the scaling factor at each time step $t$. Viewed under the big picture, it serves as the glue to connect each other component in our mechanism (see the edges and parmeters around RL in Figre~\ref{figure:layout}). To fully understand the technical fruit, we require the readers to be familiar with the common concepts in RL. For readers with limited knowledge, we kindly refer them to Appendix A, where we provide a tutorial on the basics. %In an RL problem, an agent interacts with an unknown environment and attempts to maximize its cumulative utility \citep{Sutton98,Szepesvari10}. 
-%The environment of an RL problem is commonly formalized as a Markov Decision Process (MDP) defined as $\mathcal{M} = \langle \mathcal{S}, \mathcal{A}, \mathcal{R}, \mathcal{P}, \gamma\rangle$, where each element in the tuple denotes the state space, action space, reward function, transition probability kernel and discount rate respectively \citep{Sutton98,Szepesvari10}. The agent's goal is to learn the optimal policy $\pi(a \mid s)$.
+In this subsection, we formally introduce our RL algorithm, which adjusts the scaling factor at each time step $t$. Viewed under the big picture, it serves as the glue to connect each other component in our mechanism (see the edges and parameters around RL in Figure~\ref{figure:layout}). To fully understand the technical fruit, we require the readers to at least be familiar with Q-value and function approximation. For readers with limited knowledge, we kindly refer them to Appendix A, where we provide a tutorial on these concepts.
 
 With some transformation, the  crowdsourcing problem we aim to tackle in this paper can perfectly fit into the commonly used RL formalization (i.e. a Markov Decision Process). To be more specific, the data requester is the agent and it interacts with workers (i.e. the environment); scaling factors are actions; the utility of the data requester $r^t$ after paying workers (see Eqn.~\ref{equation:utility}) is the reward; how workers respond to different incentives and potentially change their internal states thereafter forms the transition kernel, which is unobservable; what scaling factor to be picked at each step $t$ given workers' labelling constructs the policy, which needs to be learned. Note that, since the real accuracy cannot be observed, we use the estimated accuracy $\tilde{A}$ calculated by Eqn.\ref{vot} instead to construct the reward
 \begin{equation}

@@ -3,7 +3,7 @@
 In this section, we present the theoretic analysis on our incentive mechanism\footnote{Currently, our theoretical analysis is for the case that $m_i^t=M$. $m_i^t<M$ requires to replace the binomial distribution with the trinomial distribution when analyzing the $H$ function in the supplementary file. The main idea of proof will be the same, and we will extend our proof in the future work.}. Our main results are as follows:
 \begin{theorem}[One-Step IC]
 \label{OSEqulibrium}
-In any time step $t$, when $M\gg 1$, $(2\mathbb{P}_H)^{2(N-1)} \geq M$ and $a^t>c_H$, reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ if the other workers all follow this strategy.
+In any time step $t$, when $M\gg 1$, $(2\mathbb{P}_H)^{2(N-1)} \geq M$ and $a_t>\frac{c_H}{\mathbb{P}_H-0.5}$, reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ if the other workers all follow this strategy.
 \end{theorem}
 \begin{theorem}[Long-Term IC]
 \label{RMNE}
@@ -82,7 +82,7 @@ Besides, we employ the convention that $\bar{\mathbb{P}}=1-p$, $\hat{\mathbb{P}}
 
 
 \subsection{Proof for One-Step IC}
-Recalling Eqn.\ref{equation:u_of_worker} and \ref{equation:payment} shows that, when $a^t>c_H$, worker $i$'s utility-maximizing strategy must maximize $\tilde{\mathbb{P}}^t_i$ because the other parts of our payment rule are given in the beginning of step $t$.
+Recalling Eqn.\ref{equaton:score} and \ref{equation:p_infer} shows that $\sum_j \textsf{sc}_i(j)\approx M\cdot \tilde{\mathbb{P}}_i$ holds when $M\gg 1$. Thus, based on Eqn.\ref{equation:u_of_worker} and ref{equation:payment}, we can know that, when $a_t>c_H/(\mathbb{P}_H-0.5)$, worker $i$'s utility-maximizing strategy must maximize $\tilde{\mathbb{P}}^t_i$.\footnote{$u_i^t\approx  M\cdot a_t\cdot (\tilde{\mathbb{P}}_i-0.5) + M\cdot b- M \cdot c_H\cdot \textsf{eft}^{t}_i$. From the later analysis, we can know $\tilde{\mathbb{P}}_i\approx \mathbb{P}_i$. When $\textsf{rpt}^{t}_i=1$, $\textsf{eft}^{t}_i =|\mathbb{P}_i-0.5|/(P_H-0.5)$. When $\textsf{rpt}^{t}_i<1$, higher $\textsf{eft}^{t}_i$ is needed to reach $\mathbb{P}_i$, which will lead to more costs. However, the payment will not increase. Thus, the utility of worker $i$ willl decrease.}
 Thus, we can conclude Theorem~\ref{OSEqulibrium} by proving the convergence of our Bayesian inference algorithm---i.e. proving $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$.
 $\tilde{\mathbb{P}}^t_i$ are calculated according to Equation~\ref{equation:p_infer}, and if all the samples in our Bayesian inference are all correct, namely $\tilde{\mathcal{L}}^{(s)}(j)\equiv\mathcal{L}(j)$, we can prove $\tilde{P}^t_i\approx \mathbb{P}^t_i$ by leveraging the law of large numbers.
 This observation motivates us to bound $|\tilde{\mathbb{P}}^t_i-\mathbb{P}^t_i|$ by calculating the upper bound of the ratio of wrong labels in the samples.
@@ -213,7 +213,35 @@ Thereby, if $a^t>c_H$, worker $i$ can only get the maximal utility when $\mathbb
 %\end{table}
 %
 %Except for the Nash equilibrium defined in Proposition~\ref{OSEqulibrium}, our mechanism also has other equilibria. We summarize them here:
-
+\begin{figure*}[!t]
+    \centering
+    \begin{subfigure}[t]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image/BPP1}
+        \caption{\label{BIM2}}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image/BPP2}
+        \caption{\label{BIM3}}
+    \end{subfigure}
+        ~
+    \begin{subfigure}[t]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image/BPP3}
+        \caption{\label{BIM4}}
+    \end{subfigure}
+	~
+	\begin{subfigure}[t]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image/EXPC1}
+        \caption{\label{BIM1}}
+    \end{subfigure}
+	\vspace{-3mm}
+    \caption{\label{BIM}Empirical analysis on our Bayesian inference algorithm (a) payment variation with the distribution of true labels (c) payment variation as the PoBC of other workers (d) the standard variance of the payment (d) the inference bias on label accuracy}
+\vspace{-3mm}
+\end{figure*}
 \subsection{Proof for Long-Term IC}
 Due to the existence of one-step IC in our mechanism, we know that, to get higher long-term payments, worker $i$ must let our RL algorithm at least increase the scaling factor from $a$ to any $a'>a$ at a certain state $s$.
 Actually, our RL algorithm will only increase the scaling factor when the state-action value function satisfies $Q^{\pi}(s,a)\leq Q^{\pi}(s,a')$.
