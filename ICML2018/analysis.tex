@@ -7,34 +7,36 @@ In any time step $t$, when $M\gg 1$, $(2\mathbb{P}_H)^{2(N-1)} \geq M$ and $a^t>
 \end{theorem}
 \begin{theorem}[Long-Term IC]
 \label{RMNE}
-Suppose the conditions in Proposition~\ref{OSEqulibrium} are satisfied and the learned $Q$-function approaches the real $Q(s,a)$. When
+Suppose the conditions in Proposition~\ref{OSEqulibrium} are satisfied and the learned $Q$-function approaches the real $Q(\hat{s},a)$. When
 \begin{align}
-&\eta M(N-1)\mathbb{P}_H \min_{a,b\in\mathcal{A}}|a-b|> \frac{F(1)-F(1-\psi)}{1-\gamma}\label{Condition}\\
-&\quad\;\;\psi =(\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2)[4\mathbb{P}_H(1-\mathbb{P}_H)]^{\frac{N-1}{2}}
+&\eta M(N-1)\mathbb{P}_H \cdot G_{\mathcal{A}}> \frac{F(1)-F(1-\psi)}{1-\gamma}\label{Condition}\\
+&\;\psi =(\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2)[4\mathbb{P}_H(1-\mathbb{P}_H)]^{\frac{N-1}{2}} \label{equation:psi}
 \end{align}
-always reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ in the long-term if the other workers all follow this strategy.
+always reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ in the long-term if the other workers all follow this strategy. Here, $G_{\mathcal{A}}=\min_{a,b\in\mathcal{A}, a\neq b}|a-b|$ denotes the minimal gap between two available values of the scaling factor.
 \end{theorem}
-We put the detailed proof of these two theorems in the following two subsections. Here, we provide an overview about our main idea at first.
-To prove Theorem~\ref{OSEqulibrium}, three steps are needed, and we explain them in the reversed order:
-\begin{itemize}
-\item \textbf{Step 1}: First we derive the posterior distribution of $\mathcal{L}$
-\begin{equation}
-\label{postdist2}
-\mathbb P(\mathcal{L}|\bm{L})=B(\hat{\bm{\beta}}){\prod}_{i=1}^{N}B(\hat{\bm{\alpha}}_{i})/[C_p\cdot \mathbb P(\bm{L})]
-\end{equation}
-where $C_p$ is the nomalization constant. Both the numerator and denominator in Equation~\ref{postdist2} are changing with $\bm{L}$, making the distribution difficult to analyze . We derive a proper approximation for the denominator of Equation~\ref{postdist2} at first.
-\item \textbf{Step 2}: In Equation~\ref{equation:p_infer}, if the samples are all correct, namely $\tilde{\mathcal{L}}^{(s)}(j)\equiv\mathcal{L}(j)$, $\tilde{P}^t_i\approx \mathbb{P}^t_i$ must hold. This motivates to bound $|\tilde{\mathbb{P}}^t_i-\mathbb{P}^t_i|$ by calculating the upper bound of the ratio of wrong labels in the samples. Step 1 helps us to achieve this.
-
-\item \textbf{Step 3}: When $a^t>c_H$, worker $i$'s utility-maximizing strategy must maximize $\tilde{\mathbb{P}}^t_i$ because the other parts of our payment rule are given at the beginning.
-Thus, we can conclude Theorem~\ref{OSEqulibrium} by proving $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$.
-
-\end{itemize}
-Due to the existence of Theorem~\ref{OSEqulibrium}, when proving Theorem~\ref{RMNE}, we know that, to get higher long-term payments, worker $i$ must let our RL algorithm at least increase the scaling factor from $a$ to any $a'>a$ at a certain state $s$.
-Actually, our RL algorithm will only increase the scaling factor when the state-action value function satisfies $Q^{\pi}(s,a)\leq Q^{\pi}(s,a')$.
-Eqn.\ref{equation:utility} tells us that our objective function is consist of the utility obtained from the collected labels ($F(\tilde{A}^t)$) and the utility lost in the payment ($\eta {\sum}_{i=1}^{N}P^t_i$).
-To increase the scaling factor, we at least need to increase the payments for the other $N-1$ workers by $M(N-1)\mathbb{P}_H\min_{a,b\in\mathcal{A}}|a-b|$, which corresponds to the left-hand side of Eqn.\ref{Condition}.
-If worker $i$ cannot make up our value loss increment in the payments, our RL algorithm will reject the hypothesis to increase the scaling factor, and the only payment-maximizing strategy for worker $i$ is to report truthfully and exert high efforts in all time steps.
-Thus, our proof will focus on the right-hand side of Eqn.\ref{Condition} which denotes the upper bound of the value increment that worker $i$ can bring.
+In the following two subsections, we will provide the detailed proof of these two theorems. 
+%
+%We put the detailed proof of these two theorems in the following two subsections. Here, we provide an overview about our main idea at first.
+%To prove Theorem~\ref{OSEqulibrium}, three steps are needed, and we explain them in the reversed order:
+%\begin{itemize}
+%\item \textbf{Step 1}: First we derive the posterior distribution of $\mathcal{L}$
+%\begin{equation}
+%\label{postdist2}
+%\mathbb P(\mathcal{L}|\bm{L})=B(\hat{\bm{\beta}}){\prod}_{i=1}^{N}B(\hat{\bm{\alpha}}_{i})/[C_p\cdot \mathbb P(\bm{L})]
+%\end{equation}
+%where $C_p$ is the nomalization constant. Both the numerator and denominator in Equation~\ref{postdist2} are changing with $\bm{L}$, making the distribution difficult to analyze . We derive a proper approximation for the denominator of Equation~\ref{postdist2} at first.
+%\item \textbf{Step 2}: In Equation~\ref{equation:p_infer}, if the samples are all correct, namely $\tilde{\mathcal{L}}^{(s)}(j)\equiv\mathcal{L}(j)$, $\tilde{P}^t_i\approx \mathbb{P}^t_i$ must hold. This motivates to bound $|\tilde{\mathbb{P}}^t_i-\mathbb{P}^t_i|$ by calculating the upper bound of the ratio of wrong labels in the samples. Step 1 helps us to achieve this.
+%
+%\item \textbf{Step 3}: When $a^t>c_H$, worker $i$'s utility-maximizing strategy must maximize $\tilde{\mathbb{P}}^t_i$ because the other parts of our payment rule are given at the beginning.
+%Thus, we can conclude Theorem~\ref{OSEqulibrium} by proving $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$.
+%
+%\end{itemize}
+%Due to the existence of Theorem~\ref{OSEqulibrium}, when proving Theorem~\ref{RMNE}, we know that, to get higher long-term payments, worker $i$ must let our RL algorithm at least increase the scaling factor from $a$ to any $a'>a$ at a certain state $s$.
+%Actually, our RL algorithm will only increase the scaling factor when the state-action value function satisfies $Q^{\pi}(s,a)\leq Q^{\pi}(s,a')$.
+%Eqn.\ref{equation:utility} tells us that our objective function is consist of the utility obtained from the collected labels ($F(\tilde{A}^t)$) and the utility lost in the payment ($\eta {\sum}_{i=1}^{N}P^t_i$).
+%To increase the scaling factor, we at least need to increase the payments for the other $N-1$ workers by $M(N-1)\mathbb{P}_H\min_{a,b\in\mathcal{A}}|a-b|$, which corresponds to the left-hand side of Eqn.\ref{Condition}.
+%If worker $i$ cannot make up our value loss increment in the payments, our RL algorithm will reject the hypothesis to increase the scaling factor, and the only payment-maximizing strategy for worker $i$ is to report truthfully and exert high efforts in all time steps.
+%Thus, our proof will focus on the right-hand side of Eqn.\ref{Condition} which denotes the upper bound of the value increment that worker $i$ can bring.
 Note that, in our proof, if we omit the superscript $t$ in an equation, we mean that this equation holds for all time steps.
 Besides, we employ the convention that $\bar{\mathbb{P}}=1-p$, $\hat{\mathbb{P}}=\max \{\mathbb{P}, \bar{\mathbb{P}}\}$ and $\mathbb{P}_0=\tau_1$.
 
@@ -80,26 +82,32 @@ Besides, we employ the convention that $\bar{\mathbb{P}}=1-p$, $\hat{\mathbb{P}}
 
 
 \subsection{Proof for One-Step IC}
-\underline{\textbf{Step 1}:} Denote the labels generated by $N$ workers for task $j$ as vector $\bm{L}(j)$.
-The distribution of $\bm{L}(j)$ satisfies
-\begin{equation}
-\mathbb{P}_{\hat{\bm{\theta}}}[\bm{L}(j)] = {\sum}_{k=1}^{2}\tau_k{\prod}_{i=1}^{N}\mathbb{P}_i^{\delta_{ijk}}(1-\mathbb{P}_i)^{\delta_{ij(3-k)}}
-\end{equation}
-where $\hat{\bm{\theta}}=[\tau_1, \mathbb{P}_1,\ldots,\mathbb{P}_N]$ denotes all the parameters and $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$.
-Then, we can have
-\begin{lemma}
-\label{Denominator}
-When $M\rightarrow \infty$, 
-\begin{equation*}
-\mathbb{P}(\bm{L})\rightarrow C_{L}(M) \cdot {\prod}_{\bm{L}(j)} \left\{\mathbb{P}_{\hat{\bm{\theta}}}[\bm{L}(j)]\right\}^{M\cdot \mathbb{P}_{\hat{\bm{\theta}}}[\bm{L}(j)]}
-\end{equation*}
-where $C_{L}(M)$ denotes a constant that depends on $M$.
-\end{lemma}
-We defer the proof to the supplementary material.
-Our main idea is to connect $\mathbb{P}(\mathcal{L})$ with ${\prod}_{j=1}^{M}\mathbb{P}_{\hat{\bm{\theta}}}[\bm{L}(j)] $.
+Recalling Eqn.\ref{equation:u_of_worker} and \ref{equation:payment} shows that, when $a^t>c_H$, worker $i$'s utility-maximizing strategy must maximize $\tilde{\mathbb{P}}^t_i$ because the other parts of our payment rule are given in the beginning of step $t$.
+Thus, we can conclude Theorem~\ref{OSEqulibrium} by proving the convergence of our Bayesian inference algorithm---i.e. proving $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$.
+$\tilde{\mathbb{P}}^t_i$ are calculated according to Equation~\ref{equation:p_infer}, and if all the samples in our Bayesian inference are all correct, namely $\tilde{\mathcal{L}}^{(s)}(j)\equiv\mathcal{L}(j)$, we can prove $\tilde{P}^t_i\approx \mathbb{P}^t_i$ by leveraging the law of large numbers.
+This observation motivates us to bound $|\tilde{\mathbb{P}}^t_i-\mathbb{P}^t_i|$ by calculating the upper bound of the ratio of wrong labels in the samples.
+Thereby, we prove Theorem~\ref{OSEqulibrium} with the following two steps:
+%\underline{\textbf{Step 1}:} Denote the labels generated by $N$ workers for task $j$ as vector $\bm{L}(j)$.
+%The distribution of $\bm{L}(j)$ satisfies
+%\begin{equation}
+%\mathbb{P}_{\hat{\bm{\theta}}}[\bm{L}(j)] = {\sum}_{k=1}^{2}\tau_k{\prod}_{i=1}^{N}\mathbb{P}_i^{\delta_{ijk}}(1-\mathbb{P}_i)^{\delta_{ij(3-k)}}
+%\end{equation}
+%where $\hat{\bm{\theta}}=[\tau_1, \mathbb{P}_1,\ldots,\mathbb{P}_N]$ denotes all the parameters and $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$.
+%Then, we can have
+%\begin{lemma}
+%\label{Denominator}
+%When $M\rightarrow \infty$, 
+%\begin{equation*}
+%\mathbb{P}(\bm{L})\rightarrow C_{L}(M) \cdot {\prod}_{\bm{L}(j)} \left\{\mathbb{P}_{\hat{\bm{\theta}}}[\bm{L}(j)]\right\}^{M\cdot \mathbb{P}_{\hat{\bm{\theta}}}[\bm{L}(j)]}
+%\end{equation*}
+%where $C_{L}(M)$ denotes a constant that depends on $M$.
+%\end{lemma}
+%We defer the proof to the supplementary material.
+%Our main idea is to connect $\mathbb{P}(\mathcal{L})$ with ${\prod}_{j=1}^{M}\mathbb{P}_{\hat{\bm{\theta}}}[\bm{L}(j)] $.
 
-\underline{\textbf{Step 2}:} We introduce $n$ and $m$ to denote the number of tasks of which the true label sample in Eqn.\ref{equation:p_infer} is correct ($\mathcal{L}^{(s)}(j)=\mathcal{L}(j)$) and wrong ($\mathcal{L}^{(s)}(j)\neq \mathcal{L}(j)$), respectively.
- Then, we can derive the upper bound of wrong labels as
+\underline{\textbf{Step 1}:} In this step, we aim at deriving the upper bound of the ratio of wrong samples in our Bayesian inference algorithm.
+To achieve this objective , we introduce $n$ and $m$ to denote the number of tasks of which the true label sample in Eqn.\ref{equation:p_infer} is correct ($\mathcal{L}^{(s)}(j)=\mathcal{L}(j)$) and wrong ($\mathcal{L}^{(s)}(j)\neq \mathcal{L}(j)$), respectively.
+Then, we can have
 \begin{lemma}
 \label{ConvBound}
 When $M\gg 1$,
@@ -110,15 +118,13 @@ When $M\gg 1$,
 where $\varepsilon^{-1}=\prod_{i=0}^{N}(2\hat{\mathbb{P}}_i)^{2}$, $\delta=O[\Delta\cdot \log(M)]$ and 
 $$\Delta={\sum}_{i=1}^N[1(\mathbb{P}_i<0.5)-1(\mathbb{P}_i>0.5)].$$
 \end{lemma}
-We again defer the detailed proof to the supplementary material. Our main idea is to introduce a set of variables to describe the collected labels at first.
-
-
-Among the $n$ tasks of which the posterior true label is correct, $x_i$ and $y_i$ denote the number of tasks of which worker $i$'s label is correct and wrong, respectively.
+We defer the detailed proof to the supplementary material. Our main idea is to introduce a set of counts for the collected labels at first.
+More specifically, among the $n$ tasks of which the posterior true label is correct, $x_i$ and $y_i$ denote the number of tasks of which worker $i$'s label is correct and wrong, respectively.
 Among the remaining $m$ tasks, $w_i$ and $z_i$ denote the number of tasks of which worker $i$'s label is correct and wrong, respectively.
-Then, we calculate the approximation of $\mathbb{P}(m)$ based on $\mathbb{P}(x_i,y_i,w_i, z_i|m)$ and $\mathbb{P}(\mathcal{L}|\bm{L})$.
+Then, we calculate the approximation of $\mathbb{P}(m)$ based on the conditional probabilities $\mathbb{P}(x_i,y_i,w_i, z_i|m)$ and $\mathbb{P}(\mathcal{L}|\bm{L})$.
 The upper bounds of $\mathbb{E}[m/M]$ and $\mathbb{E}[m/M]^2$ can be obtained by calculating the upper bounds of $\sum_{m}m \mathbb{P}(m)$ and $\sum_{m} m^2 \mathbb{P}(m)$.
 
-\underline{\textbf{Step 3}:} When $M\gg 1$, in Eqn.\ref{equation:p_infer}, $\tilde{\mathbb{P}}_i\approx \mathbb{E}_{\mathcal{L}}(x_i+z_i)/M$, where $\mathbb{E}_{\mathcal{L}}$ denotes the expectation based on the distribution $\mathbb{P}(\mathcal{L}|\bm{L})$. Meanwhile, according to the law of large numbers, $\mathbb{P}_i\approx (x_i+w_i)/M$. Thus, we can have
+\underline{\textbf{Step 2}:} In this step, we aim at deriving the upper bound of $|\tilde{\mathbb{P}}_i-\mathbb{P}_i|$ under the conditions of Theorem~\ref{OSEqulibrium}. Following the notations in step 1, when $M\gg 1$, in Eqn.\ref{equation:p_infer}, we can have $\tilde{\mathbb{P}}_i\approx \mathbb{E}_{\mathcal{L}}(x_i+z_i)/M$, where $\mathbb{E}_{\mathcal{L}}$ denotes the expectation against $\mathbb{P}(\mathcal{L}|\bm{L})$. Meanwhile, according to the law of large numbers, $\mathbb{P}_i\approx (x_i+w_i)/M$. Thus, we can have
 \begin{equation}
 |\tilde{\mathbb{P}}_i-\mathbb{P}_i|\approx \mathbb{E}_{\mathcal{L}}|w_i-z_i|/M\leq \mathbb{E}_{\mathcal{L}}\left[m/M\right].
 \end{equation}
@@ -209,104 +215,98 @@ Thereby, if $a^t>c_H$, worker $i$ can only get the maximal utility when $\mathbb
 %Except for the Nash equilibrium defined in Proposition~\ref{OSEqulibrium}, our mechanism also has other equilibria. We summarize them here:
 
 \subsection{Proof for Long-Term IC}
-%To prove Proposition~\ref{RMNE}, we need to analyze worker $i$'s effects on our reinforcement learning algorithm.
-%If worker $i$ wishes to get higher payments in the long term, he/she must push our reinforcement learning algorithm to at least increase the scaling factor from $a$ to $b>a$ at a certian state $s$.
-%In the $\epsilon$-greedy strategy used by our reinforcement learning algorithm, the random selection part is independent of worker $i$.
-%Thus, worker $i$ must mislead the greedy part by letting $\tilde{Q}(s,a)\leq \tilde{Q}(s,b)$.
-%In this proof, we will show that, under the condition defined in Equation~\ref{Condition}, there does not exist $b\in \mathcal{A}$ that can achieve this objective.
-%In other words, our reinforcement learning algorithm will never increase the scaling factor to please a single worker.
-%On the other hand, in any time step $t$, worker $i$ will loss some money if $p_i^t<p_H$.
-%Thereby, the payment-maximizing strategy for worker $i$ is to report truthfully and exert high efforts in all time steps, which concludes Proposition~\ref{RMNE}.
-%
-%Since Proposition~\ref{RMNE} requires $\tilde{Q}(s,a)\approx Q(s,a)$ as one of the conditions, we now focus on proving that $Q(s,a)- Q(s,b) >0$ always holds.
-%Suppose all workers except for worker $i$ report truthfully and exert high efforts in all time steps.
-%According to Equations~\ref{utility} and \ref{Qfun}, we can have $Q(s,a)- Q(s,b) \geq  X(a)-X(b) + Y$, where 
-%\begin{equation}
-%X(a)={\sum}_{k=0}^{\infty}\rho^{k}\cdot \mathbb{E}F(\tilde{A}^{k+t}|s_t= s^{*}, a^t=a)
-%\end{equation}
-%denotes the expected long-term utility that we get from the labels.
-%$Y= \eta M(N-1)p_H (b-a)>0$ denotes the payment increment for workers except worker $i$.
-%To attract our reinforcement learning algorithm to increase the scaling factor, worker $i$ must increase $p_i^t$ when $a^t$ is increased from $a$ to $b$.
-%Otherwise, we will get less accurate labels with higher payments, which is impossible for the greedy strategy used in our reinforcement learning algorithm.
-%In this case, the payment for worker $i$ will also increase.
-%However, we do not know $p_i$. Thus, we regard the payment increment as $0$ when deriving the lower bound of $Q(s,a)- Q(s,b)$.
+Due to the existence of one-step IC in our mechanism, we know that, to get higher long-term payments, worker $i$ must let our RL algorithm at least increase the scaling factor from $a$ to any $a'>a$ at a certain state $s$.
+Actually, our RL algorithm will only increase the scaling factor when the state-action value function satisfies $Q^{\pi}(s,a)\leq Q^{\pi}(s,a')$.
+Eqn.\ref{equation:utility} tells us that our objective function is consist of the utility obtained from the collected labels ($F(\tilde{A}^t)$) and the utility lost in the payment ($\eta {\sum}_{i=1}^{N}P^t_i$).
+Once we increase the scaling factor, we at least need to increase the payments for the other $N-1$ workers by $M(N-1)\mathbb{P}_H\cdot G_{\mathcal{A}}$, which corresponds to the left-hand side of Eqn.\ref{Condition}.
 
-% \frac{F_u-F_l}{1-\rho} - \eta \zeta (b-a)
-%
-%When $t\gg 1$, we can neglect the effects of the end-point and make the approximation that $H_t^{-1} \bm{u}_t\approx \bm{U}_t$, where the vector of the long-term cumulative utility $\bm{U}_t=[U(0), U(1),\ldots, U(t)]$.
-%Due to the random selection part of the $\epsilon$-greedy strategy, there should be many state-action combinations in the neighborhood of $(s^*,a)$ and $(s^*,b)$ that have been tested by our reinforcement learning algorithm.
-%These data will play the dominant role in the Gaussian process regression that
-%\begin{equation}
-%Q(s^*,a) = \bm{k}_t(s^*,a)^{T} (\bm{K}_t+\sigma^2 \bm{I}_t)^{-1} \bm{U}_t.
-%\end{equation}
-%Thus, if we can prove that $U(t,a^t=a)>U(t,a^t=b)$ holds for any time step and $b\in \mathcal{A}$, we can concldue that $Q(s^*,a)\leq Q(s^*,b)$ is impossible.
-%
-%
-%the long-term utility $U(t)$, which consists of the utility got from the labels and lost in the payments.
+On the other hand, for the obtained utility, we can have 
+\begin{lemma}
+\label{ConvBoundxx}
+In any time step $t$, if all workers except for worker $i$ report truthfully and exert high efforts,
+\begin{equation*}
+F(\tilde{A}^t)\leq F(1) \;\;,\; F(\tilde{A}^t)\geq F(1-\psi)
+\end{equation*}
+where $\psi$ is defined in Eqn.\ref{equation:psi}.
+\end{lemma}
+We again defer the detailed proof to the supplementary material.
+Our main idea is to derive the bounds of $\tilde{A}$ by analyzing the distribution of $\tilde{\sigma}_j$.
+Our motivation comes form Eqn.\ref{vot} which ensures, $\tilde{A} \approx 1-\mathbb{E}[1/(1+e^{|\tilde{\sigma}_j|})]$. From Lemma~\ref{ConvBoundxx}, we can know that, even in the long-term, worker $i$ can at most increase our value by $(1-\gamma)^{-1}[F(1)-F(1-\psi)]$, which corresponds to the right-hand side of Eqn.\ref{Condition}.
 
-Following our analysis in the beginning of this section, to prove Theorem~\ref{RMNE}, we need to derive the upper bound of the value increment that worker $i$ can bring.
-Worker $i$ can only increase our value by increasing the estimated label accuracy $\tilde{A}$.
-From Eqn.\ref{vot}, we can know that, when $M\gg 1$, the estimated accuracy $\tilde{A}$ satisfies
-\begin{equation}
-\label{accP}
-\tilde{A} \approx 1-\mathbb{E}g(\tilde{\sigma}_j)\;\;,\;\; g(\tilde{\sigma}_j)=1/(1+e^{|\tilde{\sigma}_j|}).
-\end{equation}
-From the proof of Theorem~\ref{OSEqulibrium}, we can know that $\tilde{\mathbb{P}}^{t}_i \approx \mathbb{P}^{t}_i$.
-In this case, according to Eqn.\ref{ProbRatio}, we can have
-\begin{equation}
-\label{ProbRatioApp}
-\tilde{\sigma}_j(\mathbb{P}_i)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_i^{\delta_{ij1}-\delta_{ij2}}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right).
-\end{equation}
-where $\lambda_i=\mathbb{P}_i/(1-\mathbb{P}_i)$ and $\lambda_H=\mathbb{P}_H/(1-\mathbb{P}_H)$.
-%In this proof, if the superscripts of variables in an equation are not specified, the equation should hold for any time step $t$. Suppose all workers except worker $i$ report truthfully and exert high efforts at all time steps.
-%Then, at step $t$, according to Proposition~\ref{ConvBound}, under the condition of Proposition~\ref{OSEqulibrium}, 
-%both $\mathbb{E}[m/M]$ and $\mathbb{E}[m/M]^2$ approaches $0$.
-%In this case, $\tilde{p}_i\rightarrow p_i$. Thus, the log-ratio, which is used for computing the posterior accuracy in Equation~\ref{vot} satisfies
+Thereby, if Eqn.\ref{Condition} is satisfied, worker $i$ will be unable to make up our value loss increment in the payments, and our RL algorithm will reject the hypothesis to increase the scaling factor.
+In this case, the only payment-maximizing strategy for worker $i$ is to report truthfully and exert high efforts in all time steps, which concludes Theorem~\ref{RMNE}.
+
+%Taking our analysis about the payment increment at the beginning of this section, worker $i$'s deviation will not be suffice to change the objective value function's optimal solution to a higher scaling factor if Eqn.\ref{Condition} is satisfied - the increase in accuracy is less than the additional payment.
+%In this case, our RL algorithm will not respond to the strategy changes of worker $i$, which concludes Theorem~\ref{RMNE}.
+%
+%
+%
+%If worker $i$ cannot make up our value loss increment in the payments, our RL algorithm will reject the hypothesis to increase the scaling factor, and the only payment-maximizing strategy for worker $i$ is to report truthfully and exert high efforts in all time steps.
+%Thus, our proof will focus on the right-hand side of Eqn.\ref{Condition} which denotes the upper bound of the value increment that worker $i$ can bring.
+%
+%Following our analysis in the beginning of this section, to prove Theorem~\ref{RMNE}, we need to derive the upper bound of the value increment that worker $i$ can bring.
+%Worker $i$ can only increase our value by increasing the estimated label accuracy $\tilde{A}$.
+%From Eqn.\ref{vot}, we can know that, when $M\gg 1$, the estimated accuracy $\tilde{A}$ satisfies
+%\begin{equation}
+%\label{accP}
+%\tilde{A} \approx 1-\mathbb{E}g(\tilde{\sigma}_j)\;\;,\;\; g(\tilde{\sigma}_j)=1/(1+e^{|\tilde{\sigma}_j|}).
+%\end{equation}
+%From the proof of Theorem~\ref{OSEqulibrium}, we can know that $\tilde{\mathbb{P}}^{t}_i \approx \mathbb{P}^{t}_i$.
+%In this case, according to Eqn.\ref{ProbRatio}, we can have
 %\begin{equation}
 %\label{ProbRatioApp}
-%\tilde{\sigma}_j(p_i)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_i^{\delta_{ij1}-\delta_{ij2}}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right).
+%\tilde{\sigma}_j(\mathbb{P}_i)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_i^{\delta_{ij1}-\delta_{ij2}}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right).
 %\end{equation}
-
-We know that $\tilde{A}\leq 1.0$ holds no matter what strategy worker $i$ takes. Thus, to bound the value increment caused by worker $i$'s strategy changes, we consider two cases where worker $i$ intentionally provides low-quality labels:
-
-\underline{\textbf{Case 1}:} If $\mathbb{P}_i=0.5$, we can eliminate $\lambda_i$ from Eqn.\ref{ProbRatioApp} because $\lambda_i=1$. Furthermore, according to Lemma~\ref{Su-Concave2} in the supplementary file, we can know that 
-$g(\tilde{\sigma}_j)< e^{\tilde{\sigma}_j}$ and $g(\tilde{\sigma}_j)< e^{-\tilde{\sigma}_j}$ both hold. Thus, we build a tighter upper bound of $g(\tilde{\sigma}_j)$ by dividing all the combinations of $\delta_{kj1}$ and $\delta_{kj2}$ in Eqn.\ref{ProbRatioApp} into two sets and using the smaller one of $e^{\tilde{\sigma}_j}$ and $e^{-\tilde{\sigma}_j}$ in each set.
-By using this method, if the true label is $1$, we can have $\mathbb{E}_{[L(j)=1]}g(\tilde{\sigma}_j)< q_1+q_2$, where
-\begin{equation*}
-\begin{split}
-&q_1 = \frac{\tau_2}{\tau_1}{\sum}_{n=K+1}^{N-1}C_{N-1}^{n} (\frac{1}{\lambda_H})^{n-m}\mathbb{P}_H^n(1-\mathbb{P}_H)^m\\
-&q_2 = \frac{\tau_1}{\tau_2}{\sum}_{n=0}^{K}C_{N-1}^{n} {\lambda_H}^{n-m}\mathbb{P}_H^n(1-\mathbb{P}_H)^m\\
-&n={\sum}_{k\neq i}\delta_{kj1}\;,\;m= {\sum}_{k\neq i}\delta_{kj2}
-\end{split}
-\end{equation*}
-and $K=\lfloor (N-1)/2 \rfloor$. By using Lemma~\ref{Su-Concave3} in the supplementary file, we can thus get
-\begin{equation*}
-\begin{split}
-\mathbb{E}_{[L(j)=1]}g(\tilde{\sigma}_j) < c_{\tau}[4\mathbb{P}_H(1-\mathbb{P}_H)]^{\frac{N-1}{2}}.
-\end{split}
-\end{equation*}
-where $c_{\tau}=\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2$. Similarly,
-\begin{equation*}
-\begin{split}
-\mathbb{E}_{[L(j)=2]}g(\tilde{\sigma}_j) < c_{\tau}[4\mathbb{P}_H(1-\mathbb{P}_H)]^{\frac{N-1}{2}}.
-\end{split}
-\end{equation*}
-Thereby, $\tilde{A}>1-c_{\tau}[4\mathbb{P}_H(1-\mathbb{P}_H)]^{\frac{N-1}{2}}=1-\psi$.
-
-
-\underline{\textbf{Case 2}:} If $\mathbb{P}_i=1-\mathbb{P}_H$, we can rewrite Eqn.\ref{ProbRatioApp} as
-\begin{equation*}
-\tilde{\sigma}_j(1-\mathbb{P}_H)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_H^{x-y}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right)
-\end{equation*}
-where $x=\delta_{ij2}$ and $y=\delta_{ij1}$. Since $\mathbb{P}_i=1-\mathbb{P}_H$, $x$ and $y$ actually has the same distribution as $\delta_{kj1}$ and $\delta_{kj2}$. Thus, the distribution of $\tilde{\sigma}_j(1-\mathbb{P}_H)$ is actually the same as $\tilde{\sigma}_j(\mathbb{P}_H)$.
-In other words, since Proposition~\ref{OSEqulibrium} ensures $\tilde{\mathbb{P}}_i\approx\mathbb{P}_i$, our Bayesian inference algorithm uses the information provided by worker $i$ via flipping the label when $\mathbb{P}_i<0.5$.
-%\end{itemize}
-
-
-Thus, even if worker $i$ intentionally lowers the label quality, $\tilde{A}\geq 1-\psi$ still holds.
-Considering $F(\cdot)$ is a non-decreasing monotonic function, we know that worker $i$ can at most increase data requester's objective function by $F(1)-F(1-\psi)$ in each step and $(1-\gamma)^{-1}[F(1)-F(1-\psi)]$ in the long-term.
-Taking our analysis about the payment increment at the beginning of this section, worker $i$'s deviation will not be suffice to change the objective value function's optimal solution to a higher scaling factor if Eqn.\ref{Condition} is satisfied - the increase in accuracy is less than the additional payment.
-In this case, our RL algorithm will not respond to the strategy changes of worker $i$, which concludes Theorem~\ref{RMNE}.
+%where $\lambda_i=\mathbb{P}_i/(1-\mathbb{P}_i)$ and $\lambda_H=\mathbb{P}_H/(1-\mathbb{P}_H)$.
+%%In this proof, if the superscripts of variables in an equation are not specified, the equation should hold for any time step $t$. Suppose all workers except worker $i$ report truthfully and exert high efforts at all time steps.
+%%Then, at step $t$, according to Proposition~\ref{ConvBound}, under the condition of Proposition~\ref{OSEqulibrium}, 
+%%both $\mathbb{E}[m/M]$ and $\mathbb{E}[m/M]^2$ approaches $0$.
+%%In this case, $\tilde{p}_i\rightarrow p_i$. Thus, the log-ratio, which is used for computing the posterior accuracy in Equation~\ref{vot} satisfies
+%%\begin{equation}
+%%\label{ProbRatioApp}
+%%\tilde{\sigma}_j(p_i)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_i^{\delta_{ij1}-\delta_{ij2}}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right).
+%%\end{equation}
+%
+%We know that $\tilde{A}\leq 1.0$ holds no matter what strategy worker $i$ takes. Thus, to bound the value increment caused by worker $i$'s strategy changes, we consider two cases where worker $i$ intentionally provides low-quality labels:
+%
+%\underline{\textbf{Case 1}:} If $\mathbb{P}_i=0.5$, we can eliminate $\lambda_i$ from Eqn.\ref{ProbRatioApp} because $\lambda_i=1$. Furthermore, according to Lemma~\ref{Su-Concave2} in the supplementary file, we can know that 
+%$g(\tilde{\sigma}_j)< e^{\tilde{\sigma}_j}$ and $g(\tilde{\sigma}_j)< e^{-\tilde{\sigma}_j}$ both hold. Thus, we build a tighter upper bound of $g(\tilde{\sigma}_j)$ by dividing all the combinations of $\delta_{kj1}$ and $\delta_{kj2}$ in Eqn.\ref{ProbRatioApp} into two sets and using the smaller one of $e^{\tilde{\sigma}_j}$ and $e^{-\tilde{\sigma}_j}$ in each set.
+%By using this method, if the true label is $1$, we can have $\mathbb{E}_{[L(j)=1]}g(\tilde{\sigma}_j)< q_1+q_2$, where
+%\begin{equation*}
+%\begin{split}
+%&q_1 = \frac{\tau_2}{\tau_1}{\sum}_{n=K+1}^{N-1}C_{N-1}^{n} (\frac{1}{\lambda_H})^{n-m}\mathbb{P}_H^n(1-\mathbb{P}_H)^m\\
+%&q_2 = \frac{\tau_1}{\tau_2}{\sum}_{n=0}^{K}C_{N-1}^{n} {\lambda_H}^{n-m}\mathbb{P}_H^n(1-\mathbb{P}_H)^m\\
+%&n={\sum}_{k\neq i}\delta_{kj1}\;,\;m= {\sum}_{k\neq i}\delta_{kj2}
+%\end{split}
+%\end{equation*}
+%and $K=\lfloor (N-1)/2 \rfloor$. By using Lemma~\ref{Su-Concave3} in the supplementary file, we can thus get
+%\begin{equation*}
+%\begin{split}
+%\mathbb{E}_{[L(j)=1]}g(\tilde{\sigma}_j) < c_{\tau}[4\mathbb{P}_H(1-\mathbb{P}_H)]^{\frac{N-1}{2}}.
+%\end{split}
+%\end{equation*}
+%where $c_{\tau}=\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2$. Similarly,
+%\begin{equation*}
+%\begin{split}
+%\mathbb{E}_{[L(j)=2]}g(\tilde{\sigma}_j) < c_{\tau}[4\mathbb{P}_H(1-\mathbb{P}_H)]^{\frac{N-1}{2}}.
+%\end{split}
+%\end{equation*}
+%Thereby, $\tilde{A}>1-c_{\tau}[4\mathbb{P}_H(1-\mathbb{P}_H)]^{\frac{N-1}{2}}=1-\psi$.
+%
+%
+%\underline{\textbf{Case 2}:} If $\mathbb{P}_i=1-\mathbb{P}_H$, we can rewrite Eqn.\ref{ProbRatioApp} as
+%\begin{equation*}
+%\tilde{\sigma}_j(1-\mathbb{P}_H)\approx \log\left(\frac{\tau_{1}}{\tau_{2}}\lambda_H^{x-y}{\prod}_{k\neq i}\lambda_H^{\delta_{kj1}-\delta_{kj2}}\right)
+%\end{equation*}
+%where $x=\delta_{ij2}$ and $y=\delta_{ij1}$. Since $\mathbb{P}_i=1-\mathbb{P}_H$, $x$ and $y$ actually has the same distribution as $\delta_{kj1}$ and $\delta_{kj2}$. Thus, the distribution of $\tilde{\sigma}_j(1-\mathbb{P}_H)$ is actually the same as $\tilde{\sigma}_j(\mathbb{P}_H)$.
+%In other words, since Proposition~\ref{OSEqulibrium} ensures $\tilde{\mathbb{P}}_i\approx\mathbb{P}_i$, our Bayesian inference algorithm uses the information provided by worker $i$ via flipping the label when $\mathbb{P}_i<0.5$.
+%%\end{itemize}
+%
+%
+%Thus, even if worker $i$ intentionally lowers the label quality, $\tilde{A}\geq 1-\psi$ still holds.
+%Considering $F(\cdot)$ is a non-decreasing monotonic function, we know that worker $i$ can at most increase data requester's objective function by $F(1)-F(1-\psi)$ in each step and $(1-\gamma)^{-1}[F(1)-F(1-\psi)]$ in the long-term.
+%Taking our analysis about the payment increment at the beginning of this section, worker $i$'s deviation will not be suffice to change the objective value function's optimal solution to a higher scaling factor if Eqn.\ref{Condition} is satisfied - the increase in accuracy is less than the additional payment.
+%In this case, our RL algorithm will not respond to the strategy changes of worker $i$, which concludes Theorem~\ref{RMNE}.
 
 
 
