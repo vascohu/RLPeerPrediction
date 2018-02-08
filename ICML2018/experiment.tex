@@ -81,6 +81,48 @@ where $\bar{u}_{\cdot H}$ and $\bar{u}_{\cdot L}$ denote the average utility if 
 \end{itemize}
 Besides, we set $\mathbb{P}_H = 0.9$, $\mathbb{P}_L = 0.5$ and $c_{H} =0.02$.
 
+The first set of experiments we conduct focuses on the accuracy of the estimation of the data requester's cumulative utility $R_i^t$. Since it is used as the reward signal for our reinforcement learning algorithm, it would not be a surprise that the reliability of the estimation plays a crucial role in determining the well-being of the whole mechanism. As Figure~\ref{figure:rewardError} shows, the estimated value's deviation from the real one is small, regardless of which worker model the experiments run on. \yitao{more analysis on each of them}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.4]{image/rewardError}
+\caption{The gap between the estimation of the data requester's cumulative reward and the real one, smoothed over 5 episodes.}
+\label{figure:rewardError}
+\end{figure}
+
+The next set of experiments is about how quickly our RL algorithm learns. As Figure~\ref{figure:learningCurve} shows, our RL algorithms manages to pick up a \yitao{comment on converging speed}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.4]{image/learningCurve}
+\caption{The learning curve of our mechanism smoothed over 5 episodes.}
+\label{figure:learningCurve}
+\end{figure}
+
+Finally, we compare our mechanism with two baselines created by ourselves. The first one
+
+\begin{table}
+\label{table:performance}
+\caption{A comparison between our mechanism's performance and the two baseline.}
+\vskip 0.15in
+\centering
+{\scriptsize
+\begin{sc}
+\begin{tabular}{ l | l | l | l }
+Method & Rational & QR & MWU \\ \hline \hline
+Fixed Optimal & 27.58 (0.25) & 21.01 (0.01) & 11.72 (0.51) \\
+Adaptive Optimal & & & \\
+Our Method & 26.23 (0.38) & 21.01 (0.01) & 15.62 (0.41)\\
+\end{tabular}
+\end{sc}
+}
+\vskip -0.1in
+\end{table}
+%We plot the deviation of the estimated value from the real one in Figure~\ref{figure:rewardError}
+
+
+
+
 %In the literature of crowdsourcing, the Dawid-Skene estimator is the most popular method used to infer the true labels~\cite{dawid1979maximum,raykar2010learning}.
 %The variational inference estimator, which has the similar Bayesian model to our inference algorithm, is also widely-adopted in the existing studies of crowdsourcing~\cite{liu2012variational,chen2015statistical}.
 %To compare different estimators, we set $M=100$ and $N=10$ in Figure~\ref{BIM1}. Also, we let the score of all workers be equal, namely $p_1= \ldots=p_N$, and increase the value of $p_i$ from $0.5$ to $0.9$. Meanwhile, we set the true label distribution as the uniform distribution, namely $\tau_1=\tau_2=0.5$. For a given $p_i$, we firstly generate the true labels and then the labels of all workers both by the Bernoulli distribution. For each value of $p_i$, we run the experiments for $1000$ rounds. To show the bias of inference, we calculate the average value differences between the posterior expected accuracy $\mathbb{E}A$ and the real accuracy $A$. From the figure, we can find that, when workers can provide not-so-bad labels ($p_i>0.75$), both the two above estimators and our inference algorithm have very small bias, which agrees with the good performance of these estimators in the literature~\cite{raykar2010learning,liu2012variational}. However, if workers can only provide low-quality labels, the bias of the Dawid-Skene and variational inference estimators will become unacceptable, because the difference can be larger than $0.3$ while both $\mathbb{E}A$ and $A$ belong to $[0.5,1.0]$. In this case, we cannot use $\mathbb{E}A$ to calculate the utility of the data requester as Equation~\ref{utility}. By contrast, the bias of our Bayesian inference algorithm is much smaller, which is the foundation of our reinforcement incentive mechanism.
