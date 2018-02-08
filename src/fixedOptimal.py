@@ -5,7 +5,7 @@ import sys
 
 from itertools import product
 
-num_time_steps = 21
+num_time_steps = 28
 task_num = 100
 worker_num = 10
 num_true_label = 0
@@ -29,7 +29,7 @@ for i in range(4):
         label_mat = mkt.get_label_mat_NTL()
         true_label = mkt.get_true_label()
         acc = infer.test(label_mat, list(true_label))
-        (pay, reward_mat) = mech.pay(label_mat, infer.belief)
+        (pay, reward_mat) = mech.pay(label_mat, infer.p_dist)
         mkt.evolve(reward_mat)
         r = infer.reward(pay)
         accR += r

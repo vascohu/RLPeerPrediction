@@ -5,7 +5,7 @@ import sys
 
 from itertools import product
 
-num_time_steps = 21
+num_time_steps = 28
 task_num = 100
 worker_num = 10
 num_true_label = 0
@@ -25,13 +25,13 @@ for action_sequence in product([0,1,2,3], repeat=7):
     accR = 0
     accRR = 0
     for i in range(num_time_steps):
-        if i % 3 == 0:
-            a = action_set[action_sequence[i//3]]
+        if i % 4 == 0:
+            a = action_set[action_sequence[i//4]]
         mech.set([a])
         label_mat = mkt.get_label_mat_NTL()
         true_label = mkt.get_true_label()
         acc = infer.test(label_mat, list(true_label))
-        (pay, reward_mat) = mech.pay(label_mat, infer.belief)
+        (pay, reward_mat) = mech.pay(label_mat, infer.p_dist)
         mkt.evolve(reward_mat)
         r = infer.reward(pay)
         accR += r

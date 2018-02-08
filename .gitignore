@@ -19,3 +19,5 @@ ICML2018/_region_.tex
 ICML2018/main.pdf
 AAAI Workshop/aaai18_RPP.pdf
 src/*_*.txt
+src/errorCurve.py
+src/learningCurve.py
