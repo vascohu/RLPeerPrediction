@@ -16,10 +16,10 @@ However, there have been many studies showing that human agents may be bounded-r
 
 
 In this paper, we propose a \emph{learning-based incentive mechanism}, aiming to merge and extend the techniques in the two disconnected areas to address the caveats when they are employed alone, as discussed above.
-The high level idea is as follows: we divide the large dataset into relatively small task packages. At each time step, we employ workers to handle one task package and infer the true labels and workers' states from their reports.
-Meanwhile, a reinforcement learning (RL) algorithm is used to mine the connection between workers' state changes and the incentives.
-We determines the payments for workers based on the inference results and the output of the RL algorithm.
-By doing so, we can fully exploit the collected labels, adapt to different types of workers and induce workers to generate high-quality labels.
+The high level idea is as follows: we divide the large dataset into relatively small task packages. At each time step, we employ workers to handle one task package and etimate the true labels and workers' strategies from their reports.
+Relying on the above estimates, a reinforcement learning (RL) algorithm is used to uncover how workers respond to the incentives.
+We determine the payments for workers based on workers' current strategies and the output of the RL algorithm.
+By doing so, our mechanism can not only incentivize rational workers to provide high-quality labels but also dynamically adjust the payments according to workers' types.
 
 % Then, we use the learned worker accuracy o determine the payments for workers. Meanwhile, driving in the background, we develop a reinforcement learning algorithm to adjust the payments based on workers' historical responses to incentivizes. By doing so, our incentive mechanism can be adapted to different types of workers.
 

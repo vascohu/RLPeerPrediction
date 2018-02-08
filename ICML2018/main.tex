@@ -123,14 +123,23 @@
 ]
 
 \begin{abstract}
+%In crowdsourcing, incentive mechanisms are designed to incentivize workers to report high-quality labels.
+%However, existing mechanisms are often developed as one-shot static solutions, assuming that the designer knows how worker respond to certain incentive levels in exerting effort, and that all workers follow certain utility-maximizing strategy.
+%In this paper, we build a sequential data acquisition mechanism that leverages the power of reinforcement learning. We firstly develop a Bayesian inference algorithm to estimate workers' states by fully exploiting all the collected labels.
+%Then, we propose a reinforcement learning algorithm, relying on the above state estimation, to uncover how workers respond to the different offered incentive levels, and how workers' states (accuracy in contributed labels) changes. %mine the connection between workers' state changes and the incentives.
+%Our mechanism determines the incentives for workers based on the estimates of workers' states and the output of the reinforcement learning algorithm.
+%We theoretically prove that our mechanism correctly incentivizes workers to report high-quality labels.
+%Besides, the empirical results show that our Bayesian inference algorithm can improve the robustness and lower the variance of incentives, and our mechanism performs consistently well when different kinds of workers are tested.
+
 In crowdsourcing, incentive mechanisms are designed to incentivize self-interested workers to report high-quality labels.
-However, existing mechanisms are often developed as one-shot static solutions, assuming that the designer knows how worker respond to certain incentive levels in exerting effort, and that all workers follow certain utility-maximizing strategy.
-In this paper, we build a sequential data acquisition mechanism that leverages the power of reinforcement learning. We firstly develop a Bayesian inference algorithm to estimate workers' states by fully exploiting all the collected labels.
-Then, we propose a reinforcement learning algorithm, relying on the above state estimation, to uncover how workers respond to the different offered incentive levels, and how workers' states (accuracy in contributed labels) changes. %mine the connection between workers' state changes and the incentives.
-Our mechanism determines the incentives for workers based on the estimates of workers' states and the output of the reinforcement learning algorithm.
-We theoretically prove that our mechanism correctly incentivizes workers to report high-quality labels.
-Besides, the empirical results show that our Bayesian inference algorithm can improve the robustness and lower the variance of incentives, and our mechanism performs consistently well when different kinds of workers are tested.
+However, existing mechanisms are often developed as one-shot static solutions, assuming that all workers follow the utility-maximizing strategy.
+In this paper, we build a sequential data acquisition mechanism by firstly developing a Bayesian inference algorithm to estimate workers' labeling strategies from the collected labels.
+Then, we propose a reinforcement learning algorithm, relying on the above estimates, to uncover how workers respond to the incentives. Our mechanism determines the incentives for workers based on workers' current strategies and the output of the reinforcement learning algorithm.
+We theoretically prove that our mechanism can correctly incentivize workers to provide high-quality labels.
+We also empirically show that our Bayesian inference algorithm can improve the robustness and lower the variance of incentives, and our mechanism performs consistently well when different kinds of workers are tested.
 \end{abstract}
+
+
 
 \input{introduction}
 \input{related}
