@@ -217,7 +217,7 @@ Thereby, if $a^t>c_H$, worker $i$ can only get the maximal utility when $\mathbb
 \subsection{Proof for Long-Term IC}
 Due to the existence of one-step IC in our mechanism, we know that, to get higher long-term payments, worker $i$ must let our RL algorithm at least increase the scaling factor from $a$ to any $a'>a$ at a certain state $s$.
 Actually, our RL algorithm will only increase the scaling factor when the state-action value function satisfies $Q^{\pi}(s,a)\leq Q^{\pi}(s,a')$.
-Eqn.\ref{equation:utility} tells us that our objective function is consist of the utility obtained from the collected labels ($F(\tilde{A}^t)$) and the utility lost in the payment ($\eta {\sum}_{i=1}^{N}P^t_i$).
+Eqn.\ref{equation:approx_reward} tells us that our objective function is consist of the utility obtained from the collected labels ($F(\tilde{A}^t)$) and the utility lost in the payment ($\eta {\sum}_{i=1}^{N}P^t_i$).
 Once we increase the scaling factor, we at least need to increase the payments for the other $N-1$ workers by $M(N-1)\mathbb{P}_H\cdot G_{\mathcal{A}}$, which corresponds to the left-hand side of Eqn.\ref{Condition}.
 
 On the other hand, for the obtained utility, we can have 
