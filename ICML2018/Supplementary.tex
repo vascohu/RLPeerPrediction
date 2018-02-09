@@ -726,6 +726,46 @@ Thus, we develop our Bayesian inference algorithm to calibrate the estimates of 
     \caption{\label{BIM}The inference bias on label accuracy}
 \end{figure}
 
+\section{Derivation of Posterior Distribution}
+It is not had to figure out the joint distribution of the collected labels $\bm{L}$ and the true labels $\mathcal{L}$ 
+\begin{equation*}
+\label{JointDist}
+\begin{split}
+    &\mathbb{P}(\bm{L}, \mathcal{L}| \bm{\theta}, \bm{\tau})=\\ &\qquad {\prod}_{j=1}^{M}{\prod}_{k=1}^{2}\left\{\tau_{k}\prod_{i=1}^{N}\mathbb{P}_i^{\delta_{ijk}}(1-\mathbb{P}_i)^{\delta_{ij(3-k)}} \right\}^{\xi_{jk}}
+\end{split}
+\end{equation*}
+where $\bm{\theta}=[\mathbb{P}_1,\ldots, \mathbb{P}_N]$ and $\bm{\tau}=[\tau_1,\tau_2]$. $\tau_1$ and $\tau_2$ denote the distribution of true label $1$ and $2$, respectively.
+Besides,  $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$ and $\xi_{jk}= \mathbbm{1}(\mathcal{L}(j)=k)$.
+Then, the joint distribution of $\bm{L}$, $\mathcal{L}$, $\bm{\theta}$ and $\bm{\tau}$ 
+\begin{equation*}
+\label{JointDist2}
+\begin{split}
+&\mathbb{P}(\mathcal{L},\bm{L},\bm{p}, \bm{\tau})=\mathbb{P}(\mathcal{L},\bm{L}|\bm{p}, \bm{\tau})\cdot \mathbb{P}(\bm{\theta}, \bm{\tau})\\
+&=\frac{1}{B(\bm{\beta})}\prod_{k=1}^{K}\tau_k^{\hat{\beta}^{*}_k-1}\cdot\prod_{i=1}^{N}\frac{1}{B(\bm{\alpha})}p_i^{\hat{\alpha}^{*}_{i1}-1}(1-p_i)^{\hat{\alpha}^{*}_{i2}-1}
+\end{split}
+\end{equation*}
+where $B(x,y)=(x-1)!(y-1)!/(x+y-1)!$ denotes the beta function, and
+\begin{equation*}
+\begin{split}
+&\hat{\alpha}^{*}_{i1}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta_{ijk}\xi_{jk}+\alpha_{1}\\
+&\hat{\alpha}^{*}_{i2}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta_{ij(3-k)}\xi_{jk}+\alpha_{2}\\
+&\hat{\beta}^{*}_k={\sum}_{j=1}^{M}\xi_{jk}+\beta_{k}.
+\end{split}
+\end{equation*}
+As we have explained in our paper, we set $\alpha_1=1.5$ and $\alpha_2=1$ in this paper.
+Meanwhile, we employ the uniform distribution for $\bm{\tau}$ by setting $\beta_1=\beta_2=1$.
+In this case, we can conduct marginalization via integrating the joint distribution $\mathbb{P}(\mathcal{L},\bm{L},\bm{p}, \bm{\tau})$ over $\bm{\theta}$ and $\bm{\tau}$ as
+\begin{equation}
+\label{marginalization}
+\begin{split}
+P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})=\frac{B(\hat{\bm{\beta}})}{B(\bm{\beta})}\cdot {\prod}_{i=1}^{N}\frac{B(\hat{\bm{\alpha}}_{i})}{[B(\bm{\alpha})]^2}
+\end{split}
+\end{equation}
+where $\hat{\bm{\alpha}}_i=[\hat{\alpha}^{*}_{i1}+0.5,\hat{\alpha}^{*}_{i2}]$ and $\hat{\bm{\beta}}=[\hat{\beta}^{*}_1,\hat{\beta}^{*}_2]$. Following Bayes' theorem, we can know that
+\begin{equation}
+\label{PostDist}
+P(\bm{L}|\mathcal{L})=\frac{P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})}{P(\mathcal{L}|\bm{\alpha}, \bm{\beta})}\propto B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}_{i}). 
+\end{equation}
 
 
 \bibliographystyle{icml2018}
