@@ -688,12 +688,44 @@ Thereby, if $a_t>\frac{c_H}{\mathbb{P}_H-0.5}$, $\textsf{rpt}^{t}_i=1$ and $\tex
 \end{proof}
 \end{lemma}
 
-%
-%In this case, we can conclude the first inequality of Proposition~\ref{ConvBound} by combining these two bounds. Furthermore, by using Lemmas~\ref{Su-Sum5} and \ref{Su-Sum6} in the supplementary file, we can know that
-%\begin{equation}
-%\sum_{m=0}^{M}m^2(e^{-\overline{K}m}+e^{\delta-\overline{K}n})\approx (x^2+e^{\delta})(1+x)^{M-2}
-%\end{equation}
-%which concludes the second inequality of Proposition~\ref{ConvBound}.
+\section{Uninformative Equilibrium}
+The uninformative equilibrium denotes the case where all workers collude by always reports the same answer to all tasks.
+For traditional peer prediction mechanisms, under this equilibrium, all the workers still can get high payments because these mechanisms determines the payment by comparing the reports of two workers.
+However, the data requester only can get uninformative labels, and thus this equilibrium is undesired.
+
+In our mechanism, when workers always reports the same answer, for example $1$, our Bayesian inference will 
+wrongly regard the collected labels as high-quality ones and calculate the estimates as
+\begin{equation}
+\tilde{\mathbb{P}}_i=\frac{M+2}{M+3}\;,\;\tilde{\tau}_1=\frac{M+1}{M+2}.
+\end{equation}
+If the answer is $2$, our estimates are
+\begin{equation}
+\tilde{\mathbb{P}}_i=\frac{M+2}{M+3}\;,\;\tilde{\tau}_2=\frac{M+1}{M+2}.
+\end{equation}
+In this case, we can build a warning signal for the uninformative equilibrium as
+\begin{equation}
+\mathsf{Sig}_u = \frac{1}{N}\sum_{i=1}^{N}\log(\tilde{\mathbb{P}}_i)+\log(\max\{\tilde{\tau}_1,\tilde{\tau}_2 \})
+\end{equation}
+If
+\begin{equation}
+\mathsf{Sig}_u\geq \log\frac{M+1}{M+3}
+\end{equation}
+workers are identified to be under the uniformative equilibrium, and we will directly set the score in our payment rule as $0$.
+By doing so, we can create a huge loss for workers and push them to leave this uninformative equilibrium.
+
+\section{Estimation Bias of the Label Accuracy}
+In Figure~\ref{BIM}, we compare our Bayesian inference algorithm with two popular inference algorithms in crowdsourcing, that is, the EM estimator~\cite{raykar2010learning} and the variational inference estimator~\cite{liu2012variational}.
+Here, we set workers' PoBC $\mathbb{P}_i$ to be equal and increase the value of $\mathbb{P}_i$ from $0.5$ to $0.9$.
+The other settings are the same as Figure~2b in our paper.
+From the figure, we can find that, when the quality of labels is very low, the inference bias of the EM and variational inference estimators on the label accuracy can be larger than $0.3$ while the range of the label accuracy is only $[0.5,1.0]$.
+This observation shows that these two estimators become over-optimistic for low-quality labels, which will be disastrous for our RL algorithm.
+Thus, we develop our Bayesian inference algorithm to calibrate the estimates of label accuracy for training our RL algorithm.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.45\textwidth]{image/EXPC1}
+    \caption{\label{BIM}The inference bias on label accuracy}
+\end{figure}
+
 
 
 \bibliographystyle{icml2018}

@@ -15,29 +15,9 @@ Suppose the conditions in Proposition~\ref{OSEqulibrium} are satisfied and the l
 always reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ in the long-term if the other workers all follow this strategy. Here, $G_{\mathcal{A}}=\min_{a,b\in\mathcal{A}, a\neq b}|a-b|$ denotes the minimal gap between two available values of the scaling factor.
 \end{theorem}
 In the following two subsections, we will provide the outline of the proofs of these two theorems. 
-%
-%We put the detailed proof of these two theorems in the following two subsections. Here, we provide an overview about our main idea at first.
-%To prove Theorem~\ref{OSEqulibrium}, three steps are needed, and we explain them in the reversed order:
-%\begin{itemize}
-%\item \textbf{Step 1}: First we derive the posterior distribution of $\mathcal{L}$
-%\begin{equation}
-%\label{postdist2}
-%\mathbb P(\mathcal{L}|\bm{L})=B(\hat{\bm{\beta}}){\prod}_{i=1}^{N}B(\hat{\bm{\alpha}}_{i})/[C_p\cdot \mathbb P(\bm{L})]
-%\end{equation}
-%where $C_p$ is the nomalization constant. Both the numerator and denominator in Equation~\ref{postdist2} are changing with $\bm{L}$, making the distribution difficult to analyze . We derive a proper approximation for the denominator of Equation~\ref{postdist2} at first.
-%\item \textbf{Step 2}: In Equation~\ref{equation:p_infer}, if the samples are all correct, namely $\tilde{\mathcal{L}}^{(s)}(j)\equiv\mathcal{L}(j)$, $\tilde{P}^t_i\approx \mathbb{P}^t_i$ must hold. This motivates to bound $|\tilde{\mathbb{P}}^t_i-\mathbb{P}^t_i|$ by calculating the upper bound of the ratio of wrong labels in the samples. Step 1 helps us to achieve this.
-%
-%\item \textbf{Step 3}: When $a^t>c_H$, worker $i$'s utility-maximizing strategy must maximize $\tilde{\mathbb{P}}^t_i$ because the other parts of our payment rule are given at the beginning.
-%Thus, we can conclude Theorem~\ref{OSEqulibrium} by proving $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$.
-%
-%\end{itemize}
-%Due to the existence of Theorem~\ref{OSEqulibrium}, when proving Theorem~\ref{RMNE}, we know that, to get higher long-term payments, worker $i$ must let our RL algorithm at least increase the scaling factor from $a$ to any $a'>a$ at a certain state $s$.
-%Actually, our RL algorithm will only increase the scaling factor when the state-action value function satisfies $Q^{\pi}(s,a)\leq Q^{\pi}(s,a')$.
-%Eqn.\ref{equation:utility} tells us that our objective function is consist of the utility obtained from the collected labels ($F(\tilde{A}^t)$) and the utility lost in the payment ($\eta {\sum}_{i=1}^{N}P^t_i$).
-%To increase the scaling factor, we at least need to increase the payments for the other $N-1$ workers by $M(N-1)\mathbb{P}_H\min_{a,b\in\mathcal{A}}|a-b|$, which corresponds to the left-hand side of Eqn.\ref{Condition}.
-%If worker $i$ cannot make up our value loss increment in the payments, our RL algorithm will reject the hypothesis to increase the scaling factor, and the only payment-maximizing strategy for worker $i$ is to report truthfully and exert high efforts in all time steps.
-%Thus, our proof will focus on the right-hand side of Eqn.\ref{Condition} which denotes the upper bound of the value increment that worker $i$ can bring.
-Note that, in our proof, if we omit the superscript $t$ in an equation, we mean that this equation holds for all time steps.
+Note that, in addition to incentive compatiblity, our mechanism can also get rid of the undesired uninformative equlibrium that most peer prediction mechanisms have.
+See Appendix G in the supplementary file for detailed discussion.
+Besides, in our proof, if we omit the superscript $t$ in an equation, we mean that this equation holds for all time steps.
 Besides, we employ the convention that $\bar{\mathbb{P}}=1-p$, $\hat{\mathbb{P}}=\max \{\mathbb{P}, \bar{\mathbb{P}}\}$ and $\mathbb{P}_0=\tau_1$.
 
 %To prove Proposition~\ref{RMNE}, we need to analyze worker $i$'s effects on our reinforcement learning algorithm.
@@ -242,7 +222,7 @@ Thereby, if $a^t>c_H$, worker $i$ can only get the maximal utility when $\mathbb
 %        \caption{\label{BIM1}}
 %    \end{subfigure}
 	\vspace{-3mm}
-    \caption{\label{BIM}Empirical analysis on our Bayesian inference algorithm (a) payment variation with the distribution of true labels (c) payment variation as the PoBC of other workers (d) the standard variance of the payment (d) the inference bias on label accuracy}
+    \caption{\label{BIM}Empirical analysis on our Bayesian inference algorithm (a) payment variation with the distribution of true labels (b payment variation as the PoBC of other workers (c) the standard variance of the payment}
 \vspace{-3mm}
 \end{figure*}
 \subsection{Proof for Long-Term IC}
