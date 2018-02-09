@@ -151,13 +151,13 @@ We also empirically show that our Bayesian inference algorithm can improve the r
 
 \section{Future Work and Conclusion}
 In this paper, we build a novel sequential data acquisition mechanism for crowdsourcing.
-In each time step, our mechanism uses a Bayesian inference algorithm to , and our payments to workers are proportional to these estimates.
-We adjust the scaling factor of the payments by developing a RL algorithm which can learn how workers respond to the payments in the background.
+In each time step, our mechanism uses the Bayesian inference algorithm to learn workers' probability of being correct, and our payments to workers are proportional to these probabilities.
+When interacting with workers, our mechanism learns the optimal policy to adjust the scaling factor of the payments via our reinforcement incentive learning algorithm.
 We theoretically prove that our mechanism is incentive compatible.
 We also empirically show that our Bayesian inference algorithm can help to improve the robustness and lower the variance of payments.
-Meanwhile, our RL algorithm can adapt our mechanism to different kinds of worker models and thus consistently improve the utility of the data requester.
-In the future, we will firstly extend our proof in Section 5 to more general cases where $m_i^t<M$.
-Secondly, for more practical cases where the number of workers is very large and the mapping between workers and tasks is very sparse, we will improve our RL algrithm by involving more complex state representations.
+Meanwhile, our reinforcement incentive learning algorithm performs consistently well on different wrker models.
+In the future, we will firstly extend our theoretical analysis to more general cases where $m_i^t<M$.
+Secondly, for more practical cases where the mapping between workers and tasks is very sparse, we will improve our mechanism with more complex state representations, for example, neural networks.
 
 \bibliographystyle{icml2018}
 \bibliography{ref}
