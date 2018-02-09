@@ -239,6 +239,7 @@ $$\hat{s}_t = \langle \phi(\hat{s}_{t-1}), a_{t-1} \rangle.$$
 
 %Since the data requester never possesses the ground-truth for each task, the utility $u^t$ is not accurately observed. Also note $\hat{s}_t$ is hardly perfectly accurate. % as the mapping function can not be perfect. 
 %Combining both together,
+\vspace{-2mm}
 Since neither $r_t$ nor $\hat{s}_t$ can be perfectly accurate, it would not be a surprise to observe some noise that cannot be directly learned in our Q-function. %Recall Eqn.~\ref{vot} shows that the estimated accuracy is calculated as an average across all $M$ tasks. 
 As for most crowdsourcing problems the number of tasks $M$ is large, we leverage the central limit theorem to justify our modeling of the noise using a Gaussian process.
 To be more specific, we calculate the temporal difference (TD) error as 
