@@ -27,6 +27,7 @@ respectively. Furthermore, following existing literature \citet{dasgupta2013crow
 Besides, we further assume the cost for any worker $i$ to exert low efforts is $c_{L} = 0$, whereas exerting high efforts is $c_{H} \geq 0$.\footnote{We make such assumption for simplicity. Our analysis can be extended to the case where both $c_{L},  c_{H} \geq 0$, as long as $c_{H} \geq c_{L}$.}
 Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task is
 \begin{equation}
+\label{PPP}
 \begin{split}
 &\mathbb{P}^{t}_i  = ~\textsf{rpt}^{t}_i \cdot\textsf{eft}^{t}_i \mathbb{P}_{H}+ (1-\textsf{rpt}^{t}_i)\cdot \textsf{eft}^{t}_i (1-\mathbb{P}_{ H})+\\
 &\textsf{rpt}^{t}_i \cdot(1-\textsf{eft}^{t}_i) \mathbb{P}_{L}+(1-\textsf{rpt}^{t}_i) \cdot(1-\textsf{eft}^{t}_i) (1-\mathbb{P}_{L})
