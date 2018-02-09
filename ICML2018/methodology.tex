@@ -235,8 +235,7 @@ To achieve better generalization across different states, it is a common approac
 $\phi(s_t) = {\sum}_{i=1}^N \mathbb{P}^t_i/N$.
 Further recall, when deciding the current scaling factor $a_t$, the data requester does not observe the latest workers' labelling and thus cannot directly estimate the current $\phi(s_t)$ via Bayesian inference. Due to this one-step delay, we have to build our state representation using the previous observation. Since most workers would only change their internal states after receiving a new incentive, there exists some imperfect mapping function $\phi(s_{t}) \approx f(\phi(s_{t-1}),a_{t-1})$. %Putting into another perspective, the combination of $\phi(s_{t-1})$ and $a_{t-1}$ also reflects our best knowledge of the current state. 
 Utilizing this implicit function, we formally introduce an augmented state representation for our RL algorithm
-$\hat{s}_t = \langle \phi(\hat{s}_{t-1}), a_{t-1} \rangle$.
-
+$$\hat{s}_t = \langle \phi(\hat{s}_{t-1}), a_{t-1} \rangle.$$
 
 %Since the data requester never possesses the ground-truth for each task, the utility $u^t$ is not accurately observed. Also note $\hat{s}_t$ is hardly perfectly accurate. % as the mapping function can not be perfect. 
 %Combining both together,
@@ -246,10 +245,15 @@ To be more specific, we calculate the temporal difference (TD) error as
 \begin{equation}
 r_t \approx Q^\pi(\hat{s}_t, a_t) - \gamma \mathbb{E}_{\pi}Q^{\pi}(\hat{s}_{t+1},a_{t+1}) + \epsilon_t 
 \end{equation}
-where the noise $\epsilon $ follows a Gaussian process $\mathcal{N}(\hat{s}_t,\hat{s}_{t+1})$, and $\pi=\mathbb{P}(a|\hat{s})$ depicts how $a$ is selected in any state $\hat{s}$.
-By doing so, we gain two benefits. First, it greatly simplifies the derivation of the update for the Q-function. Secondly, as shown in our empirical results later, it is robust under different worker models.
-Besides, when studying the dialogue with human beings, \citet{gasic2014gaussian} has demonstrated a notably successful approximation of Q-function by letting $Q^{\pi}(\hat{s}_{t+1},a_{t+1})\approx\mathbb{E}_{\pi}Q^{\pi}(\hat{s}_{t+1},a_{t+1})+\epsilon_{\pi}$, where the noise $\epsilon_{\pi}$ also follows a Gaussian process.
-To analyze how human workers response to incentives, we also employ this approximation technique when developing our algorithm.
+where the noise $\epsilon $ follows a Gaussian process $\mathcal{N}(\hat{s}_t,\hat{s}_{t+1})$, and $\pi=\mathbb{P}(a|\hat{s})$ denotes the current policy.
+ Doing so, we gain two benefits. First, it greatly simplifies the derivation of the update for the Q-function. Secondly, as shown in our empirical results later, it is robust under different worker models.
+Besides, following \citet{gasic2014gaussian} we approximate Q-function as
+$$
+Q^{\pi}(\hat{s}_{t+1},a_{t+1})\approx\mathbb{E}_{\pi}Q^{\pi}(\hat{s}_{t+1},a_{t+1})+\epsilon_{\pi}
+$$
+where $\epsilon_{\pi}$ also follows a Gaussian process.
+%when studying the dialogue with human beings, \citet{gasic2014gaussian} has demonstrated a notably successful approximation of Q-function by letting $Q^{\pi}(\hat{s}_{t+1},a_{t+1})\approx\mathbb{E}_{\pi}Q^{\pi}(\hat{s}_{t+1},a_{t+1})+\epsilon_{\pi}$, where the noise $\epsilon_{\pi}$ also follows a Gaussian process.
+%To analyze how human workers response to incentives, we also employ this approximation technique when developing our algorithm.
 
 Under the Gaussian process approximation, all the observed rewards and the corresponding $Q$ values up to the current step $t$ form a equation set, and it can be written as
 \begin{equation}
