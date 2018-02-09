@@ -3,9 +3,10 @@
 	\includegraphics[width=0.48\textwidth]{image/Architecture}
 	\vspace*{-8mm}
     \caption{\label{figure:layout} Layout of our incentive mechanism.}
+    \vspace{2mm}
 \end{figure}
 \section{Incentive Mechanism for Crowdsourcing}
-We present the overall layout of our mechanism in Figure~\ref{figure:layout}, where estimated values are denoted with over-the-head tildes. In our design, the payment rule is to ensure that reporting truthfully and exerting high efforts  is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents strategic manipulations from workers, which bring more long-term benefits to them by sacrificing short-term ones, or the other way around. 
+We present the overall layout of our mechanism in Figure~\ref{figure:layout}, where estimated values are denoted with over-the-head tildes. In our design, the payment rule is to ensure that reporting truthfully and exerting high efforts  is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long-run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents strategic manipulations from workers, which bring more long-term benefits to them by sacrificing short-term ones, or the other way around. 
 By doing so, we wish to induce workers to generate high-quality labels. %and thus improve the label accuracy. 
 The Bayesian inference algorithm is responsible for estimating the true labels, workers' PoBCs and the aggregate label accuracy from the collected labels at each time step. It utilizes soft Dirichlet priors and Gibbs sampling to prevent overestimation of accuracy when workers generate poor-quality labels. The reinforcement learning algorithm adjusts the payment rule based on the historical data of payments, workers' PoBCs and aggregate labels' accuracy, aiming to optimally balance the utility gain from high accuracy and loss from large payments, which corresponds to $F(A^t)$ and $\sum_{i}P_i^t$ in Eqn.\ref{equation:utility} respectively.
 
@@ -270,12 +271,14 @@ To summarize, we provide a formal description about our RL algorithm in Algorith
    \FOR{each episode}
    \FOR{each step in the episode}
    \STATE Decide the scaling factor as ($\epsilon$-greedy method)
+   			\vspace{-3mm}
 			$$\ \ a_t=\left\{
 			\begin{array}{ll}
 				\arg\max_{a\in\mathcal{A}}Q(\hat{s}_t,a) & \mathrm{Probability\ } 1-\epsilon\\
 				\mathrm{Random\ } a\in\mathcal{A} & \mathrm{Probability\ } \epsilon
 			\end{array}						
-			 \right.$$   
+			 \right.$$  
+			 \vspace{-3mm} 
    \STATE Assign tasks and collect labels from the workers
    \STATE Run Bayesian inference to get $\hat{s}_{t+1}$ and $r_t$
    \STATE Use $(\hat{s}_t, a_t, r_t)$ to update $\bm{K}$, $\bm{H}$ and $\bm{r}$ in Eqn.\ref{equation:update}
