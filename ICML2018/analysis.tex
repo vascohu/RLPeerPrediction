@@ -1,6 +1,6 @@
 \section{Convergence and Incentive Results}
 \label{analysis}
-In this section, we present the theoretic analysis on our incentive mechanism\footnote{Currently, our theoretical analysis is for the case that $m_i^t=M$. $m_i^t<M$ requires to replace the binomial distribution with the trinomial distribution when analyzing the $H$ function in the supplementary file. The main idea of proof will be the same, and we will extend our proof in the future work.}. Our main results are as follows:
+In this section, we present the theoretic analysis for our incentive mechanism\footnote{Currently, our theoretical analysis is for the case that $m_i^t=M$. $m_i^t<M$ requires to replace the binomial distribution with the trinomial distribution when analyzing a key function involved in the proof in the supplementary file. The main idea of proof will be the same, and we will extend our proof in the future work.}. Our main results are as follows:
 \begin{theorem}[One-Step IC]
 \label{OSEqulibrium}
 In any time step $t$, when $M\gg 1$, $(2\mathbb{P}_H)^{2(N-1)} \geq M$ and $a_t>\frac{c_H}{\mathbb{P}_H-0.5}$, reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ if the other workers all follow this strategy.
@@ -14,7 +14,7 @@ Suppose the conditions in Proposition~\ref{OSEqulibrium} are satisfied and the l
 \end{align}
 always reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ in the long-term if the other workers all follow this strategy. Here, $G_{\mathcal{A}}=\min_{a,b\in\mathcal{A}, a\neq b}|a-b|$ denotes the minimal gap between two available values of the scaling factor.
 \end{theorem}
-In the following two subsections, we will provide the detailed proof of these two theorems. 
+In the following two subsections, we will provide the outline of the proofs of these two theorems. 
 %
 %We put the detailed proof of these two theorems in the following two subsections. Here, we provide an overview about our main idea at first.
 %To prove Theorem~\ref{OSEqulibrium}, three steps are needed, and we explain them in the reversed order:
@@ -82,11 +82,11 @@ Besides, we employ the convention that $\bar{\mathbb{P}}=1-p$, $\hat{\mathbb{P}}
 
 
 \subsection{Proof for One-Step IC}
-Recalling Eqn.\ref{equaton:score} and \ref{equation:p_infer} shows that $\sum_j \textsf{sc}_i(j)\approx M\cdot \tilde{\mathbb{P}}_i$ holds when $M\gg 1$. Thus, based on Eqn.\ref{equation:u_of_worker} and ref{equation:payment}, we can know that, when $a_t>c_H/(\mathbb{P}_H-0.5)$, worker $i$'s utility-maximizing strategy must maximize $\tilde{\mathbb{P}}^t_i$.\footnote{$u_i^t\approx  M\cdot a_t\cdot (\tilde{\mathbb{P}}_i-0.5) + M\cdot b- M \cdot c_H\cdot \textsf{eft}^{t}_i$. See Lemma~3 in the supplementary file for more detailed discussion. 
+Recall that, Eqn.\ref{equaton:score} and \ref{equation:p_infer} together show that $\sum_j \textsf{sc}_i(j)\approx M\cdot \tilde{\mathbb{P}}_i$ holds when $M\gg 1$. Then, when $a_t>c_H/(\mathbb{P}_H-0.5)$, if $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$, worker $i$'s utility-maximizing strategy will be reporting truthfully and exerting high efforts.\footnote{$u_i^t\approx  M\cdot a_t\cdot (\tilde{\mathbb{P}}_i-0.5) + M\cdot b- M \cdot c_H\cdot \textsf{eft}^{t}_i$. See Appendix~F in the supplementary file for more detailed discussion. 
 %From the later analysis, we can know $\tilde{\mathbb{P}}_i\approx \mathbb{P}_i$. When $\textsf{rpt}^{t}_i=1$, $\textsf{eft}^{t}_i =|\mathbb{P}_i-0.5|/(P_H-0.5)$. When $\textsf{rpt}^{t}_i<1$, higher $\textsf{eft}^{t}_i$ is needed to reach $\mathbb{P}_i$, which will lead to more costs. However, the payment will not increase. Thus, the utility of worker $i$ willl decrease.
 }
-Thus, we can conclude Theorem~\ref{OSEqulibrium} by proving the convergence of our Bayesian inference algorithm---i.e. proving $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$.
-$\tilde{\mathbb{P}}^t_i$ are calculated according to Equation~\ref{equation:p_infer}, and if all the samples in our Bayesian inference are all correct, namely $\tilde{\mathcal{L}}^{(s)}(j)\equiv\mathcal{L}(j)$, we can prove $\tilde{P}^t_i\approx \mathbb{P}^t_i$ by leveraging the law of large numbers.
+Thus, we can conclude Theorem~\ref{OSEqulibrium} by proving the convergence of our Bayesian inference algorithm, i.e. proving $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$.
+$\tilde{\mathbb{P}}^t_i$ is computed according to Eqn.~\ref{equation:p_infer}, and if most of the samples in our Bayesian inference arecorrect, namely $\tilde{\mathcal{L}}^{(s)}(j)\equiv\mathcal{L}(j)$, we can prove $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$ by leveraging the law of large numbers.
 This observation motivates us to bound $|\tilde{\mathbb{P}}^t_i-\mathbb{P}^t_i|$ by calculating the upper bound of the ratio of wrong labels in the samples.
 Thereby, we prove Theorem~\ref{OSEqulibrium} with the following two steps:
 %\underline{\textbf{Step 1}:} Denote the labels generated by $N$ workers for task $j$ as vector $\bm{L}(j)$.
@@ -107,9 +107,9 @@ Thereby, we prove Theorem~\ref{OSEqulibrium} with the following two steps:
 %We defer the proof to the supplementary material.
 %Our main idea is to connect $\mathbb{P}(\mathcal{L})$ with ${\prod}_{j=1}^{M}\mathbb{P}_{\hat{\bm{\theta}}}[\bm{L}(j)] $.
 
-\underline{\textbf{Step 1}:} In this step, we aim at deriving the upper bound of the ratio of wrong samples in our Bayesian inference algorithm.
+\underline{\textbf{Step 1}:} In this step, we aim to derive the upper bound of the ratio of wrong samples in our Bayesian inference algorithm.
 To achieve this objective , we introduce $n$ and $m$ to denote the number of tasks of which the true label sample in Eqn.\ref{equation:p_infer} is correct ($\mathcal{L}^{(s)}(j)=\mathcal{L}(j)$) and wrong ($\mathcal{L}^{(s)}(j)\neq \mathcal{L}(j)$), respectively.
-Then, we can have
+Then, we are able to prove the following lemma:
 \begin{lemma}
 \label{ConvBound}
 When $M\gg 1$,
@@ -126,13 +126,13 @@ Among the remaining $m$ tasks, $w_i$ and $z_i$ denote the number of tasks of whi
 Then, we calculate the approximation of $\mathbb{P}(m)$ based on the conditional probabilities $\mathbb{P}(x_i,y_i,w_i, z_i|m)$ and $\mathbb{P}(\mathcal{L}|\bm{L})$.
 The upper bounds of $\mathbb{E}[m/M]$ and $\mathbb{E}[m/M]^2$ can be obtained by calculating the upper bounds of $\sum_{m}m \mathbb{P}(m)$ and $\sum_{m} m^2 \mathbb{P}(m)$.
 
-\underline{\textbf{Step 2}:} In this step, we aim at deriving the upper bound of $|\tilde{\mathbb{P}}_i-\mathbb{P}_i|$ under the conditions of Theorem~\ref{OSEqulibrium}. Following the notations in step 1, when $M\gg 1$, in Eqn.\ref{equation:p_infer}, we can have $\tilde{\mathbb{P}}_i\approx \mathbb{E}_{\mathcal{L}}(x_i+z_i)/M$, where $\mathbb{E}_{\mathcal{L}}$ denotes the expectation against $\mathbb{P}(\mathcal{L}|\bm{L})$. Meanwhile, according to the law of large numbers, $\mathbb{P}_i\approx (x_i+w_i)/M$. Thus, we can have
+\underline{\textbf{Step 2}:} In this step, we derive the upper bound of $|\tilde{\mathbb{P}}_i-\mathbb{P}_i|$ under the conditions of Theorem~\ref{OSEqulibrium}. Following the notations in Step 1, when $M\gg 1$, in Eqn.\ref{equation:p_infer}, we can have $\tilde{\mathbb{P}}_i\approx \mathbb{E}_{\mathcal{L}}(x_i+z_i)/M$, where $\mathbb{E}_{\mathcal{L}}$ denotes the expectation against $\mathbb{P}(\mathcal{L}|\bm{L})$. Meanwhile, according to the law of large numbers, $\mathbb{P}_i\approx (x_i+w_i)/M$. Thus, we can have
 \begin{equation}
 |\tilde{\mathbb{P}}_i-\mathbb{P}_i|\approx \mathbb{E}_{\mathcal{L}}|w_i-z_i|/M\leq \mathbb{E}_{\mathcal{L}}\left[m/M\right].
 \end{equation}
 If workers except for worker $i$ all report truthfully and exert high efforts, then $\Delta \leq -1$ in Theorem~\ref{ConvBound} because we require $N\geq 3$ in Section~\ref{PF}.
 Thus, $e^{\delta}\approx 0$.
-Considering $2\hat{\mathbb{P}}_i\geq 1$,we can have $\varepsilon^{-1}\geq (2\mathbb{P}_H)^{2(N-1)}$.
+Since $2\hat{\mathbb{P}}_i\geq 1$, we have $\varepsilon^{-1}\geq (2\mathbb{P}_H)^{2(N-1)}$.
 Hence, $\varepsilon\leq M^{-1}$ when $(2\mathbb{P}_H)^{2(N-1)} \geq M$.
 Taking the above analysis into consideration, Eqn.\ref{equation:CB1} and \ref{equation:CB2} can be calculated as
 \begin{equation}
@@ -215,39 +215,40 @@ Thereby, if $a^t>c_H$, worker $i$ can only get the maximal utility when $\mathbb
 %\end{table}
 %
 %Except for the Nash equilibrium defined in Proposition~\ref{OSEqulibrium}, our mechanism also has other equilibria. We summarize them here:
-\begin{figure*}[!t]
+
+\begin{figure*}[!htb]
     \centering
-    \begin{subfigure}[t]{0.24\textwidth}
+    \begin{subfigure}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/BPP1}
         \caption{\label{BIM2}}
     \end{subfigure}%
     ~
-    \begin{subfigure}[t]{0.24\textwidth}
+    \begin{subfigure}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/BPP2}
         \caption{\label{BIM3}}
     \end{subfigure}
         ~
-    \begin{subfigure}[t]{0.24\textwidth}
+    \begin{subfigure}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/BPP3}
         \caption{\label{BIM4}}
     \end{subfigure}
-	~
-	\begin{subfigure}[t]{0.24\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{image/EXPC1}
-        \caption{\label{BIM1}}
-    \end{subfigure}
+%	~
+%	\begin{subfigure}[t]{0.24\textwidth}
+%        \centering
+%        \includegraphics[width=\textwidth]{image/EXPC1}
+%        \caption{\label{BIM1}}
+%    \end{subfigure}
 	\vspace{-3mm}
     \caption{\label{BIM}Empirical analysis on our Bayesian inference algorithm (a) payment variation with the distribution of true labels (c) payment variation as the PoBC of other workers (d) the standard variance of the payment (d) the inference bias on label accuracy}
 \vspace{-3mm}
 \end{figure*}
 \subsection{Proof for Long-Term IC}
-Due to the existence of one-step IC in our mechanism, we know that, to get higher long-term payments, worker $i$ must let our RL algorithm at least increase the scaling factor from $a$ to any $a'>a$ at a certain state $s$.
+Due to the one-step IC in our mechanism, we know that, to get higher long-term payments, worker $i$ must mislead our RL algorithm into at least increasing the scaling factor from $a$ to any $a'>a$ at a certain state $s$.
 Actually, our RL algorithm will only increase the scaling factor when the state-action value function satisfies $Q^{\pi}(s,a)\leq Q^{\pi}(s,a')$.
-Eqn.\ref{equation:approx_reward} tells us that our objective function is consist of the utility obtained from the collected labels ($F(\tilde{A}^t)$) and the utility lost in the payment ($\eta {\sum}_{i=1}^{N}P^t_i$).
+Eqn.\ref{equation:approx_reward} tells us that our objective function consists of the utility obtained from the collected labels ($F(\tilde{A}^t)$) and the utility lost in the payment ($\eta {\sum}_{i=1}^{N}P^t_i$).
 Once we increase the scaling factor, we at least need to increase the payments for the other $N-1$ workers by $M(N-1)\mathbb{P}_H\cdot G_{\mathcal{A}}$, which corresponds to the left-hand side of Eqn.\ref{Condition}.
 
 On the other hand, for the obtained utility, we can have 
