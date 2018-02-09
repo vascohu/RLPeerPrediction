@@ -234,7 +234,7 @@ r_t\approx F(\tilde{A}^t) - \eta {\sum}_{i=1}^{N}P^t_i.
 To achieve better generalization across different states, it is a common approach to learn a feature-based state representation $\phi(s)$ \citep{Mnih15, Liang16}. Recall that the data requester's implicit utility at each time $t$ only depends on the aggregate PoBC averaged across the whole worker body. Such observation already points out to a  representation design with good generalization, namely 
 $\phi(s_t) = {\sum}_{i=1}^N \mathbb{P}^t_i/N$.
 Further recall, when deciding the current scaling factor $a_t$, the data requester does not observe the latest workers' labelling and thus cannot directly estimate the current $\phi(s_t)$ via Bayesian inference. Due to this one-step delay, we have to build our state representation using the previous observation. Since most workers would only change their internal states after receiving a new incentive, there exists some imperfect mapping function $\phi(s_{t}) \approx f(\phi(s_{t-1}),a_{t-1})$. %Putting into another perspective, the combination of $\phi(s_{t-1})$ and $a_{t-1}$ also reflects our best knowledge of the current state. 
-Utilizing this implicit function, we formally introduce an augmented state representation for our RL algorithm
+Utilizing this implicit function, we introduce the augmented state representation in RIL
 $$\hat{s}_t = \langle \phi(\hat{s}_{t-1}), a_{t-1} \rangle.$$
 
 %Since the data requester never possesses the ground-truth for each task, the utility $u^t$ is not accurately observed. Also note $\hat{s}_t$ is hardly perfectly accurate. % as the mapping function can not be perfect. 
