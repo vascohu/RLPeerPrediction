@@ -150,7 +150,14 @@ We also empirically show that our Bayesian inference algorithm can improve the r
 \input{experiment}
 
 \section{Conclusion and Future Work}
-In this paper, we propose a novel sequential data acquisition mechanism which is consists of three parts, that is the payment rule, the Bayesian inference and the RL algorithm.
+In this paper, we propose a novel sequential data acquisition mechanism for crowdsourcing.
+In each time step, we estimate workers' probabilities of being correct via developing a Bayesian inference algorithm, and our payments to workers are proportional to these estimates.
+We adjust the scaling factor of the payments by developing a RL algorithm which can learn how workers respond to the payments in the background.
+We theoretically prove that our mechanism is incentive compatible.
+We also empirically show that our Bayesian inference algorithm can help to improve the robustness and lower the variance of payments.
+Meanwhile, our RL algorithm can adapt our mechanism to different kinds of worker models and thus consistently improve the utility of the data requester.
+In the future, we will firstly extend our proof in Section 5 to more general cases where $m_i^t<M$.
+Secondly, for more practical cases where the number of workers is very large and the mapping between workers and tasks is very sparse, we will improve our RL algrithm by involving more complex state representations.
 
 \bibliographystyle{icml2018}
 \bibliography{ref}
