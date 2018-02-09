@@ -65,32 +65,28 @@ where $\textsf{sc}^{t}_i(j)$ denotes worker $i$'s score on task $j$, which is ca
 %\footnote{In practice, $M^{t}_{i}$ is often smaller than $M$, and we can introduce $L^{t}_i(j)=0$ to denote that task $j$ is not assigned to worker $i$. The incentive mechanisms developed in this paper can work well in the case where the matrix $[L^{t}_i(j)]$ is sparse. However, to simplify the theoretical analysis, we assume $M^{t}_{i}\equiv M$ in this paper and put the theoretical analysis on the sparse case as our future work.}
 
 %In this subsection, we present the details of our inference algorithm.
-For the simplicity of notations, we omit the superscript $t$ in this subsection. 
-Before designing our own Bayesian inference algorithm, we ran several preliminary experiments using the existing inference algorithms popularly used by others. Our empirical studies reveal that those popular ones may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.\footnote{See Appendix H in the supplementary file for details} This heavy bias will lead the data requester's utility $r^t$ to be miscalculated, causing two bad consequences. First, it induces bad incentive property, as workers with poor labelling accuracy now enjoy good estimates. Secondly, this potentially misleads RIL, as $r^t$ is used as reward. 
+Before designing our own Bayesian inference algorithm, we ran several preliminary experiments using the existing inference algorithms popularly used by others. Our empirical studies reveal that those popular ones may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.\footnote{See Appendix H in the supplementary file for details} This heavy bias will lead the data requester's utility $r^t$ to be miscalculated, causing two bad consequences. First, it induces bad incentive property, as workers with poor labelling accuracy now enjoy good estimates. Secondly, this potentially misleads our reinforcement learning algorithm. To reduce the inference bias, we develop our Bayesian inference algorithm by introducing the soft Dirichlet priors to both the distribution of true labels and workers' PoBCs. However, after doing so, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution first and then employ Gibbs sampling to conduct inference.
 
-To reduce the inference bias, we develop our Bayesian inference algorithm by introducing soft Dirichlet priors to both the distribution of true labels $\bm{\tau}=[\tau_1,\tau_2]$, where $\tau_1$ and $\tau_2$ denote that of label $1$ and $2$, respectively,  and workers' PoBCs $\bm{\theta} = \left[\mathbb{P}_1, \dots,\mathbb{P}_n\right]$. After doing so, we derive the conditional distribution of true labels given collected labels as (see Supplementary for detailed derivation)
-%However, after doing so, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution first and then employ Gibbs sampling to conduct inference.
-%
-%% For the simplicity of notations, we omit the superscript $t$ in this subsection.  %This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
-%It is not had to figure out the joint distribution of the collected labels $\bm{L}$ and the true labels $\mathcal{L}$ 
-%\begin{equation*}
-%\label{JointDist}
-%\begin{split}
-%    &\mathbb{P}(\bm{L}, \mathcal{L}| \bm{\theta}, \bm{\tau})=\\ &\qquad {\prod}_{j=1}^{M}{\prod}_{k=1}^{2}\left\{\tau_{k}\prod_{i=1}^{N}\mathbb{P}_i^{\delta_{ijk}}(1-\mathbb{P}_i)^{\delta_{ij(3-k)}} \right\}^{\xi_{jk}}
-%\end{split}
-%\end{equation*}
-%where $\bm{\theta}=[\mathbb{P}_1,\ldots, \mathbb{P}_N]$ and $\bm{\tau}=[\tau_1,\tau_2]$. $\tau_1$ and $\tau_2$ denote the distribution of true label $1$ and $2$, respectively.
-%Besides,  $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$ and $\xi_{jk}= \mathbbm{1}(\mathcal{L}(j)=k)$.
-%Here, we assume Dirichlet priors $\textrm{Dir}(\cdot)$ for $\mathbb{P}_i$ and $\bm{\tau}$, namely, 
-%$
-%[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2}), \bm{\tau}\sim \textrm{Dir}(\beta_{1},\beta_{2}).
-%$
-%Then, the joint distribution of $\bm{L}$ and $\mathcal{L}$ satisfies
-%\begin{equation*}
-%\label{JointDist2}
-%\mathbb{P}(\bm{L},\mathcal{L})={\int}_{\bm{\theta},\bm{\tau}}\mathbb{P}(\mathcal{L},\bm{L}|\bm{\theta}, \bm{\tau})\cdot \mathbb{P}(\bm{\theta}, \bm{\tau})\mathrm{d}\bm{\theta}\mathrm{d}\bm{\tau}.
-%\end{equation*}
-%Following Bayes' theorem, we derive the following
+ For the simplicity of notations, we omit the superscript $t$ in this subsection.  %This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
+It is not had to figure out the joint distribution of the collected labels $\bm{L}$ and the true labels $\mathcal{L}$ 
+\begin{equation*}
+\label{JointDist}
+\begin{split}
+    &\mathbb{P}(\bm{L}, \mathcal{L}| \bm{\theta}, \bm{\tau})=\\ &\qquad {\prod}_{j=1}^{M}{\prod}_{k=1}^{2}\left\{\tau_{k}\prod_{i=1}^{N}\mathbb{P}_i^{\delta_{ijk}}(1-\mathbb{P}_i)^{\delta_{ij(3-k)}} \right\}^{\xi_{jk}}
+\end{split}
+\end{equation*}
+where $\bm{\theta}=[\mathbb{P}_1,\ldots, \mathbb{P}_N]$ and $\bm{\tau}=[\tau_1,\tau_2]$. $\tau_1$ and $\tau_2$ denote the distribution of true label $1$ and $2$, respectively.
+Besides,  $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$ and $\xi_{jk}= \mathbbm{1}(\mathcal{L}(j)=k)$.
+Here, we assume Dirichlet priors $\textrm{Dir}(\cdot)$ for $\mathbb{P}_i$ and $\bm{\tau}$, namely, 
+$
+[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2}), \bm{\tau}\sim \textrm{Dir}(\beta_{1},\beta_{2}).
+$
+Then, the joint distribution of $\bm{L}$ and $\mathcal{L}$ satisfies
+\begin{equation*}
+\label{JointDist2}
+\mathbb{P}(\bm{L},\mathcal{L})={\int}_{\bm{\theta},\bm{\tau}}\mathbb{P}(\mathcal{L},\bm{L}|\bm{\theta}, \bm{\tau})\cdot \mathbb{P}(\bm{\theta}, \bm{\tau})\mathrm{d}\bm{\theta}\mathrm{d}\bm{\tau}.
+\end{equation*}
+Following Bayes' theorem, we derive the following
 \begin{equation}
 \label{PostDist}
 \mathbb{P}(\mathcal{L}|\bm{L})=\mathbb{P}(\bm{L},\mathcal{L})/\mathbb{P}(\bm{L})\propto B(\hat{\bm{\beta}}){\prod}_{i=1}^{N}B(\hat{\bm{\alpha}}_{i}) 
@@ -178,7 +174,7 @@ To simplify the theoretical analysis, we set $\alpha_1=1.5$ and $\alpha_2=1$ in 
 \end{algorithmic}
 \end{algorithm}
 
-Note we cannot derive an explicit formula for the distribution of a specific task $j$'s ground-truth from the conditional posterior distribution $\mathbb{P}(\mathcal{L}|\bm{L})$. We thus resort to Gibbs sampling for the inference.
+Note we cannot derive an explicit formula for the distribution of task $j$'s ground-truth from the joint posterior distribution $\mathbb{P}(\mathcal{L}|\bm{L})$. We thus resort to Gibbs sampling for the inference.
 More specifically, according to Bayes' theorem, we know that the conditional distribution of task $j$'s ground-truth $\mathcal{L}(j)$ satisfies
 $\mathbb{P}[\mathcal{L}(j)|\bm{L}, \mathcal{L}(-j)]\propto \mathbb{P}(\mathcal{L}|\bm{L})$, where $-j$ denotes all tasks excluding $j$.
 Leveraging this, we generate samples of the true label vector $\mathcal{L}$ following Algorithm~\ref{GSC}.
@@ -221,7 +217,7 @@ For good inference accuracy, we require both $W$ and $W_0$ to be large values, a
 
 \subsection{Reinforcement Incentive Learning}
 \label{RL}
-In this subsection, we formally introduce RIL, which adjusts the scaling factor $a^t$ at each time step $t$. Viewed under the big picture, it serves as the glue to connect each other component in our mechanism (see the edges and parameters around RIL in Figure~\ref{figure:layout}). To fully understand the technical fruit, we require the readers to at least be familiar with Q-value and function approximation. For readers with limited knowledge, we kindly refer them to Appendix A, where we provide a tutorial on these concepts.
+In this subsection, we formally introduce RIL, which adjusts the scaling factor at each time step $t$. Viewed under the big picture, it serves as the glue to connect each other component in our mechanism (see the edges and parameters around RL in Figure~\ref{figure:layout}). To fully understand the technical fruit, we require the readers to at least be familiar with Q-value and function approximation. For readers with limited knowledge, we kindly refer them to Appendix A, where we provide a tutorial on these concepts.
 
 With some transformation, the  crowdsourcing problem we aim to tackle in this paper can perfectly fit into the commonly used RL formalization (i.e. a Markov Decision Process). To be more specific, the data requester is the agent and it interacts with workers (i.e. the environment); scaling factors are actions; the utility of the data requester $r^t$ after paying workers (see Eqn.~\ref{equation:utility}) is the reward; how workers respond to different incentives and potentially change their internal states thereafter forms the transition kernel, which is unobservable; what scaling factor to be picked at each step $t$ given workers' labelling constructs the policy, which needs to be learned. Note that, since the real accuracy cannot be observed, we use the estimated accuracy $\tilde{A}$ calculated by Eqn.\ref{vot} instead to construct the reward
 \vspace{-2mm}
