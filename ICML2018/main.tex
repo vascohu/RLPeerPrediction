@@ -149,11 +149,11 @@ We empirically show that our Bayesian inference algorithm can improve the robust
 \input{experiment}
 
 \section{Future Work and Conclusion}
-In this paper, we build a novel sequential data acquisition mechanism for crowdsourcing.
+In this paper, we build a novel RL framework for sequentially acquiring data from crowdsourcing.
 At each time step, our mechanism uses the Bayesian inference algorithm to learn workers' probability of being correct, and we issue payments to workers that are proportional to these estimated accuracy.
 When interacting with workers, our mechanism learns the optimal policy to adjust the scaling factor of the payments via our reinforcement incentive learning algorithm.
 We theoretically prove that our mechanism is incentive compatible. As a by product, we have also proved the convergence of our Bayesian inference method.
-We also empirically show that our Bayesian inference algorithm can help improve the robustness and lower the variance of payments, which are favorable properties in practice.
+We empirically show that our Bayesian inference algorithm can help improve the robustness and lower the variance of payments, which are favorable properties in practice.
 Meanwhile, our reinforcement incentive learning algorithm performs consistently well with different worker models.
 In the future, for more practical cases where the mapping between workers and tasks is very sparse, we will explore the question that how to improve our mechanism with more complex state representations, for example, using neural networks.
 
