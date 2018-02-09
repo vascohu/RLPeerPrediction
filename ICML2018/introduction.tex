@@ -9,25 +9,25 @@ Firstly, from the label inference studies~\cite{zheng2017truth}, we can know tha
 However, existing peer prediction mechanisms purely rely on the labels of the reference worker, which only represents a limited share of the overall collected information.
 %This way of design will inevitably lower the robustness, and meanwhile increase the variance of payment (which is unfavorable in practice.)
 Secondly, existing peer prediction mechanisms simplify workers' responses to the incentive mechanism by assuming that workers are all fully rational and only follow the utility-maximizing strategy.
-However, there have been many studies showing that human agents may be bounded-rational and even keep improving their responding strategies in practice~\cite{simon1982models,chastain2014algorithms,gao2014trick}.
+However, there are evidences showing that human agents may follow bounded-rationality model and improve their responding strategies in practice~\cite{simon1982models,chastain2014algorithms,gao2014trick}. Lastly, it is often assumed that workers' costs in exerting effort to produce high quality labels are known by the mechanism designer. 
 
 
 
 
 In this paper, we propose a \emph{learning-based incentive mechanism}, aiming to merge and extend the techniques in the two disconnected areas to address the caveats when they are employed alone, as discussed above.
-The high level idea is as follows: we divide the large dataset into relatively small task packages. At each time step, we employ workers to handle one task package and etimate the true labels and workers' strategies from their reports.
-Relying on the above estimates, a reinforcement learning (RL) algorithm is used to uncover how workers respond to the incentives.
+The high level idea is as follows: we divide the large dataset into relatively small task packages. At each time step, we employ workers to handle one task package and estimate the true labels and workers' strategies from their reports.
+Relying on the above estimates, a reinforcement learning (RL) algorithm is used to uncover how workers respond to different levels of offered payments.
 We determine the payments for workers based on workers' current strategies and the output of the RL algorithm.
-By doing so, our mechanism can not only incentivize rational workers to provide high-quality labels but also dynamically adjust the payments according to workers' types.
+By doing so, our mechanism not only incentivizes rational workers to provide high-quality labels but also dynamically adjusts the payments according to workers' types.
 
 % Then, we use the learned worker accuracy o determine the payments for workers. Meanwhile, driving in the background, we develop a reinforcement learning algorithm to adjust the payments based on workers' historical responses to incentivizes. By doing so, our incentive mechanism can be adapted to different types of workers.
 
 
 
-However, as the first work to merge these techniques, there is a line of challenges. In light of the challenges, we summarize our core contributions as follows:
+We summarize our core contributions as follows:
 \begin{itemize}[topsep=0pt,  itemsep=0pt]
 \item To support the IC of our mechanism and calibrate the estimates of label accuracy for training our RL algorithm, we develop a novel Bayesian inference algorithm and theoretically prove its convergence.
 \item Since the inference results are approximately corrupted with Gaussian noise, we develop a RL algorithm based on the data-driven Gaussian process regression. Meanwhile, we provide a novel method to prove the long-term IC of reinforcement learning algorihtms.
 \end{itemize}
-Besides, we conduct extensive experiments, and the results show that our Bayesian inference algorithm can improve the robustness and lower the variance of payments. Meanwhile, our RL algorithm can significantly increase the utility of the data requester under different worker models, such as fully rational, bounded rational and learning agent models. 
+Besides, we conduct extensive experiments, and the results show that our Bayesian inference algorithm can improve the robustness and lower the variance of payments. Meanwhile, our RL algorithm can significantly increase the utility of the data requester under different worker models, such as fully rational and learning agent models. 
 
