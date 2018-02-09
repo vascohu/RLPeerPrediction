@@ -15,7 +15,7 @@ In Figure~\ref{BIM2}, we let all workers excluding $i$ report truthfully and exe
 and increase $\tau_1$ from $0.05$ to $0.95$.
 In Figure~\ref{BIM3}, we let $\tau_1=0.5$, and increase other workers' PoBCs $\mathbb{P}_{-i}$ from $0.6$ to $0.95$.
 %From these two figures, we can find that the payment for worker $1$ in our mechanism almost only depends on worker $1$'s own strategy.
-As both figures reveal, in our mechanism, the payment for worker $i$ almost only depends on his/her own strategy. On contrast, in DG13, the payments severely affected by the distribution of true labels $\bm{\tau}$ and the strategies of other workers, summarized by $\mathbb{P}_{-i}$.
+As both figures reveal, in our mechanism, the payment for worker $i$ almost only depends on his/her own strategy. On contrast, in DG13, the payments severely affected by the distribution of true labels and the strategies of other workers.
 In other words, our Bayesian inference is more robust to different environments.
 Furthermore in Figure~\ref{BIM4}, we present the standard deviation of the payment to worker $i$.
 We let $\tau_1=0.5$, $\mathbb{P}_{-i}=\mathbb{P}_H$ and increase $\mathbb{P}_i$ from $0.6$ to $0.95$.
@@ -125,14 +125,14 @@ On contrast, MWU workers' learn utility-maximizing strategies change gradually, 
 \begin{figure}[!t]
    \setlength{\abovecaptionskip}{0mm}
     \centering
-    \begin{subfigure}[t]{0.22\textwidth}
+    \begin{subfigure}[t]{0.24\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/RIL1}%rewardError
 		\vspace{-1mm}
         \caption{\label{figure:rewardError}}
     \end{subfigure}%
 ~
-    \begin{subfigure}[t]{0.21\textwidth}
+    \begin{subfigure}[t]{0.23\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/RIL2}%learningCurve
 		\vspace{-1mm}
@@ -140,13 +140,13 @@ On contrast, MWU workers' learn utility-maximizing strategies change gradually, 
     \end{subfigure}
     \vspace{-2mm}
     \caption{\label{figure:learning}Empirical analysis on our RL algorithm. (a) The gap between the estimation of the data requester's cumulative rewards and the real one, smoothed over 5 episodes. (b) The learning curve of our mechanism smoothed over 5 episodes.}
-	\vspace{-2mm}
+	\vspace{-3mm}
 \end{figure}
 
 \begin{table}[t]
 \caption{Performance comparison on three worker models. Data requester's cumulative utility normalized over the number of tasks. Standard deviation reported in parenthesis.}
 \label{table:performance}
-\vskip 0.15in
+\vskip 0.1in
 \centering
 {\scriptsize
 \begin{sc}

@@ -1,9 +1,9 @@
 \begin{figure}[t]
+	\vspace{-3mm}
  	\centering
 	\includegraphics[width=0.48\textwidth]{image/Architecture}
-	\vspace*{-8mm}
+	\vspace*{-10mm}
     \caption{\label{figure:layout} Overview of our incentive mechanism.}
-    \vspace{-5mm}
 \end{figure}
 \section{Incentive Mechanism for Crowdsourcing}
 Our mechanism mainly consists of three components: one-step payment rule, Bayesian inference and reinforcement incentive learning (RIL); see Figure~\ref{figure:layout} for the overall layout, where estimated values are denoted with tildes. 
@@ -64,7 +64,7 @@ where $\textsf{sc}^{t}_i(j)$ denotes worker $i$'s score on task $j$, which will 
 %\footnote{In practice, $M^{t}_{i}$ is often smaller than $M$, and we can introduce $L^{t}_i(j)=0$ to denote that task $j$ is not assigned to worker $i$. The incentive mechanisms developed in this paper can work well in the case where the matrix $[L^{t}_i(j)]$ is sparse. However, to simplify the theoretical analysis, we assume $M^{t}_{i}\equiv M$ in this paper and put the theoretical analysis on the sparse case as our future work.}
 
 %In this subsection, we present the details of our inference algorithm.
-For the simplicity of notations, we omit the superscript $t$ in this subsection. The motivation for designing our own Bayesian inference algorithm is as follows: we have ran several preliminary experiments using popular inference algorithms used in the literature. Our empirical studies reveal that those methods tend to heavily bias towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.\footnote{See Appendix H in Supplementary material for details} This heavy bias will lead the data requester's utility $r_t$ to be miscalculated, causing two bad consequences. First, it induces bad incentive property, as workers with poor labeling accuracy now enjoy good estimates. Secondly, this potentially misleads RIL, as $r_t$ is used as reward. 
+For the simplicity of notations, we omit the superscript $t$ in this subsection. The motivation for designing our own Bayesian inference algorithm is as follows: we have ran several preliminary experiments using popular inference algorithms used in the literature. Our empirical studies reveal that those methods tend to heavily bias towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.\footnote{See Appendix H in Supplementary material for details} This heavy bias will lead the data requester's utility $r_t$ to be miscalculated, causing two bad consequences. First, it induces bad incentive property, as workers with poor labeling accuracy now enjoy good estimates. Secondly, this potentially misleads RIL, as $r_t$ is used as reward. 
 
 To reduce the inference bias, we develop a Bayesian inference algorithm by introducing soft Dirichlet priors to both the distribution of true labels $\bm{\tau}=[\tau_1,\tau_2]\sim \textrm{Dir}(\beta_{1},\beta_{2})$, where $\tau_1$ and $\tau_2$ denote that of label $1$ and $2$, respectively,  and workers' PoBCs  $[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2})$. After doing so, we derive the conditional distribution of true labels given collected labels as (see Appendix I in Supplementary)
 \vspace{-5mm}

@@ -8,12 +8,14 @@ In any time step $t$, when $M\gg 1$, $(2\mathbb{P}_H)^{2(N-1)} \geq M$ and $a_t>
 \begin{theorem}[Long-Term IC]
 \label{RMNE}
 Suppose the conditions in Proposition~\ref{OSEqulibrium} are satisfied and the learned $Q$-function approaches the real $Q^{\pi}(\hat{s},a)$. When
+\vspace{-1mm}
 \begin{align}
 &\eta M(N-1)\mathbb{P}_H \cdot G_{\mathcal{A}}> \frac{F(1)-F(1-\psi)}{1-\gamma}\label{Condition}\\
 &\;\psi =(\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2)[4\mathbb{P}_H(1-\mathbb{P}_H)]^{\frac{N-1}{2}} \label{equation:psi}
 \end{align}
 always reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ in the long-term if the other workers all follow this strategy. Here, $G_{\mathcal{A}}=\min_{a,b\in\mathcal{A}, a\neq b}|a-b|$ denotes the minimal gap between two available values of the scaling factor.
 \end{theorem}
+\vspace{-2mm}
 In the following two subsections, we will provide the outline of the proofs of these two theorems. 
 Note that, in addition to incentive compatiblity, our mechanism can also get rid of the undesired uninformative equlibrium that most peer prediction mechanisms have.
 See Appendix G in Supplementary for detailed discussion.
@@ -87,7 +89,7 @@ Thereby, we prove Theorem~\ref{OSEqulibrium} with the following two steps:
 %We defer the proof to the supplementary material.
 %Our main idea is to connect $\mathbb{P}(\mathcal{L})$ with ${\prod}_{j=1}^{M}\mathbb{P}_{\hat{\bm{\theta}}}[\bm{L}(j)] $.
 
-\underline{\textbf{Step 1}:} In this step, we aim to derive the upper bound of the ratio of wrong samples in our Bayesian inference algorithm.
+\underline{\textbf{Step 1}:} In this step, we aim to derive the upper bound of the ratio of wrong samples.
 To achieve this objective , we introduce $n$ and $m$ to denote the number of tasks of which the true label sample in Eqn. (\ref{equation:p_infer}) is correct ($\tilde{\mathcal{L}}^{(s)}(j)=\mathcal{L}(j)$) and wrong ($\tilde{\mathcal{L}}^{(s)}(j)\neq \mathcal{L}(j)$), respectively.
 Then, we are able to prove the following lemma:
 \begin{lemma}
@@ -197,19 +199,19 @@ In this case, $\tilde{\mathbb{P}}_i\approx \mathbb{P}_i$, and thus we can conclu
 
 \begin{figure*}[!htb]
     \centering
-    \begin{subfigure}[t]{0.32\textwidth}
+    \begin{subfigure}[t]{0.31\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/BPP1}
         \caption{\label{BIM2}}
     \end{subfigure}%
-    ~
-    \begin{subfigure}[t]{0.32\textwidth}
+    ~~
+    \begin{subfigure}[t]{0.31\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/BPP2}
         \caption{\label{BIM3}}
     \end{subfigure}
-        ~
-    \begin{subfigure}[t]{0.32\textwidth}
+        ~~
+    \begin{subfigure}[t]{0.31\textwidth}
         \centering
         \includegraphics[width=\textwidth]{image/BPP3}
         \caption{\label{BIM4}}
@@ -222,7 +224,7 @@ In this case, $\tilde{\mathbb{P}}_i\approx \mathbb{P}_i$, and thus we can conclu
 %    \end{subfigure}
 	\vspace{-2mm}
     \caption{\label{BIM} Empirical analysis on our Bayesian inference algorithm. (a) Average payment per task given true label's distribution. (b) Average payment per task given PoBCs of workers excluding $i$. (c) The standard deviation of the payment given worker $i$'s PoBC.}
-\vspace{-2mm}
+\vspace{-3mm}
 \end{figure*}
 \subsection{Proof for Long-Term IC}
 Due to the one-step IC in our mechanism, we know that, to get higher long-term payments, worker $i$ must mislead our RL algorithm into at least increasing the scaling factor from $a$ to any $a'>a$ at a certain state $\hat{s}$.
