@@ -66,9 +66,9 @@ where $\textsf{sc}^{t}_i(j)$ denotes worker $i$'s score on task $j$, which is ca
 
 %In this subsection, we present the details of our inference algorithm.
 For the simplicity of notations, we omit the superscript $t$ in this subsection. 
-Before designing our own Bayesian inference algorithm, we ran several preliminary experiments using the existing inference algorithms popularly used by others. Our empirical studies reveal that those popular ones may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.\footnote{See Appendix H in the supplementary file for details} This heavy bias will lead the data requester's utility $r^t$ to be miscalculated, causing two bad consequences. First, it induces bad incentive property, as workers with poor labelling accuracy now enjoy good estimates. Secondly, this potentially misleads RIL, as $r^t$ is used as reward. 
+Before designing our own Bayesian inference algorithm, we ran several preliminary experiments using the existing inference algorithms popularly used by others. Our empirical studies reveal that those popular ones may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.\footnote{See Appendix H in Supplementary for details} This heavy bias will lead the data requester's utility $r^t$ to be miscalculated, causing two bad consequences. First, it induces bad incentive property, as workers with poor labelling accuracy now enjoy good estimates and thus high payments. Secondly, this potentially misleads RIL, as $r^t$ is used as reward. 
 
-To reduce the inference bias, we develop our Bayesian inference algorithm by introducing soft Dirichlet priors to both the distribution of true labels $\bm{\tau}=[\tau_1,\tau_2]$, where $\tau_1$ and $\tau_2$ denote that of label $1$ and $2$, respectively,  and workers' PoBCs $\bm{\theta} = \left[\mathbb{P}_1, \dots,\mathbb{P}_n\right]$. After doing so, we derive the conditional distribution of true labels given collected labels as (see Supplementary for detailed derivation)
+To reduce the inference bias, we develop our Bayesian inference algorithm by introducing soft Dirichlet priors to both the distribution of true labels $\bm{\tau}=[\tau_1,\tau_2]\sim \textrm{Dir}(\beta_{1},\beta_{2})$, where $\tau_1$ and $\tau_2$ denote that of label $1$ and $2$, respectively,  and workers' PoBCs  $[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2})$. After doing so, we derive the conditional distribution of true labels given collected labels as (see Appendix I in Supplementary for detailed derivation)
 %However, after doing so, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution first and then employ Gibbs sampling to conduct inference.
 %
 %% For the simplicity of notations, we omit the superscript $t$ in this subsection.  %This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
@@ -108,10 +108,10 @@ where $B(x,y)=(x-1)!(y-1)!/(x+y-1)!$ denotes the beta function, $\hat{\bm{\alpha
 \begin{split}
 &\hat{\alpha}_{i1}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta_{ijk}\xi_{jk}+2\alpha_{1}-1\\
 &\hat{\alpha}_{i2}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta_{ij(3-k)}\xi_{jk}+2\alpha_{2}-1\\
-&\hat{\beta}_k={\sum}_{j=1}^{M}\xi_{jk}+2\beta_{k}-1.
+&\hat{\beta}_k={\sum}_{j=1}^{M}\xi_{jk}+2\beta_{k}-1
 \end{split}
 \end{equation*}
-The convergence of our inference algorithm requires $\alpha_1>\alpha_2$.
+where $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$ and $\xi_{jk}= \mathbbm{1}(\mathcal{L}(j)=k)$. The convergence of our inference algorithm requires $\alpha_1>\alpha_2$.
 To simplify the theoretical analysis, we set $\alpha_1=1.5$ and $\alpha_2=1$ in the rest of this paper.
 %\begin{equation}
 %\begin{split}
@@ -184,7 +184,7 @@ $\mathbb{P}[\mathcal{L}(j)|\bm{L}, \mathcal{L}(-j)]\propto \mathbb{P}(\mathcal{L
 Leveraging this, we generate samples of the true label vector $\mathcal{L}$ following Algorithm~\ref{GSC}.
 At each step of the sampling procedure (line 6-7), Algorithm~\ref{GSC} calculates $\mathbb{P}[\mathcal{L}(j)|\bm{L}, \mathcal{L}(-j)]$ first and then generates a new sample of $\mathcal{L}(j)$ to replace the old one in $\tilde{\mathcal{L}}$.
 After traversing through all tasks, Algorithm~\ref{GSC} generates a new sample of the true label vector $\mathcal{L}$.
-Repeating this process for $W$ times, we get the required number of samples, which is recorded in $\mathcal{S}$.
+Repeating this process for $W$ times, we get $W$ samples, which is recorded in $\mathcal{S}$.
 Here, we write the $s$-th sample as $\tilde{\mathcal{L}}^{(s)}$.
 Since Gibbs sampling requires a burn-in process, we discard the first $W_0$ samples in $\mathcal{S}$. After doing so, we calcualte worker $i$'s score on task $j$ as
 \begin{equation}
