@@ -88,7 +88,6 @@ Besides, in each episode of Algorithm~\ref{RAC}, we set the number of steps as $
 %\end{itemize}
 %Besides, we set $\mathbb{P}_H = 0.9$, $\mathbb{P}_L = 0.5$ and $c_{H} =0.02$.
 
-<<<<<<< HEAD
 Our first set of experiments focuses on the estimation bias of the the data requester's cumulative utility $R$.
 Since the data requester's utility is used as the reward signal for our RL algorithm, it would not be a surprise that the reliability of the estimation plays a crucial role in determining the well-being of the whole mechanism. As Figure~\ref{figure:rewardError} shows, the estimated value's deviation from the real one will become very small after some episodes of learning, regardless of which worker model the experiments run on.
 This means the learned reward signal provides a good guidance for our RL algorithm.
@@ -102,12 +101,7 @@ This observation shows the consistently good performance on different worker mod
 %Furthermore, the deviations on the rational and QR workers both will converge to a very small value while the deviation on the MWU worker will stay at relatively large values.
 %This is because the first two kinds of workers responds to the incentives in a fixed way. Once we find the optimal scaling factor, we can always use this value and get high-qualtiy labels.
 %By contrast, MWU workers must have a process to learn the benefits of exerting high efforts. In this stage, the label quality will be very low, leading to a quite large deviation.
-=======
-The first set of experiments we conduct focuses on the accuracy of the estimation of the data requester's cumulative utility $R$. Since it is used as the reward signal for our RL algorithm, it would not be a surprise that the reliability of the estimation plays a crucial role in determining the well-being of the whole mechanism. As Figure~\ref{figure:rewardError} shows, the estimated value's deviation from the real one is small, regardless of which worker model the experiments run on. Besides, we can observe a large deviation at the beginning stage of the training on the QR workers. This is because the small scaling factor at the beginning stage causes the difference between $u^t_{iH}$ and $u^t_{iL}$ to be very small, which will lead to low-quality labels. Even though our Bayesian inference algorithm has significantly reduce the bias on low-quality labels, the cumulative errors is still very large, which shows the necessity of our inference algorithm.
-Furthermore, the deviations on the rational and QR workers both will converge to a very small value while the deviation on the MWU worker will stay at relatively large values.
-This is because the first two kinds of workers responds to the incentives in a fixed way. Once we find the optimal scaling factor, we can always use this value and get high-quality labels.
-By contrast, MWU workers must have a process to learn the benefits of exerting high efforts. In this stage, the label quality will be very low, leading to a quite large deviation.
->>>>>>> e562d5e5a0470f1d5e5feab9c841b2e67c961a0f
+
 
 \begin{figure}[!t]
    \setlength{\abovecaptionskip}{0mm}
@@ -165,12 +159,8 @@ For this model, compared with Fixed Optimal, our RL algorithm increases the cumu
 Method & Rational & QR & MWU \\ \hline \hline
 Fixed Optimal & 27.584 (.253) & 21.004 (.012) & 11.723 (.514) \\
 Adaptive Optimal & 27.618 (.109) & 21.017 (.004) & 18.475 (.382) \\
-<<<<<<< HEAD
-RIL & 26.232 (.386) & 21.016 (.018) & 15.626 (.406)\\
-\hline
-=======
 RIL & 27.184 (.336) & 21.016 (.018) & 15.726 (.416)\\
->>>>>>> e562d5e5a0470f1d5e5feab9c841b2e67c961a0f
+\hline
 \end{tabular}
 \end{sc}
 }
