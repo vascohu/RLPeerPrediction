@@ -220,19 +220,18 @@ For good inference accuracy, we require both $W$ and $W_0$ to be large values, a
 In this subsection, we formally introduce our RL algorithm, named as Reinforcement Incentive Learning (RIL), which adjusts the scaling factor at each time step $t$. Viewed under the big picture, it serves as the glue to connect each other component in our mechanism (see the edges and parameters around RL in Figure~\ref{figure:layout}). To fully understand the technical fruit, we require the readers to at least be familiar with Q-value and function approximation. For readers with limited knowledge, we kindly refer them to Appendix A, where we provide a tutorial on these concepts.
 
 With some transformation, the  crowdsourcing problem we aim to tackle in this paper can perfectly fit into the commonly used RL formalization (i.e. a Markov Decision Process). To be more specific, the data requester is the agent and it interacts with workers (i.e. the environment); scaling factors are actions; the utility of the data requester $r^t$ after paying workers (see Eqn.~\ref{equation:utility}) is the reward; how workers respond to different incentives and potentially change their internal states thereafter forms the transition kernel, which is unobservable; what scaling factor to be picked at each step $t$ given workers' labelling constructs the policy, which needs to be learned. Note that, since the real accuracy cannot be observed, we use the estimated accuracy $\tilde{A}$ calculated by Eqn.\ref{vot} instead to construct the reward
+\vspace{-2mm}
 \begin{equation}
 \label{equation:approx_reward}
 r_t\approx F(\tilde{A}^t) - \eta {\sum}_{i=1}^{N}P^t_i.
 \end{equation}
 
-To achieve better generalization across different states, it is a common approach to learn a feature-based state representation $\phi(s)$ \citep{Gordon00, Mnih15, Liang16}. Recall that the data requester's implicit utility at each time $t$ only depends on the aggregate PoBC averaged across the whole worker body. Such observation already points out to a  representation design with good generalization, namely 
-$$\phi(s_t) = \frac{1}{N}\sum_{i=1}^N \mathbb{P}^t_i.$$
-
+\vspace{-2mm}
+To achieve better generalization across different states, it is a common approach to learn a feature-based state representation $\phi(s)$ \citep{Mnih15, Liang16}. Recall that the data requester's implicit utility at each time $t$ only depends on the aggregate PoBC averaged across the whole worker body. Such observation already points out to a  representation design with good generalization, namely 
+$\phi(s_t) = {\sum}_{i=1}^N \mathbb{P}^t_i/N$.
 Further recall, when deciding the current scaling factor $a_t$, the data requester does not observe the latest workers' labelling and thus cannot directly estimate the current $\phi(s_t)$ via Bayesian inference. Due to this one-step delay, we have to build our state representation using the previous observation. Since most workers would only change their internal states after receiving a new incentive, there exists some imperfect mapping function $\phi(s_{t}) \approx f(\phi(s_{t-1}),a_{t-1})$. %Putting into another perspective, the combination of $\phi(s_{t-1})$ and $a_{t-1}$ also reflects our best knowledge of the current state. 
 Utilizing this implicit function, we formally introduce an augmented state representation for our RL algorithm
-$$
-\hat{s}_t = \langle \phi(\hat{s}_{t-1}), a_{t-1} \rangle .
-$$
+$\hat{s}_t = \langle \phi(\hat{s}_{t-1}), a_{t-1} \rangle$.
 
 
 %Since the data requester never possesses the ground-truth for each task, the utility $u^t$ is not accurately observed. Also note $\hat{s}_t$ is hardly perfectly accurate. % as the mapping function can not be perfect. 
