@@ -77,10 +77,10 @@ It is not had to figure out the joint distribution of the collected labels $\bm{
 \end{equation*}
 where $\bm{\theta}=[\mathbb{P}_1,\ldots, \mathbb{P}_N]$ and $\bm{\tau}=[\tau_1,\tau_2]$. $\tau_1$ and $\tau_2$ denote the distribution of true label $1$ and $2$, respectively.
 Besides,  $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$ and $\xi_{jk}= \mathbbm{1}(\mathcal{L}(j)=k)$.
-Here, we assume Dirichlet priors $\textrm{Dir}(\cdot)$ for $\mathbb{P}_i$ and $\bm{\tau}$
-\begin{equation*}
-[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2})\;,\; \bm{\tau}\sim \textrm{Dir}(\beta_{1},\beta_{2}).
-\end{equation*}
+Here, we assume Dirichlet priors $\textrm{Dir}(\cdot)$ for $\mathbb{P}_i$ and $\bm{\tau}$, namely, 
+$
+[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2}), \bm{\tau}\sim \textrm{Dir}(\beta_{1},\beta_{2}).
+$
 Then, the joint distribution of $\bm{L}$ and $\mathcal{L}$ satisfies
 \begin{equation*}
 \label{JointDist2}
@@ -259,8 +259,8 @@ Then, by using the online Gaussian process regression algorithm~\cite{engel2005r
 Q(\hat{s},a) = \bm{k}(\hat{s},a) ^{\mathrm{T}}(\bm{K} +\bm{\sigma}^2)^{-1}\bm{H}^{-1}\bm{r}
 \end{equation}
 where $\bm{k}(\hat{s},a)=[k((\hat{s},a), (\hat{s}_1,a_1)),\ldots, k((\hat{s},a), (s_t,a_t))]^{\mathrm{T}}$ and $\bm{K}=[\bm{k}(\hat{s}_1,a_1),\ldots,\bm{k}(\hat{s}_t,a_t)]$. Here, we use $k(\cdot, \cdot)$ to denote the Gaussian kernel.
-Finally, we employ the classic $\epsilon$-greedy method to construct policy from the learned Q-function.
-To summarize, we provide a formal description about our RL algorithm in Algorithm~\ref{RAC}. Note that, when updating $\bm{K}$, $\bm{H}$ and $\bm{r}$ in line 6, we employ the sparse approximation to discard some historical data so that the size of these matrices and vectors will not increase finitely. The details of this approximation technique can be found in \citet{gasic2014gaussian}.
+Finally, we employ the classic $\epsilon$-greedy method to decide $a_t$ based on the learned Q-function.
+To summarize, we provide a formal description about our RL algorithm in Algorithm~\ref{RAC}. Note that, when updating $\bm{K}$, $\bm{H}$ and $\bm{r}$ in line 6, we employ the sparse approximation to discard some data so that the size of these matrices will not increase finitely. The details of this technique can be found in \citet{gasic2014gaussian}.
 
 \begin{algorithm}[tb]
    \caption{Reinforcement Incentive Learning (RIL)}
