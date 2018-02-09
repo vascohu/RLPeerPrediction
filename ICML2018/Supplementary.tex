@@ -752,8 +752,6 @@ where $B(x,y)=(x-1)!(y-1)!/(x+y-1)!$ denotes the beta function, and
 &\hat{\beta}^{*}_k={\sum}_{j=1}^{M}\xi_{jk}+\beta_{k}.
 \end{split}
 \end{equation*}
-As we have explained in our paper, we set $\alpha_1=1.5$ and $\alpha_2=1$ in this paper.
-Meanwhile, we employ the uniform distribution for $\bm{\tau}$ by setting $\beta_1=\beta_2=1$.
 In this case, we can conduct marginalization via integrating the joint distribution $\mathbb{P}(\mathcal{L},\bm{L},\bm{p}, \bm{\tau})$ over $\bm{\theta}$ and $\bm{\tau}$ as
 \begin{equation}
 \label{marginalization}
@@ -761,7 +759,7 @@ In this case, we can conduct marginalization via integrating the joint distribut
 P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})=\frac{B(\hat{\bm{\beta}})}{B(\bm{\beta})}\cdot {\prod}_{i=1}^{N}\frac{B(\hat{\bm{\alpha}}_{i})}{[B(\bm{\alpha})]^2}
 \end{split}
 \end{equation}
-where $\hat{\bm{\alpha}}_i=[\hat{\alpha}^{*}_{i1}+0.5,\hat{\alpha}^{*}_{i2}]$ and $\hat{\bm{\beta}}=[\hat{\beta}^{*}_1,\hat{\beta}^{*}_2]$. Following Bayes' theorem, we can know that
+where $\hat{\bm{\alpha}}_i=[\hat{\alpha}^{*}_{i1}+\alpha_1-1,\hat{\alpha}^{*}_{i2}+\alpha_2-1]$ and $\hat{\bm{\beta}}=[\hat{\beta}^{*}_1+\beta_1-1,\hat{\beta}^{*}_2+\beta_1-1]$. Following Bayes' theorem, we can know that
 \begin{equation}
 \label{PostDist}
 P(\bm{L}|\mathcal{L})=\frac{P(\mathcal{L},\bm{L}|\bm{\alpha}, \bm{\beta})}{P(\mathcal{L}|\bm{\alpha}, \bm{\beta})}\propto B(\hat{\bm{\beta}})\prod_{i=1}^{N}B(\hat{\bm{\alpha}}_{i}). 
