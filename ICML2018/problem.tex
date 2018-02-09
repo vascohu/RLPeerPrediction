@@ -1,6 +1,6 @@
 \section{Problem Formulation}
 \label{PF}
-This paper focuses on typical crowdsourcing problems. To be more specific, at each time step $t$, one data requester asks $N \geq 3$ candidate workers to label $M$ tasks with binary answer space $\left\{1,2\right\}$. We use $L^t_i(j)$ to denote the label worker $i$ generates for task $j$ at time $t$. For simplicity of computation, we reserve $L^t_i(j) = 0$ if  $j$ is not assigned to $i$. Furthermore, we use $\mathcal{L}$ and $\bm{L}$ to denote the set of ground-truth labels and  the aggregate collected labels respectively.
+This paper focuses on typical crowdsourcing problems. To be more specific, at each time step $t$, one data requester assigns $M$ tasks with binary answer space $\left\{1,2\right\}$ to $N \geq 3$ candidate workers to label. Workers receive payments for finishing the labeling tasks. We use $L^t_i(j)$ to denote the label worker $i$ generates for task $j$ at time $t$. For simplicity of computation, we reserve $L^t_i(j) = 0$ if  $j$ is not assigned to $i$. Furthermore, we use $\mathcal{L}$ and $\bm{L}$ to denote the set of ground-truth labels and  the set of all collected labels respectively.
 
 %The generated label $L^{t}_{i}(j)$ depends both on the ground-truth label $L^{t}(j)$ and worker $i$'s effort level $e^{t}_i$ and reporting strategy $r^{t}_i$.
 %Any worker $i$ can potentially have two effort levels, High ($e^{t}_i=1$) and Low ($e^{t}_i=0$).
@@ -23,9 +23,8 @@ The generated label $L^{t}_{i}(j)$ depends both on the ground-truth $\mathcal{L}
 %Also, he/she can decide either to truthfully report his observation $r^{t}_i = 1$ or to revert the answer $r^{t}_i = 0$.
 %Workers may act differently for different tasks. 
 At any given time for any task, workers at their will adopt an arbitrary combination of effort level and report strategy. We thus define $\textsf{eft}^{t}_i\in[0,1]$ and $\textsf{rpt}^{t}_i\in[0,1]$ as worker $i$'s probability of exerting high efforts and reporting truthfully for task $j$ %at time $t$ 
-respectively. Furthermore, following existing literature \citet{dasgupta2013crowdsourced,liu2017sequential}, we assume that tasks are homogeneous and workers share the same probability of generating the correct labels if they exert the same level of efforts. We denote the probability as $\mathbb{P}_{H}$ and $\mathbb{P}_{L}$ respectively. Note we require $\mathbb{P}_{H} > \mathbb{P}_{L} = 0.5$, where 0.5 is used when workers randomly label tasks.
-Besides, we further assume the cost for any worker $i$ to exert low efforts is $c_{L} = 0$, whereas exerting high efforts is $c_{H} \geq 0$.\footnote{We make such assumption for simplicity. Our analysis can be extended to the case where both $c_{L},  c_{H} \geq 0$, as long as $c_{H} \geq c_{L}$.}
-Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task is
+respectively. Furthermore, following existing literature \cite{dasgupta2013crowdsourced,liu2017sequential}, we assume that tasks are homogeneous and workers share the same probability of generating the correct labels if they exert the same level of efforts. We denote the probability as $\mathbb{P}_{H}$ and $\mathbb{P}_{L}$ respectively. Note we require $\mathbb{P}_{H} > \mathbb{P}_{L} = 0.5$. Besides, we further assume the cost for any worker $i$ to exert low effort is $c_{L} = 0$, whereas exerting high effort incurs $c_{H} \geq 0$.\footnote{We make such assumption for simplicity. Our analysis can be extended to the case where both $c_{L},  c_{H} \geq 0$, as long as $c_{H} \geq c_{L}$.}
+Worker $i$'s probability of being correct (PoBC) at time $t$ for any given task is then given by
 \begin{equation}
 \label{PPP}
 \begin{split}
@@ -48,7 +47,7 @@ where $P^{t}_{i}$ denotes our payment to worker $i$ for task $j$ at time $t$ (se
  
 At the beginning of each step, the data requester and workers mutually agree to a certain rule of payment determination, which would not be changed until the next time step.
 %the data requester promises the workers a certain rule of payment determination which acts the contract between two sides and cannot be changed until the next time step.
-The workers are self-interested and may change their internal states according to the expected utility $\mathbb{E}u_i^t$ he/she can get. It is no surprise that workers' different internal sates would lead to different PoBCs and finally different qualities of labels. After collecting the generated labels, it is a common procedure for the data requester to infer true labels $\tilde{L}^t(j)$ by running some inference algorithm.
+The workers are self-interested and may change their internal states according to the expected utility $\mathbb{E}u_i^t$ he/she can get. It is not surprising that workers' different internal sates would lead to different PoBCs and then different qualities of labels. After collecting the generated labels, it is a common procedure for the data requester to infer true labels $\tilde{L}^t(j)$ by running some inference algorithm.
 %Please refer to \citet{zheng2017truth} for a good survey of the existing inference algorithms.
 %Denote the the inferred true label of task $j$ by $\tilde{L}^{t}(j)$.
 The aggregate label accuracy $A^t$ and the data requester's utility $r_t$ satisfy
@@ -59,7 +58,7 @@ A^t&=\frac{1}{M}{\sum}_{j=1}^{M}1\left[\tilde{L}^{t}(j)=\mathcal{L}(j)\right]\\
 r_t &= F(A^t) - \eta {\sum}_{i=1}^{N}{\sum}_{j=1}^{M}P^t_i(j)
 \end{split}
 \end{equation}
-where $F(\cdot)$ is a non-decreasing monotonic function mapping accuracy to utility and $\eta>0$ is a tunable parameter balancing label quality and costs. Intuitively, $F(\cdot)$ function is usually non-deceasing as higher accuracy is preferred.\footnote{We use $r$ to denote the data requester's utility as it is used as the reward in our RL algorithm. See Section 4.3 for details.} 
+where $F(\cdot)$ is a non-decreasing monotonic function mapping accuracy to utility and $\eta>0$ is a tunable parameter balancing label quality and costs. Naturally, $F(\cdot)$ function is non-deceasing as higher accuracy is preferred.\footnote{We use $r$ to denote the data requester's utility as it is used as the reward in our RL algorithm. See Section 4.3 for details.} 
 
 %Due to the sequential nature of our assignment problem, we introduce the cumulative utility $U(t)$ of the data requester from the current step $t$ as
 %\begin{equation}
