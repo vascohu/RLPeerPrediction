@@ -18,7 +18,8 @@ This paper focuses on typical crowdsourcing problems. To be more specific, at ea
 %Following \cite{dasgupta2013crowdsourced,liu2017sequential}, we assume that the tasks are homogeneous and the workers share the same set of $p_{i, H}, p_{i, L}$, denoting by $p_H, p_L$, and $p_{H}>p_{L}= 0.5$.
 %Here, $p^t_i=0.5$ means that worker $i$ randomly selects a label to report.
 
-The generated label $L^{t}_{i}(j)$ depends both on the ground-truth $\mathcal{L}(j)$ and worker $i$'s internal state, which is mainly determined by two factors, effort level (high or low) and reporting strategy (truthful or deceitful).
+The generated label $L^{t}_{i}(j)$ depends both on the ground-truth $\mathcal{L}(j)$ and worker $i$'s strategy, which is mainly determined by two factors, effort level (high or low) and reporting strategy (truthful or deceitful).
+Accommodating the notation commonly used in reinforcement learning, we also refer worker i's strategy as his/her internal state.
 %Any worker $i$ can potentially have two effort levels, High ($e^{t}_i=1$) and Low ($e^{t}_i=0$).
 %Also, he/she can decide either to truthfully report his observation $r^{t}_i = 1$ or to revert the answer $r^{t}_i = 0$.
 %Workers may act differently for different tasks. 
@@ -47,7 +48,7 @@ where $P^{t}_{i}$ denotes our payment to worker $i$ for task $j$ at time $t$ (se
  
 At the beginning of each step, the data requester and workers mutually agree to a certain rule of payment determination, which would not be changed until the next time step.
 %the data requester promises the workers a certain rule of payment determination which acts the contract between two sides and cannot be changed until the next time step.
-The workers are self-interested and may change their internal states according to the expected utility $\mathbb{E}u_i^t$ he/she can get. It is not surprising that workers' different internal sates would lead to different PoBCs and then different qualities of labels. After collecting the generated labels, it is a common procedure for the data requester to infer true labels $\tilde{L}^t(j)$ by running some inference algorithm.
+The workers are self-interested and may change their strategies according to the expected utility $\mathbb{E}u_i^t$ he/she can get. It is not surprising that workers' different strategies would lead to different PoBCs and then different qualities of labels. After collecting the generated labels, it is a common procedure for the data requester to infer true labels $\tilde{L}^t(j)$ by running some inference algorithm.
 %Please refer to \citet{zheng2017truth} for a good survey of the existing inference algorithms.
 %Denote the the inferred true label of task $j$ by $\tilde{L}^{t}(j)$.
 The aggregate label accuracy $A^t$ and the data requester's utility $r_t$ satisfy

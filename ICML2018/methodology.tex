@@ -3,11 +3,12 @@
 	\includegraphics[width=0.48\textwidth]{image/Architecture}
 	\vspace*{-8mm}
     \caption{\label{figure:layout} Overview of our incentive mechanism.}
+    \vspace{-5mm}
 \end{figure}
 \section{Incentive Mechanism for Crowdsourcing}
 Our mechanism mainly consists of three components: one-step payment rule, Bayesian inference and reinforcement incentive learning (RIL); see Figure~\ref{figure:layout} for the overall layout, where estimated values are denoted with tildes. 
 
- The payment rule ensures that reporting truthfully and exerting high efforts is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long-run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents strategic manipulations from workers, which brings more long-term benefits to them by sacrificing short-term gains, or the other way around. The Bayesian inference algorithm is responsible for estimating the true labels, workers' PoBCs and the aggregate label accuracy from the collected labels at each time step. It utilizes soft Dirichlet priors and Gibbs sampling to prevent overestimation of accuracy when workers generate poor-quality labels. RIL adjusts the payment rule based on the historical data of payments, workers' PoBCs and aggregate labels' accuracy, aiming to optimally balance the utility gain from high accuracy and loss from large payments, which corresponds to $F(A^t)$ and $\sum_{i}\sum_{j}P_i^t(j)$ in Eqn.\ref{equation:utility} respectively. %In the following subsections, we provide a detailed formal introduction of the three one by one.
+ The payment rule ensures that reporting truthfully and exerting high efforts is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long-run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents strategic manipulations from workers, which brings more long-term benefits to them by sacrificing short-term gains, or the other way around. The Bayesian inference algorithm is responsible for estimating the true labels, workers' PoBCs and the aggregate label accuracy from the collected labels at each time step. It utilizes soft Dirichlet priors and Gibbs sampling to prevent overestimation of accuracy when workers generate poor-quality labels. RIL adjusts the payment rule based on the historical data of payments, workers' PoBCs and aggregate labels' accuracy, aiming to optimally balance the utility gain from high accuracy and loss from large payments, which corresponds to $F(A^t)$ and $\sum_{i}\sum_{j}P_i^t(j)$ in Eqn. (\ref{equation:utility}) respectively. %In the following subsections, we provide a detailed formal introduction of the three one by one.
 
 %Nevertheless, there are three challenges to achieve our design. Firstly, our empirical studies reveal that popular inference algorithms may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $q_i^t=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.
 %This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
@@ -65,29 +66,8 @@ where $\textsf{sc}^{t}_i(j)$ denotes worker $i$'s score on task $j$, which will 
 %In this subsection, we present the details of our inference algorithm.
 For the simplicity of notations, we omit the superscript $t$ in this subsection. The motivation for designing our own Bayesian inference algorithm is as follows: we have ran several preliminary experiments using popular inference algorithms used in the literature. Our empirical studies reveal that those methods tend to heavily bias towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.\footnote{See Appendix H in Supplementary material for details} This heavy bias will lead the data requester's utility $r_t$ to be miscalculated, causing two bad consequences. First, it induces bad incentive property, as workers with poor labeling accuracy now enjoy good estimates. Secondly, this potentially misleads RIL, as $r_t$ is used as reward. 
 
-To reduce the inference bias, we develop a Bayesian inference algorithm by introducing soft Dirichlet priors to both the distribution of true labels $\bm{\tau}=[\tau_1,\tau_2]\sim \textrm{Dir}(\beta_{1},\beta_{2})$, where $\tau_1$ and $\tau_2$ denote that of label $1$ and $2$, respectively,  and workers' PoBCs  $[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2})$. After doing so, we derive the conditional distribution of true labels given collected labels as (see Appendix I in Supplementary for detailed derivation)
-%However, after doing so, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution first and then employ Gibbs sampling to conduct inference.
-%
-%% For the simplicity of notations, we omit the superscript $t$ in this subsection.  %This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
-%It is not had to figure out the joint distribution of the collected labels $\bm{L}$ and the true labels $\mathcal{L}$ 
-%\begin{equation*}
-%\label{JointDist}
-%\begin{split}
-%    &\mathbb{P}(\bm{L}, \mathcal{L}| \bm{\theta}, \bm{\tau})=\\ &\qquad {\prod}_{j=1}^{M}{\prod}_{k=1}^{2}\left\{\tau_{k}\prod_{i=1}^{N}\mathbb{P}_i^{\delta_{ijk}}(1-\mathbb{P}_i)^{\delta_{ij(3-k)}} \right\}^{\xi_{jk}}
-%\end{split}
-%\end{equation*}
-%where $\bm{\theta}=[\mathbb{P}_1,\ldots, \mathbb{P}_N]$ and $\bm{\tau}=[\tau_1,\tau_2]$. $\tau_1$ and $\tau_2$ denote the distribution of true label $1$ and $2$, respectively.
-%Besides,  $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$ and $\xi_{jk}= \mathbbm{1}(\mathcal{L}(j)=k)$.
-%Here, we assume Dirichlet priors $\textrm{Dir}(\cdot)$ for $\mathbb{P}_i$ and $\bm{\tau}$, namely, 
-%$
-%[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2}), \bm{\tau}\sim \textrm{Dir}(\beta_{1},\beta_{2}).
-%$
-%Then, the joint distribution of $\bm{L}$ and $\mathcal{L}$ satisfies
-%\begin{equation*}
-%\label{JointDist2}
-%\mathbb{P}(\bm{L},\mathcal{L})={\int}_{\bm{\theta},\bm{\tau}}\mathbb{P}(\mathcal{L},\bm{L}|\bm{\theta}, \bm{\tau})\cdot \mathbb{P}(\bm{\theta}, \bm{\tau})\mathrm{d}\bm{\theta}\mathrm{d}\bm{\tau}.
-%\end{equation*}
-%Following Bayes' theorem, we derive the following
+To reduce the inference bias, we develop a Bayesian inference algorithm by introducing soft Dirichlet priors to both the distribution of true labels $\bm{\tau}=[\tau_1,\tau_2]\sim \textrm{Dir}(\beta_{1},\beta_{2})$, where $\tau_1$ and $\tau_2$ denote that of label $1$ and $2$, respectively,  and workers' PoBCs  $[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2})$. After doing so, we derive the conditional distribution of true labels given collected labels as (see Appendix I in Supplementary)
+\vspace{-5mm}
 \begin{equation}
 \label{PostDist}
 \mathbb{P}(\mathcal{L}|\bm{L})=\mathbb{P}(\bm{L},\mathcal{L})/\mathbb{P}(\bm{L})\propto B(\hat{\bm{\beta}}){\prod}_{i=1}^{N}B(\hat{\bm{\alpha}}_{i}) 
@@ -228,10 +208,10 @@ r_t\approx F(\tilde{A}^t) - \eta {\sum}_{i=1}^{N}P^t_i.
 \end{equation}
 
 \vspace{-2mm}
-To achieve better generalization across different states, it is a common approach to learn a feature-based state representation $\phi(s)$ \citep{Mnih15, Liang16}. Recall that the data requester's implicit utility at each time $t$ only depends on the aggregate PoBC averaged across the whole worker body. Such observation already points out to a  representation design with good generalization, namely 
+To achieve better generalization across different states, it is a common approach to learn a feature-based state representation $\phi(s)$ \citep{Mnih15, Liang16}. Recall that the data requester's implicit utility at time $t$ only depends on the aggregate PoBC averaged across the whole worker body. Such observation already points out to a  representation design with good generalization, namely 
 $\phi(s_t) = {\sum}_{i=1}^N \mathbb{P}^t_i/N$.
-Further recall that, when deciding the current scaling factor $a_t$, the data requester does not observe the latest workers' labeling accuracy and thus cannot directly estimate the current $\phi(s_t)$ via Bayesian inference. Due to this one-step delay, we have to build our state representation using the previous observation. Since most workers would only change their internal states after receiving a new incentive, there exists some imperfect mapping function $\phi(s_{t}) \approx f(\phi(s_{t-1}),a_{t-1})$. %Putting into another perspective, the combination of $\phi(s_{t-1})$ and $a_{t-1}$ also reflects our best knowledge of the current state. 
-Utilizing this implicit function, we introduce the augmented state representation in RIL
+Further recall that, when deciding the current scaling factor $a_t$, the data requester does not observe the latest workers' PoBCs and thus cannot directly estimate the current $\phi(s_t)$. Due to this one-step delay, we have to build our state representation using the previous observation. Since most workers would only change their internal states after receiving a new incentive, there exists some imperfect mapping function $\phi(s_{t}) \approx f(\phi(s_{t-1}),a_{t-1})$. %Putting into another perspective, the combination of $\phi(s_{t-1})$ and $a_{t-1}$ also reflects our best knowledge of the current state. 
+Utilizing this implicit function, we introduce the augmented state representation in RIL as
 $$\hat{s}_t = \langle \phi(\hat{s}_{t-1}), a_{t-1} \rangle.$$
 
 %Since the data requester never possesses the ground-truth for each task, the utility $u^t$ is not accurately observed. Also note $\hat{s}_t$ is hardly perfectly accurate. % as the mapping function can not be perfect. 
@@ -286,7 +266,7 @@ To summarize, we provide a formal description about our RL algorithm in Algorith
 			 \vspace{-3mm} 
    \STATE Assign tasks and collect labels from the workers
    \STATE Run Bayesian inference to get $\hat{s}_{t+1}$ and $r_t$
-   \STATE Use $(\hat{s}_t, a_t, r_t)$ to update $\bm{K}$, $\bm{H}$ and $\bm{r}$ in Eqn.\ref{equation:update}
+   \STATE Use $(\hat{s}_t, a_t, r_t)$ to update $\bm{K}$, $\bm{H}$ and $\bm{r}$ in Eqn. (\ref{equation:update})
    \ENDFOR
    \ENDFOR
 \end{algorithmic}
