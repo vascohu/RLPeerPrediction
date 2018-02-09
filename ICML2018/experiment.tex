@@ -1,5 +1,5 @@
 \section{Empirical Experiments} 
-In our incentive mechanism, Bayesian inference extracts important and useful information from the collected labels. On the other hand, RIL empowers us with the adaptivity to different kind of workers. In this section, we demonstrate these benefits by empirically testing them.
+In our incentive mechanism, Bayesian inference extracts important and useful information from all collected labels. On the other hand, RIL empowers us with the adaptivity to different types of worker models. In this section, we demonstrate these benefits via empirical studies.
 
 %To demonstrate the benefits of our two core algorithms, Bayesian inference and RL, we empirically test them one-by-one.
 %\yitao{To do: better overview for experiments, and need more motivation for 6.1}
@@ -8,19 +8,19 @@ In our incentive mechanism, Bayesian inference extracts important and useful inf
 
 \subsection{Performance Analysis of Bayesian Inference}
 In this subsection, we focus on our Bayesian inference algorithm by fixing the scaling factor $a_t=1$ and setting $M=100$, $N=10$, $\mathbb{P}_H=0.8$, $b=0$ and $m_i^t=M(N-1)/N$. 
-We use the average payment to worker $i$ as a proxy, as it is proportional to scores computed by Bayesian inference. We use DG13, the state-of-the-art peer prediction mechanism for binary labels~\citep{dasgupta2013crowdsourced}, as the benchmark to conduct our comparison. To setup the experiments, we generate task $j$'s true label $\mathcal{L}(j)$ following its distribution $\bm{\tau}$ and worker $i$'s label for task $j$ based on $i$'s PoBC $\mathbb{P}_i$ and $\mathcal{L}(j)$. For each data point, we run experiments for $1000$ rounds and report the mean.
+We use the average payment to worker $i$ as a proxy, as it is proportional to scores computed by Bayesian inference. We use DG13, the state-of-the-art peer prediction mechanism for binary labels~\citep{dasgupta2013crowdsourced}, as the benchmark to conduct our comparison. To setup the experiments, we generate task $j$'s true label $\mathcal{L}(j)$ following its distribution $\bm{\tau}$ (to be specified) and worker $i$'s label for task $j$ based on $i$'s PoBC $\mathbb{P}_i$ and $\mathcal{L}(j)$. For each data point, we run experiments for $1000$ rounds and report the mean.
 
 %In Figure~\ref{BIM}a and b, we show the variation of the payment for worker $1$ with the distribution of true labels and the strategies of other workers, respectively.
 In Figure~\ref{BIM2}, we let all workers excluding $i$ report truthfully and exert high efforts (i.e. $\mathbb{P}_{-i} = \mathbb{P}_H$), 
 and increase $\tau_1$ from $0.05$ to $0.95$.
 In Figure~\ref{BIM3}, we let $\tau_1=0.5$, and increase other workers' PoBCs $\mathbb{P}_{-i}$ from $0.6$ to $0.95$.
 %From these two figures, we can find that the payment for worker $1$ in our mechanism almost only depends on worker $1$'s own strategy.
-As both figures reveal, in our mechanism the payment for worker $i$ almost only depends on his/her own strategy. On contrast, in DG13 it is severely affected by the distribution of true labels $\bm{\tau}$ and the strategies of other workers, summarized by $\mathbb{P}_{-i}$.
+As both figures reveal, in our mechanism the payment for worker $i$ almost only depends on his/her own strategy. On contrast, in DG13 the payments severely affected by the distribution of true labels $\bm{\tau}$ and the strategies of other workers, summarized by $\mathbb{P}_{-i}$.
 In other words, our Bayesian inference is more robust to different environments.
 Furthermore in Figure~\ref{BIM4}, we present the standard deviation of the payment to worker $i$.
 We let $\tau_1=0.5$, $\mathbb{P}_{-i}=\mathbb{P}_H$ and increase $\mathbb{P}_i$ from $0.6$ to $0.95$.
-As shown in the figure, our method manages to achieve a noticeably smaller standard deviation than DG13. 
-In summary, compared with traditional peer prediction mechanisms that only make use of two workers' labels to decide a score, the usage of our Bayesian inference algorithm improves the robustness and decreases the variance of payments, because of its ability of fully exploit all the collected labels. %\yitao{@yang, please take a look on this last sentence.}
+As shown in the figure, our method manages to achieve a noticeably smaller standard deviation compared to DG13. 
+In summary, compared with traditional peer prediction mechanisms that only make use of a small set of workers' labels to decide a payment, the usage of our Bayesian inference algorithm improves its robustness and decreases the variance, because of its ability to fully exploit all the collected labels. %\yitao{@yang, please take a look on this last sentence.}
 
 
 %Furthermore, in Figure~\ref{BIM1}, we compare our Bayesian inference algorithm with two popular inference algorithms in crowdsourcing, that is, the EM estimator~\cite{raykar2010learning} and the variational inference estimator~\cite{liu2012variational}.
@@ -82,8 +82,8 @@ In this case, how tasks are assigned does not affect the empirical analysis we w
 %Besides, we set $\mathbb{P}_H = 0.9$, $\mathbb{P}_L = 0.5$ and $c_{H} =0.02$.
 
 Our first set of experiments focus on the estimation bias of the the data requester's cumulative utility $R$.
-Since the data requester's utility is used as the reward in RIL, it would not be a surprise that the reliability of the estimation plays a crucial role in determining the well-being of the whole mechanism. As Figure~\ref{figure:rewardError} shows, the estimated value only deviates from the real one in a very small magnitude after a few episodes of learning, regardless of which worker model the experiments run on, justifying our heavy reliance on it to provide a good guidance for RIL.
-The next set of experiments is about how quickly RIL learns. As Figure~\ref{figure:learningCurve} shows, under all three worker models, RIL manages to pick up and stick to a fairly promising policy %to maximize the cumulative utility of the data requester 
+Since the data requester's utility is used as the reward in RIL, it would not be a surprise that the reliability of the estimation plays a crucial role in determining the well-being of the whole mechanism. As Figure~\ref{figure:rewardError} shows, the estimated value only deviates from the real one in a very small magnitude after a few episodes of learning, regardless of which worker model the experiments run on.
+The next set of experiments is about how quickly RIL learns. As Figure~\ref{figure:learningCurve} shows, under all three worker models, RIL manages to pick up and stick to a promising policy %to maximize the cumulative utility of the data requester 
 in less than 100 episodes. 
 This observation also demonstrates the robustness of RIL under different deploying environment.
 
@@ -113,7 +113,7 @@ This observation also demonstrates the robustness of RIL under different deployi
         \caption{\label{figure:learningCurve}}
     \end{subfigure}
     \vspace{-2mm}
-    \caption{\label{figure:learning}Empirical analysis on our RL algorithm. (a) The gap between the estimation of the data requester's cumulative rewards and the real one, smoothed over 5 episodes. (b) The learning curve of our mechanism smoothed over 5 episode.}
+    \caption{\label{figure:learning}Empirical analysis on our RL algorithm. (a) The gap between the estimation of the data requester's cumulative rewards and the real one, smoothed over 5 episodes. (b) The learning curve of our mechanism smoothed over 5 episodes.}
 	\vspace{-1mm}
 \end{figure}
 %\begin{figure}[t]
@@ -139,7 +139,7 @@ Lastly, we take the learned policy after 500 episodes with exploration rate turn
 To create the second one, Adaptive Optimal, we change the scaling factor every $4$ steps and report the highest cumulative reward via traversing all $4^7=16384$ possible configurations. This benchmark is infeasible to be reproduced in real-world practice, once the number of times steps becomes large. Yet it is very close to the global optimal in the sequential setting.
 As Table 1 demonstrates, the two benchmarks plus RIL all achieve a similar performance tested for rational and QR workers.
 This is because these two kinds of workers have a fixed pattern in response to incentives and thus the optimal policy would be a fixed scaling factor through all the whole episode.
-On contrast, MWU workers their utility-maximizing strategies gradually, and the learning process is affected by the incentives. Under this model, compared with Fixed Optimal, RIL increases the cumulative reward from $11.7$ to $15.6$, which is a significant improvement considering the unreachable real optimal is only around $18.5$. Up to this point, with three sets of experiments, we demonstrate the competitiveness of RIL and its robustness under different environment.% and conclude our empirical analysis.
+On contrast, MWU workers' utility-maximizing strategies change gradually, and the learning process is affected by the incentives. Under this model, compared with Fixed Optimal, RIL increases the cumulative reward from $11.7$ to $15.6$, which is a significant improvement considering the unreachable real optimal is only around $18.5$. Up to this point, with three sets of experiments, we demonstrate the competitiveness of RIL and its robustness under different environment.% and conclude our empirical analysis.
 
 \begin{table}[t]
 \caption{Performance comparison on three worker models. Data requester's cumulative utility normalized over the number of tasks. Standard deviation reported in parenthesis.}
