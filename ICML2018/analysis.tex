@@ -16,7 +16,7 @@ always reporting truthfully and exerting high efforts is the utility-maximizing 
 \end{theorem}
 In the following two subsections, we will provide the outline of the proofs of these two theorems. 
 Note that, in addition to incentive compatiblity, our mechanism can also get rid of the undesired uninformative equlibrium that most peer prediction mechanisms have.
-See Appendix G in the supplementary file for detailed discussion.
+See Appendix G in Supplementary for detailed discussion.
 Besides, in our proof, if we omit the superscript $t$ in an equation, we mean that this equation holds for all time steps.
 Besides, we employ the convention that $\bar{\mathbb{P}}=1-\mathbb{P}$, $\hat{\mathbb{P}}=\max \{\mathbb{P}, \bar{\mathbb{P}}\}$ and $\mathbb{P}_0=\tau_1$.
 
@@ -62,7 +62,7 @@ Besides, we employ the convention that $\bar{\mathbb{P}}=1-\mathbb{P}$, $\hat{\m
 
 
 \subsection{Proof for One-Step IC}
-Recall that, Eqn.\ref{equaton:score} and \ref{equation:p_infer} together show that $\sum_j \textsf{sc}_i(j)\approx M\cdot \tilde{\mathbb{P}}_i$ holds when $M\gg 1$. Then, when $a_t>c_H/(\mathbb{P}_H-0.5)$, if $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$, worker $i$'s utility-maximizing strategy will be reporting truthfully and exerting high efforts.\footnote{$u_i^t\approx  M\cdot a_t\cdot (\tilde{\mathbb{P}}_i-0.5) + M\cdot b- M \cdot c_H\cdot \textsf{eft}^{t}_i$. See Appendix~F in the supplementary file for more detailed discussion. 
+Recall that, Eqn.\ref{equaton:score} and \ref{equation:p_infer} together show that $\sum_j \textsf{sc}_i(j)\approx M\cdot \tilde{\mathbb{P}}_i$ holds when $M\gg 1$. Then, when $a_t>c_H/(\mathbb{P}_H-0.5)$, if $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$, worker $i$'s utility-maximizing strategy will be reporting truthfully and exerting high efforts.\footnote{$u_i^t\approx  M\cdot a_t\cdot (\tilde{\mathbb{P}}_i-0.5) + M\cdot b- M \cdot c_H\cdot \textsf{eft}^{t}_i$. See Appendix~F in Supplementary for more detailed discussion. 
 %From the later analysis, we can know $\tilde{\mathbb{P}}_i\approx \mathbb{P}_i$. When $\textsf{rpt}^{t}_i=1$, $\textsf{eft}^{t}_i =|\mathbb{P}_i-0.5|/(P_H-0.5)$. When $\textsf{rpt}^{t}_i<1$, higher $\textsf{eft}^{t}_i$ is needed to reach $\mathbb{P}_i$, which will lead to more costs. However, the payment will not increase. Thus, the utility of worker $i$ willl decrease.
 }
 Thus, we can conclude Theorem~\ref{OSEqulibrium} by proving the convergence of our Bayesian inference algorithm, i.e. proving $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$.
@@ -100,7 +100,7 @@ When $M\gg 1$,
 where $\varepsilon^{-1}=\prod_{i=0}^{N}(2\hat{\mathbb{P}}_i)^{2}$, $\delta=O[\Delta\cdot \log(M)]$ and 
 $$\Delta={\sum}_{i=1}^N[1(\mathbb{P}_i<0.5)-1(\mathbb{P}_i>0.5)].$$
 \end{lemma}
-We defer the detailed proof to the supplementary material. Our main idea is to introduce a set of counts for the collected labels at first.
+We defer the detailed proof to Appendix C in Supplementary. Our main idea is to introduce a set of counts for the collected labels at first.
 More specifically, among the $n$ tasks of which the posterior true label is correct, $x_i$ and $y_i$ denote the number of tasks of which worker $i$'s label is correct and wrong, respectively.
 Among the remaining $m$ tasks, $w_i$ and $z_i$ denote the number of tasks of which worker $i$'s label is correct and wrong, respectively.
 Then, we calculate the approximation of $\mathbb{P}(m)$ based on the conditional probabilities $\mathbb{P}(x_i,y_i,w_i, z_i|m)$ and $\mathbb{P}(\mathcal{L}|\bm{L})$.
@@ -221,6 +221,7 @@ Thereby, if $a_t>\frac{c_H}{\mathbb{P}_H-0.5}$, worker $i$ can only get the maxi
 %        \includegraphics[width=\textwidth]{image/EXPC1}
 %        \caption{\label{BIM1}}
 %    \end{subfigure}
+	\vspace{-2mm}
     \caption{\label{BIM} Empirical analysis on our Bayesian inference algorithm. (a) Average payment per task given true label's distribution. (b) Average payment per task given PoBCs of workers excluding $i$. (c) The standard deviation of the payment given worker $i$'s PoBC.}
 \vspace{-2mm}
 \end{figure*}
@@ -239,12 +240,12 @@ F(\tilde{A}^t)\leq F(1) \;\;,\; F(\tilde{A}^t)\geq F(1-\psi)
 \end{equation*}
 where $\psi$ is defined in Eqn.\ref{equation:psi}.
 \end{lemma}
-We again defer the detailed proof to the supplementary material.
+We again defer the detailed proof to Appendix E in Supplementary.
 Our main idea is to derive the bounds of $\tilde{A}$ by analyzing the distribution of $\tilde{\sigma}_j$.
 Our motivation comes form Eqn.\ref{vot} which ensures, $\tilde{A} \approx 1-\mathbb{E}[1/(1+e^{|\tilde{\sigma}_j|})]$. From Lemma~\ref{ConvBoundxx}, we can know that, even in the long-term, worker $i$ can at most increase our value by $(1-\gamma)^{-1}[F(1)-F(1-\psi)]$, which corresponds to the right-hand side of Eqn.\ref{Condition}.
 
 Thereby, if Eqn.\ref{Condition} is satisfied, worker $i$ will be unable to make up our value loss increment in the payments, and our RL algorithm will reject the hypothesis to increase the scaling factor.
-In this case, the only payment-maximizing strategy for worker $i$ is to report truthfully and exert high efforts in all time steps, which concludes Theorem~\ref{RMNE}.
+In this case, the only utility-maximizing strategy for worker $i$ is to report truthfully and exert high efforts in all time steps, which concludes Theorem~\ref{RMNE}.
 
 %Taking our analysis about the payment increment at the beginning of this section, worker $i$'s deviation will not be suffice to change the objective value function's optimal solution to a higher scaling factor if Eqn.\ref{Condition} is satisfied - the increase in accuracy is less than the additional payment.
 %In this case, our RL algorithm will not respond to the strategy changes of worker $i$, which concludes Theorem~\ref{RMNE}.

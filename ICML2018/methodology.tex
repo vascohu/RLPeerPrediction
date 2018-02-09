@@ -7,7 +7,7 @@
 \section{Incentive Mechanism for Crowdsourcing}
 Our mechanism mainly consists of three components: payment rule, Bayesian inference and reinforcement incentive learning (RIL); see Figure~\ref{figure:layout} for the overall layout, where estimated values are denoted with over-the-head tildes. 
 
- The payment rule ensures that reporting truthfully and exerting high efforts is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long-run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents strategic manipulations from workers, which brings more long-term benefits to them by sacrificing short-term ones, or the other way around. The Bayesian inference algorithm is responsible for estimating the true labels, workers' PoBCs and the aggregate label accuracy from the collected labels at each time step. It utilizes soft Dirichlet priors and Gibbs sampling to prevent overestimation of accuracy when workers generate poor-quality labels. RIL adjusts the payment rule based on the historical data of payments, workers' PoBCs and aggregate labels' accuracy, aiming to optimally balance the utility gain from high accuracy and loss from large payments, which corresponds to $F(A^t)$ and $\sum_{i}P_i^t$ in Eqn.\ref{equation:utility} respectively. %In the following subsections, we provide a detailed formal introduction of the three one by one.
+ The payment rule ensures that reporting truthfully and exerting high efforts is the payment-maximizing strategy for all workers at any given time. Besides, our incentive mechanism as a whole guarantees that this is also the payment-maximizing strategy for all workers in the long-run. We kindly refer readers to Section~\ref{analysis} for the theoretical proof. This property prevents strategic manipulations from workers, which brings more long-term benefits to them by sacrificing short-term ones, or the other way around. The Bayesian inference algorithm is responsible for estimating the true labels, workers' PoBCs and the aggregate label accuracy from the collected labels at each time step. It utilizes soft Dirichlet priors and Gibbs sampling to prevent overestimation of accuracy when workers generate poor-quality labels. RIL adjusts the payment rule based on the historical data of payments, workers' PoBCs and aggregate labels' accuracy, aiming to optimally balance the utility gain from high accuracy and loss from large payments, which corresponds to $F(A^t)$ and $\sum_{i}\sum_{j}P_i^t(j)$ in Eqn.\ref{equation:utility} respectively. %In the following subsections, we provide a detailed formal introduction of the three one by one.
 
 %Nevertheless, there are three challenges to achieve our design. Firstly, our empirical studies reveal that popular inference algorithms may be heavily biased towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $q_i^t=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.
 %This heavy bias will cause the utility to be miscalculated and thus mislead our reinforcement adjustment.
@@ -64,7 +64,7 @@ where $\textsf{sc}^{t}_i(j)$ denotes worker $i$'s score on task $j$, which is ca
 
 %In this subsection, we present the details of our inference algorithm.
 For the simplicity of notations, we omit the superscript $t$ in this subsection. 
-Before designing our own Bayesian inference algorithm, we ran several preliminary experiments using popular inference algorithms used in the literature. Our empirical studies reveal that those methods tend to heavily biase towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.\footnote{See Appendix H in Supplementary for details} This heavy bias will lead the data requester's utility $r_t$ to be miscalculated, causing two bad consequences. First, it induces bad incentive property, as workers with poor labelling accuracy now enjoy good estimates and thus high payments. Secondly, this potentially misleads RIL, as $r_t$ is used as reward. 
+Before designing our own Bayesian inference algorithm, we ran several preliminary experiments using popular inference algorithms used in the literature. Our empirical studies reveal that those methods tend to heavily biase towards overestimating the accuracy when the quality of labels is very low. For example, when there are $10$ workers and $\mathbb{P}^t_i=0.55$, the estimated label accuracy of the EM estimator~\cite{dawid1979maximum,raykar2010learning} stays at around $0.9$ while the real accuracy is only around $0.5$.\footnote{See Appendix H in Supplementary for details} This heavy bias will lead the data requester's utility $r_t$ to be miscalculated, causing two bad consequences. First, it induces bad incentive property, as workers with poor labelling accuracy now enjoy good estimates. Secondly, this potentially misleads RIL, as $r_t$ is used as reward. 
 
 To reduce the inference bias, we develop our Bayesian inference algorithm by introducing soft Dirichlet priors to both the distribution of true labels $\bm{\tau}=[\tau_1,\tau_2]\sim \textrm{Dir}(\beta_{1},\beta_{2})$, where $\tau_1$ and $\tau_2$ denote that of label $1$ and $2$, respectively,  and workers' PoBCs  $[\mathbb{P}_{i}, 1-\mathbb{P}_i]\sim \textrm{Dir}(\alpha_{1},\alpha_{2})$. After doing so, we derive the conditional distribution of true labels given collected labels as (see Appendix I in Supplementary for detailed derivation)
 %However, after doing so, the posterior distribution cannot be expressed as any known distributions, which motivates us to derive the explicit posterior distribution first and then employ Gibbs sampling to conduct inference.
@@ -110,7 +110,7 @@ where $B(x,y)=(x-1)!(y-1)!/(x+y-1)!$ denotes the beta function, $\hat{\bm{\alpha
 \end{split}
 \end{equation*}
 where $\delta_{ijk}=\mathbbm{1}(L_i(j)=k)$ and $\xi_{jk}= \mathbbm{1}(\mathcal{L}(j)=k)$. The convergence of our inference algorithm requires $\alpha_1>\alpha_2$.
-To simplify the theoretical analysis, we set $\alpha_1=1.5$ and $\alpha_2=1$ in the rest of this paper.
+To simplify the theoretical analysis in Section 5, we set $\alpha_1=1.5$ and $\alpha_2=1$ in the rest of this paper.
 %\begin{equation}
 %\begin{split}
 %&\hat{\alpha}^{t}_{i1}={\sum}_{j=1}^{M}{\sum}_{k=1}^{K}\delta^{t}_{ijk}\xi^{t}_{jk}+\alpha_{1}\\
@@ -176,7 +176,7 @@ To simplify the theoretical analysis, we set $\alpha_1=1.5$ and $\alpha_2=1$ in 
 \end{algorithmic}
 \end{algorithm}
 
-Note that it is generally hard to derive an explicit formula for the distribution of a specific task $j$'s ground-truth from the conditional posterior distribution $\mathbb{P}(\mathcal{L}|\bm{L})$. We thus resort to Gibbs sampling for the inference.
+Note that it is generally hard to derive an explicit formula for the posterior distribution of a specific task $j$'s ground-truth from the conditional distribution $\mathbb{P}(\mathcal{L}|\bm{L})$. We thus resort to Gibbs sampling for the inference.
 More specifically, according to Bayes' theorem, we know that the conditional distribution of task $j$'s ground-truth $\mathcal{L}(j)$ satisfies
 $\mathbb{P}[\mathcal{L}(j)|\bm{L}, \mathcal{L}(-j)]\propto \mathbb{P}(\mathcal{L}|\bm{L})$, where $-j$ denotes all tasks excluding $j$.
 Leveraging this, we generate samples of the true label vector $\mathcal{L}$ following Algorithm~\ref{GSC}.
@@ -244,8 +244,8 @@ To be more specific, we calculate the temporal difference (TD) error as
 \begin{equation}
 r_t \approx Q^\pi(\hat{s}_t, a_t) - \gamma \mathbb{E}_{\pi}Q^{\pi}(\hat{s}_{t+1},a_{t+1}) + \epsilon_t 
 \end{equation}
-where the noise $\epsilon $ follows a Gaussian process $\mathcal{N}(\hat{s}_t,\hat{s}_{t+1})$, and $\pi=\mathbb{P}(a|\hat{s})$ denotes the current policy.
- Doing so, we gain two benefits. First, it greatly simplifies the derivation of the update for the Q-function. Secondly, as shown in our empirical results later, it is robust under different worker models.
+where the noise $\epsilon_t $ follows a Gaussian process $\mathcal{N}(\hat{s}_t,\hat{s}_{t+1})$, and $\pi=\mathbb{P}(a|\hat{s})$ denotes the current policy.
+Doing so, we gain two benefits. First, it greatly simplifies the derivation of the update equation for the Q-function. Secondly, as shown in our empirical results later, it is robust under different worker models.
 Besides, following \citet{gasic2014gaussian} we approximate Q-function as
 $$
 Q^{\pi}(\hat{s}_{t+1},a_{t+1})\approx\mathbb{E}_{\pi}Q^{\pi}(\hat{s}_{t+1},a_{t+1})+\epsilon_{\pi}

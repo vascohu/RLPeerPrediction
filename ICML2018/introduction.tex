@@ -15,7 +15,7 @@ However, there are evidences showing that human agents may follow bounded-ration
 
 
 In this paper, we propose a \emph{learning-based incentive mechanism}, aiming to merge and extend the techniques in the two disconnected areas to address the caveats when they are employed alone, as discussed above.
-The high level idea is as follows: we divide the large dataset into relatively small task packages. At each time step, we employ workers to handle one task package and estimate the true labels and workers' strategies from their reports.
+The high level idea is as follows: we divide the large dataset into relatively small task packages. At each step, we employ workers to handle one task package and estimate the true labels and workers' strategies from their reports.
 Relying on the above estimates, a reinforcement learning (RL) algorithm is used to uncover how workers respond to different levels of offered payments.
 We determine the payments for workers based on workers' current strategies and the output of the RL algorithm.
 By doing so, our mechanism not only incentivizes rational workers to provide high-quality labels but also dynamically adjusts the payments according to workers' types.

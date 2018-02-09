@@ -16,7 +16,7 @@ and increase $\tau_1$ from $0.05$ to $0.95$.
 In Figure~\ref{BIM3}, we let $\tau_1=0.5$, and increase other workers' PoBCs $\mathbb{P}_{-i}$ from $0.6$ to $0.95$.
 %From these two figures, we can find that the payment for worker $1$ in our mechanism almost only depends on worker $1$'s own strategy.
 As both figures reveal, in our mechanism the payment for worker $i$ almost only depends on his/her own strategy. On contrast, in DG13 it is severely affected by the distribution of true labels $\bm{\tau}$ and the strategies of other workers, summarized by $\mathbb{P}_{-i}$.
-In other words, our Bayesian inference is more robust to different environment.
+In other words, our Bayesian inference is more robust to different environments.
 Furthermore in Figure~\ref{BIM4}, we present the standard deviation of the payment to worker $i$.
 We let $\tau_1=0.5$, $\mathbb{P}_{-i}=\mathbb{P}_H$ and increase $\mathbb{P}_i$ from $0.6$ to $0.95$.
 As shown in the figure, our method manages to achieve a noticeably smaller standard deviation than DG13. 
@@ -52,7 +52,7 @@ where $\bar{u}_{\cdot H}$ and $\bar{u}_{\cdot L}$ denote the average utilities r
 
 People often apply traditional peer prediction mechanisms by manually setting a value for the scaling factor.
 Since we have shown the advantages of using Bayesian inference in Section 6.1, we use our payment rule with the manually adjusted scaling factor as the benchmark. 
-In this case, how the tasks are assigned does not affect the comparison and thus we let every worker get assigned the whole task set (i.e. $\forall i, m_i^t = M$).% \yitao{@yang, I am not sure about the last 3 sentence, please take a look.}
+In this case, how the tasks are assigned does not affect the comparison and thus we let every worker get assigned the whole task set at each time step (i.e. $\forall i, m_i^t = M$).% \yitao{@yang, I am not sure about the last 3 sentence, please take a look.}
 %Besides, in each episode of Algorithm~\ref{RAC}, we set the number of steps as $28$.
 %Besides, for simplicity of experiments, we assume workers always report truthfully. This reduces the number of a worker's possible internal states from $4$ to $2$.
 %Furthermore, to reduce the influence of outliers, we report the average over 5  trials in all the figures.
@@ -112,8 +112,9 @@ This observation shows the consistently good performance on different worker mod
 		\vspace{-1mm}
         \caption{\label{figure:learningCurve}}
     \end{subfigure}
+    \vspace{-2mm}
     \caption{\label{figure:learning}Empirical analysis on our RL algorithm. (a) The gap between the estimation of the data requester's cumulative rewards and the real one, smoothed over 5 episodes. (b) The learning curve of our mechanism smoothed over 5 episode.}
-	\vspace{-2mm}
+	\vspace{-1mm}
 \end{figure}
 %\begin{figure}[t]
 %\centering
@@ -158,6 +159,7 @@ RIL & 27.184 (.336) & 21.016 (.018) & 15.726 (.416)\\
 \end{sc}
 }
 \vskip -0.1in
+\vspace{-2mm}
 \end{table}
 %We plot the deviation of the estimated value from the real one in Figure~\ref{figure:rewardError}
 
