@@ -1,8 +1,7 @@
 
 
 \section{Empirical Experiments} 
-In our incentive mechanism, Bayesian inference can help us fully exploit the information contained in the collected labels, and RL keeps us being adapted to different kinds of workers.
-In this section, we will demonstrate these benefits via empirically testing these two algorithms one-by-one.
+In our incentive mechanism, Bayesian inference extracts important and useful information from the collected labels. On the other hand, RIL empowers us with the adaptivity to different kind of workers. In this section, we demonstrate these benefits by empirically testing them one-by-one.
 
 %To demonstrate the benefits of our two core algorithms, Bayesian inference and RL, we empirically test them one-by-one.
 %\yitao{To do: better overview for experiments, and need more motivation for 6.1}
@@ -27,7 +26,7 @@ In other words, the payment of our mechanism has much better robustness.
 Furthermore, in Figure~\ref{BIM4}, we present the standard variance of the payment for worker $1$.
 We let $\tau_1=0.5$, $\mathbb{P}_{i\neq 1}=\mathbb{P}_H$ and meanwhile increase $\mathbb{P}_1$ from $0.6$ to $0.95$.
 Form the figure, we can find that the payment variance of our mechanism is much smaller than that of DG13.
-All in all, compared with traditional peer prediciton mechanisms that only compare the labels of two workers, the usage of our variational inference algorithm can improve the robustness and lower the variance of payments, because of its ability of fully exploiting the collected labels.
+All in all, compared with traditional peer prediction mechanisms that only compare the labels of two workers, the usage of our variational inference algorithm can improve the robustness and lower the variance of payments, because of its ability of fully exploiting the collected labels.
 
 Furthermore, in Figure~\ref{BIM1}, we compare our Bayesian inference algorithm with two popular inference algorithms in crowdsourcing, that is, the EM estimator~\cite{raykar2010learning} and the variational inference estimator~\cite{liu2012variational}.
 Here, we set workers' PoBC $\mathbb{P}_i$ to be equal and increase the value of $\mathbb{P}_i$ from $0.5$ to $0.9$.
@@ -37,8 +36,8 @@ This observation shows that these two estimators become over-optimistic for low-
 Thus, we develop our Bayesian inference algorithm to calibrate the estimates of label accuracy for training our RL algorithm.
 
 \subsection{Empirical Analysis on RIL}
-In this subsection, we focus on investigating whether the RIL algorithm proposed in Section \ref{RL} consistently manages to learn a good policy to maximize the data requester's cumulative utility $R=\sum_t r_t$. To demonstrate our algorithm's general applicability under different environment, we consider three distinct worker models.
-For simplicity of experiments, we assume workers always report truthfully,  reducing workers' possible strategies on one task into choosing only between high and low efforts.
+In this subsection, we focus on investigating whether the RIL algorithm proposed in Section \ref{RL} consistently manages to learn a good policy to maximize the data requester's cumulative utility $R=\sum_t r_t$. To demonstrate our algorithm's general applicability, we test it under three distinct worker models, of which each assumes a different rationality level.
+For simplicity of experiments, we assume workers always report truthfully,  reducing workers' number of possible strategies on one task from 4 to 2 (i.e choosing only between high and low efforts). 
 We provide a formal description about the three models as follows
 \begin{itemize}[topsep=0pt, partopsep=0pt]
 \item {\bf Rational} workers alway act to maximize their own utilities. Since our incentive mechanism theoretically ensures that exerting high effort % and reporting truthfully 
@@ -88,9 +87,9 @@ Furthermore, to reduce the influence of outliers, we report the average over 5  
 %\end{itemize}
 %Besides, we set $\mathbb{P}_H = 0.9$, $\mathbb{P}_L = 0.5$ and $c_{H} =0.02$.
 
-The first set of experiments we conduct focuses on the accuracy of the estimation of the data requester's cumulative utility $R$. Since it is used as the reward signal for our RL algorithm, it would not be a surprise that the reliability of the estimation plays a crucial role in determining the well-being of the whole mechanism. As Figure~\ref{figure:rewardError} shows, the estimated value's deviation from the real one is small, regardless of which worker model the experiments run on. Besides, we can observe a large deviation at the begining stage of the training on the QR workers. This is because the small scaling factor at the begining stage causes the difference between $u^t_{iH}$ and $u^t_{iL}$ to be very small, which will lead to low-quality labels. Even though our Bayesian inference algorithm has significantly reduce the bias on low-quality labels, the cumulative errors is still very large, which shows the necessity of our inference algorithm.
+The first set of experiments we conduct focuses on the accuracy of the estimation of the data requester's cumulative utility $R$. Since it is used as the reward signal for our RL algorithm, it would not be a surprise that the reliability of the estimation plays a crucial role in determining the well-being of the whole mechanism. As Figure~\ref{figure:rewardError} shows, the estimated value's deviation from the real one is small, regardless of which worker model the experiments run on. Besides, we can observe a large deviation at the beginning stage of the training on the QR workers. This is because the small scaling factor at the beginning stage causes the difference between $u^t_{iH}$ and $u^t_{iL}$ to be very small, which will lead to low-quality labels. Even though our Bayesian inference algorithm has significantly reduce the bias on low-quality labels, the cumulative errors is still very large, which shows the necessity of our inference algorithm.
 Furthermore, the deviations on the rational and QR workers both will converge to a very small value while the deviation on the MWU worker will stay at relatively large values.
-This is because the first two kinds of workers responds to the incentives in a fixed way. Once we find the optimal scaling factor, we can always use this value and get high-qualtiy labels.
+This is because the first two kinds of workers responds to the incentives in a fixed way. Once we find the optimal scaling factor, we can always use this value and get high-quality labels.
 By contrast, MWU workers must have a process to learn the benefits of exerting high efforts. In this stage, the label quality will be very low, leading to a quite large deviation.
 
 \begin{figure}[!t]
