@@ -1,19 +1,19 @@
 \section{Related Work}
 Our work is inspired by the following three literatures:
 
-\emph{Peer Prediction:} This line of works, addressing the incentive issues for reporting high quality data without verification, starts roughly with the seminar works \cite{prelec2004bayesian,gneiting2007strictly}. A series of follow-up works have relaxed various assumptions of this family of mechanisms \cite{jurca2009mechanisms,witkowski2012peer,radanovic2013robust,dasgupta2013crowdsourced}. 
+\emph{Peer Prediction:} This line of works, addressing the incentive issues for reporting high quality data without verification, starts roughly with the seminal works \cite{prelec2004bayesian,gneiting2007strictly}. A series of follow-up works have relaxed various assumptions that have been made\cite{jurca2009mechanisms,witkowski2012peer,radanovic2013robust,dasgupta2013crowdsourced}. 
 
 \emph{Inference method:} Recently, inference methods have been applied to crowdsourcing settings, aiming to uncover the true labels from multiple noisy reported copies. Notable successes include EM method \cite{dawid1979maximum,raykar2010learning,zhang2014spectral}, Variational Inference \cite{liu2012variational,chen2015statistical} and Minimax Entropy Inference~\cite{zhou2012learning,zhou2014aggregating}. Besides, \citet{zheng2017truth} provide a good survey of the existing inference algorithms.
 
 \emph{Reinforcement Learning:} In the past few years, %with the help of advances in better feature extraction and state representation, 
-RL has made several breakthroughs of achieving human-level performance in challenging domains \citep{Mnih15,Hasselt2016DeepRL,Silver17}. More gladly, many studies successfully deploy it to solve some social problems \citep{Yu2013EmotionalMR,Leibo2017}. Besides, RL has also helped make advances in human-agent collaboration \citep{Sadhu2016ArgusSH,Wang2017}.
+RL has made several breakthroughs of achieving human-level performance in challenging domains \citep{Mnih15,Hasselt2016DeepRL,Silver17}. More gladly, many studies successfully deploy it to solve some societal problems \citep{Yu2013EmotionalMR,Leibo2017}. Besides, RL has also helped make advances in human-agent collaboration \citep{Sadhu2016ArgusSH,Wang2017}.
 
 %In RL problems, an agent interacts with an unknown environment and attempts to maximize its cumulative utility \citep{Sutton98,Szepesvari10}. Recently, various RL aglorithms have been developed and sucessfully applied to the interaction with human beings~\cite{engel2005reinforcement,gasic2014gaussian}.
 
-Our work differs from the above literature in the connection between incentive mechanisms and ML. There have been a very few recent studies that have similar taste as ours.
-For example, to improve the utility of the data requester in crowdsourcing, \citet{liu2017sequential} develop a multi-armed bandit algorithm to adjust the state-of-the-art peer prediction mechanism DG13~\cite{dasgupta2013crowdsourced}.
-However, both the bandit algorithm and DG13 still need to assume that workers are fully rational.
-Instead of randomly choosing a reference worker, \citet{liu2017machine} propose to use supervised learning algorithms to generate the reference reports based on the contextual information of tasks and derive the corresponding IC conditions.
+Our work differs from the above literature in the connection between incentive mechanisms and ML. There have been a very few recent studies that share similar taste with ours.
+For example, to improve the utility of the data requester in crowdsourcing, a multi-armed bandit algorithm is developed in \citet{liu2017sequential} to adjust the state-of-the-art peer prediction mechanism DG13~\cite{dasgupta2013crowdsourced} to a prior-free setting.
+However, both above bandit algorithm and DG13 still need to assume that workers are fully rational.
+Instead of randomly choosing a reference worker as commonly done in peer prediction, \citet{liu2017machine} propose to use supervised learning algorithms to generate the reference reports based on the contextual information of tasks and derive the corresponding IC conditions.
 In this paper, without assuming the contextual information about tasks, we use Bayesian inference to learn workers' states and true labels, which is an unsupervised-learning algorithm.
 %Our payments are determined based on the learned worker models, and we derive the incentive compatibility conditions for our unsupervised-learning-based mechanism.
 

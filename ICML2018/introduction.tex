@@ -25,9 +25,9 @@ By doing so, our mechanism not only incentivizes rational workers to provide hig
 
 We summarize our core contributions as follows:
 \begin{itemize}[topsep=0pt,  itemsep=0pt]
-\item We propose an incentive compatible RL framework to (i) incentivize high quality labels from workers and (ii) maximize data requester's utility, without assuming any agent model for workers.  
-\item We provide a novel method to prove the long-term incentive compatibility of reinforcement learning algorithms.
+\item We propose an incentive compatible RL framework to (i) incentivize high quality labels from workers and (ii) learn to maximize data requester's utility dynamically, without assuming any agent model for workers.  
 \item To achieve incentive compatibility and to calibrate the estimates of label accuracy for training our RL algorithm, we develop a novel Bayesian inference algorithm and theoretically prove its convergence. Since the inference results are approximately corrupted with Gaussian noise, we develop a RL algorithm based on the data-driven Gaussian process regression. 
+\item We provide a novel method to prove the long-term incentive compatibility of RL algorithms.
 \end{itemize}
 Besides, we conduct extensive experiments of our algorithms, and the results show that our Bayesian inference algorithm can improve the robustness and lower the variance of payments, which is practically favorable. Meanwhile, our RL algorithm can significantly increase the utility of the data requester under different worker models, such as fully rational and learning agent models. 
 
