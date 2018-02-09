@@ -18,7 +18,7 @@ In the following two subsections, we will provide the outline of the proofs of t
 Note that, in addition to incentive compatiblity, our mechanism can also get rid of the undesired uninformative equlibrium that most peer prediction mechanisms have.
 See Appendix G in the supplementary file for detailed discussion.
 Besides, in our proof, if we omit the superscript $t$ in an equation, we mean that this equation holds for all time steps.
-Besides, we employ the convention that $\bar{\mathbb{P}}=1-p$, $\hat{\mathbb{P}}=\max \{\mathbb{P}, \bar{\mathbb{P}}\}$ and $\mathbb{P}_0=\tau_1$.
+Besides, we employ the convention that $\bar{\mathbb{P}}=1-\mathbb{P}$, $\hat{\mathbb{P}}=\max \{\mathbb{P}, \bar{\mathbb{P}}\}$ and $\mathbb{P}_0=\tau_1$.
 
 %To prove Proposition~\ref{RMNE}, we need to analyze worker $i$'s effects on our reinforcement learning algorithm.
 %If worker $i$ wishes to get higher payments in the long term, he/she must push our reinforcement learning algorithm to at least increase the scaling factor from $a$ to $b>a$ at a certian state $s$.
@@ -121,7 +121,7 @@ Taking the above analysis into consideration, Eqn.\ref{equation:CB1} and \ref{eq
 where $C_{1}=(1+M^{-1})^{M}\approx e$ and $C_{2}=1+M^{-1}\approx 1$.
 Then, $m/M\approx 0$ because $\mathbb{E}[m/M]\approx 0$ and $\mathrm{Var}[m/M]=\mathbb{E}[m/M]^2-(\mathbb{E}[m/M])^2 \approx 0$.
 In this case, $\tilde{\mathbb{P}}_i\approx \mathbb{P}_i$ and 
-Thereby, if $a^t>c_H$, worker $i$ can only get the maximal utility when $\mathbb{P}_i=\mathbb{P}_H$, which concludes Theorem~\ref{OSEqulibrium}.
+Thereby, if $a_t>\frac{c_H}{\mathbb{P}_H-0.5}$, worker $i$ can only get the maximal utility when $\mathbb{P}_i=\mathbb{P}_H$, which concludes Theorem~\ref{OSEqulibrium}.
 
 %Thus, $\mathbb{E}_{\mathcal{L},\bm{L}}\left[m/M\right]\lesssim x(1+x)^{M-1}$. Considering $2\hat{p}\geq 1$, we can know that $x\geq (2p_H)^{2(N-1)}$. Then, when $M\rightarrow \infty$ and $(2p_H)^{2(N-1)}>M$, we can have $(1+x)^{M-1}\rightarrow e$ and $x\rightarrow 0$. In this case, $\mathbb{E}_{\mathcal{L}}|\tilde{p}_i-p_i|\rightarrow 0$.
 %Besides, we know that $p_i$ reaches the maximum only when worker $i$ report truthfully and exert high efforts.
@@ -225,8 +225,8 @@ Thereby, if $a^t>c_H$, worker $i$ can only get the maximal utility when $\mathbb
 \vspace{-2mm}
 \end{figure*}
 \subsection{Proof for Long-Term IC}
-Due to the one-step IC in our mechanism, we know that, to get higher long-term payments, worker $i$ must mislead our RL algorithm into at least increasing the scaling factor from $a$ to any $a'>a$ at a certain state $s$.
-Actually, our RL algorithm will only increase the scaling factor when the state-action value function satisfies $Q^{\pi}(s,a)\leq Q^{\pi}(s,a')$.
+Due to the one-step IC in our mechanism, we know that, to get higher long-term payments, worker $i$ must mislead our RL algorithm into at least increasing the scaling factor from $a$ to any $a'>a$ at a certain state $\hat{s}$.
+Actually, our RL algorithm will only increase the scaling factor when the state-action value function satisfies $Q^{\pi}(\hat{s},a)\leq Q^{\pi}(\hat{s},a')$.
 Eqn.\ref{equation:approx_reward} tells us that our objective function consists of the utility obtained from the collected labels ($F(\tilde{A}^t)$) and the utility lost in the payment ($\eta {\sum}_{i=1}^{N}P^t_i$).
 Once we increase the scaling factor, we at least need to increase the payments for the other $N-1$ workers by $M(N-1)\mathbb{P}_H\cdot G_{\mathcal{A}}$, which corresponds to the left-hand side of Eqn.\ref{Condition}.
 
