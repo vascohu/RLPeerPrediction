@@ -20,7 +20,7 @@ In other words, our Bayesian inference is more robust to different environments.
 Furthermore in Figure~\ref{BIM4}, we present the standard deviation of the payment to worker $i$.
 We let $\tau_1=0.5$, $\mathbb{P}_{-i}=\mathbb{P}_H$ and increase $\mathbb{P}_i$ from $0.6$ to $0.95$.
 As shown in the figure, our method manages to achieve a noticeably smaller standard deviation than DG13. 
-In summary, compared with traditional peer prediction mechanisms that only compare the labels of two workers, the usage of our Bayesian inference algorithm can improve the robustness and lower the variance of payments, because of its ability of fully exploiting the collected labels. %\yitao{@yang, please take a look on this last sentence.}
+In summary, compared with traditional peer prediction mechanisms that only make use of two workers' labels to decide a score, the usage of our Bayesian inference algorithm improves the robustness and decreases the variance of payments, because of its ability of fully exploit all the collected labels. %\yitao{@yang, please take a look on this last sentence.}
 
 
 %Furthermore, in Figure~\ref{BIM1}, we compare our Bayesian inference algorithm with two popular inference algorithms in crowdsourcing, that is, the EM estimator~\cite{raykar2010learning} and the variational inference estimator~\cite{liu2012variational}.
@@ -50,9 +50,9 @@ where $u_{iH}^t$ and $u_{iL}^t$ denote worker $i$'s expected utility after exert
 where $\bar{u}_{\cdot H}$ and $\bar{u}_{\cdot L}$ denote the average utilities received if exerting high efforts or low efforts at time $t$ respectively. We initialize $\textsf{eft}_i^0$ as $0.2$ in our experiments.
 \end{itemize}
 
-People often apply traditional peer prediction mechanisms by manually setting a value for the scaling factor.
-Since we have shown the advantages of using Bayesian inference in Section 6.1, we use our payment rule with the manually adjusted scaling factor as the benchmark. 
-In this case, how the tasks are assigned does not affect the comparison and thus we let every worker get assigned the whole task set at each time step (i.e. $\forall i, m_i^t = M$).% \yitao{@yang, I am not sure about the last 3 sentence, please take a look.}
+%People often apply traditional peer prediction mechanisms by manually setting a value for the scaling factor.
+Since we have shown the advantage of using Bayesian inference in Section 6.1, for the sake of fair comparison, we use our payment rule with manually adjusted scaling factor as the benchmark. 
+In this case, how tasks are assigned does not affect the empirical analysis we wish to conduct  and thus we let every worker to be assigned the whole task set at each time step $t$ (i.e. $\forall i, m_i^t = M$).% \yitao{@yang, I am not sure about the last 3 sentence, please take a look.}
 %Besides, in each episode of Algorithm~\ref{RAC}, we set the number of steps as $28$.
 %Besides, for simplicity of experiments, we assume workers always report truthfully. This reduces the number of a worker's possible internal states from $4$ to $2$.
 %Furthermore, to reduce the influence of outliers, we report the average over 5  trials in all the figures.
@@ -82,10 +82,10 @@ In this case, how the tasks are assigned does not affect the comparison and thus
 %Besides, we set $\mathbb{P}_H = 0.9$, $\mathbb{P}_L = 0.5$ and $c_{H} =0.02$.
 
 Our first set of experiments focus on the estimation bias of the the data requester's cumulative utility $R$.
-Since the data requester's utility is used as the reward in RIL, it would not be a surprise that the reliability of the estimation plays a crucial role in determining the well-being of the whole mechanism. As Figure~\ref{figure:rewardError} shows, the estimated value's deviation from the real one becomes very small after a few episodes of learning, regardless of which worker model the experiments run on.
-This means the learned reward signal provides a good guidance for our RIL algorithm.
-The next set of experiments is about how quickly our RIL algorithm learns. As Figure~\ref{figure:learningCurve} shows, for all the three worker models, our RIL algorithm manages to pick up a policy to maximize the cumulative utility of the data requester in less than 100 episodes. 
-This observation shows the consistently good performance on different worker models.
+Since the data requester's utility is used as the reward in RIL, it would not be a surprise that the reliability of the estimation plays a crucial role in determining the well-being of the whole mechanism. As Figure~\ref{figure:rewardError} shows, the estimated value only deviates from the real one in a very small magnitude after a few episodes of learning, regardless of which worker model the experiments run on, justifying our heavy reliance on it to provide a good guidance for RIL.
+The next set of experiments is about how quickly RIL learns. As Figure~\ref{figure:learningCurve} shows, under all three worker models, RIL manages to pick up and stick to a fairly promising policy %to maximize the cumulative utility of the data requester 
+in less than 100 episodes. 
+This observation also demonstrates the robustness of RIL under different deploying environment.
 
 %Besides, from the figure, we can find that our RL algorithm converges the fastest on the rational workers. This is because the optimal policy for the rational workers is to let $a_t\equiv=0.1$ so that the payment will be minimized.
 %Compared with the stochastic policy on the other two kinds of workers, this policy is easy to learn and thus our RL algorithm coverges the fastest.
@@ -134,14 +134,15 @@ This observation shows the consistently good performance on different worker mod
 %\label{figure:learningCurve}
 %\end{figure}
 
-Lastly, we take the learned policy of our RIL algorithm and compares it with two benchmarking policies in Table~\ref{table:performance}. The first policy, Fixed Optimal, sets a fixed value for the scaling factor, which is commonly adopted by existing mechanisms. Here, to conduct comparison, we try all possible values and output the highest cumulative rewards in Table~\ref{table:performance}. The second policy, Adaptive Optimal, changes the scaling factor every $4$ steps and find highest cumulative rewards via traversing all $4^7=16384$ possible value combinations of the scaling factor. This policy is impossible to compute and track in practice, but is very close to the real optimal in the sequential setting.
-From Table~1, we can find that the three policies have shown similar performance for rational and QR workers.
-This is because these two kinds of workers has a fixed pattern in response to incentives and thus the optimal policy should be to set a fixed value for the scaling factor.
-By contrast, MWU workers needs to learn their utility-maximizing strategies gradually, and the learning process is affected by the incentives.
-For this model, compared with Fixed Optimal, our RIL algorithm increases the cumulative reward from $11.7$ to $15.6$, which is a significant improvement considering the unreachable real optimal is only around $18.5$. To summarize, our RL algorithm can consistently improve the cumulative utility of the data requester over different worker models.
+Lastly, we take the learned policy after 500 episodes with exploration rate turned off (i.e. $\epsilon =0$) and compares it with two benchmarks constructed by ourself (see Table~\ref{table:performance}). To create the first one, Fixed Optimal, we try all 4 possible fixed value for the scaling factor and report the highest cumulative reward realized by either of them. Note most traditional peer prediction mechanisms assume a fixed scaling factor and thus Fixed Optimal represents the best performance possibly achieved by them.
+%Here, to conduct comparison, we try all possible values and output the highest cumulative rewards in Table~\ref{table:performance}. 
+To create the second one, Adaptive Optimal, we change the scaling factor every $4$ steps and report the highest cumulative reward via traversing all $4^7=16384$ possible configurations. This benchmark is infeasible to be reproduced in real-world practice, once the number of times steps becomes large. Yet it is very close to the global optimal in the sequential setting.
+As Table 1 demonstrates, the two benchmarks plus RIL all achieve a similar performance tested for rational and QR workers.
+This is because these two kinds of workers have a fixed pattern in response to incentives and thus the optimal policy would be a fixed scaling factor through all the whole episode.
+On contrast, MWU workers their utility-maximizing strategies gradually, and the learning process is affected by the incentives. Under this model, compared with Fixed Optimal, RIL increases the cumulative reward from $11.7$ to $15.6$, which is a significant improvement considering the unreachable real optimal is only around $18.5$. Up to this point, with three sets of experiments, we demonstrate the competitiveness of RIL and its robustness under different environment.% and conclude our empirical analysis.
 
 \begin{table}[t]
-\caption{Performance comparison on three worker models. Standard deviation reported in parenthesis.}
+\caption{Performance comparison on three worker models. Data requester's cumulative utility normalized over the number of tasks. Standard deviation reported in parenthesis.}
 \label{table:performance}
 \vskip 0.15in
 \centering
@@ -159,7 +160,6 @@ RIL & 27.184 (.336) & 21.016 (.018) & 15.726 (.416)\\
 \end{sc}
 }
 \vskip -0.1in
-\vspace{-2mm}
 \end{table}
 %We plot the deviation of the estimated value from the real one in Figure~\ref{figure:rewardError}
 
