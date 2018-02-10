@@ -1,9 +1,9 @@
 \section{Convergence and Incentive Results}
 \label{analysis}
-In this section, we present the theoretic analysis for our incentive mechanism\footnote{Currently, our theoretical analysis is for the case that $m_i^t=M$. $m_i^t<M$ requires to replace the binomial distribution with the trinomial distribution when analyzing a key function involved in the proof in the supplementary file. The main idea of proof will be the same, and we will extend our proof in the future work.}. Our main results are as follows:
+In this section, we present the theoretic analysis of our incentive mechanism\footnote{Currently, our theoretical analysis is for the case that $m_i^t=M$. $m_i^t<M$ requires to replace the binomial distribution with the trinomial distribution when analyzing a key function involved in the proof in the supplementary file. The main idea of proof is roughly the same, and we will extend our proof in the future work.}. Our main results are as follows:
 \begin{theorem}[One-Step IC]
 \label{OSEqulibrium}
-In any time step $t$, when $M\gg 1$, $(2\mathbb{P}_H)^{2(N-1)} \geq M$ and $a_t>\frac{c_H}{\mathbb{P}_H-0.5}$, reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ if the other workers all follow this strategy.
+In any time step $t$, when $M\gg 1$, $(2\mathbb{P}_H)^{2(N-1)} \geq M$ and $a_t>\frac{c_H}{\mathbb{P}_H-0.5}$, reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ if other workers all follow this strategy.
 \end{theorem}
 \begin{theorem}[Long-Term IC]
 \label{RMNE}
@@ -13,11 +13,11 @@ Suppose the conditions in Proposition~\ref{OSEqulibrium} are satisfied and the l
 &\eta M(N-1)\mathbb{P}_H \cdot G_{\mathcal{A}}> \frac{F(1)-F(1-\psi)}{1-\gamma}\label{Condition}\\
 &\;\psi =(\tau_1\tau_2^{-1}+\tau_1^{-1}\tau_2)[4\mathbb{P}_H(1-\mathbb{P}_H)]^{\frac{N-1}{2}} \label{equation:psi}
 \end{align}
-always reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ in the long-term if the other workers all follow this strategy. Here, $G_{\mathcal{A}}=\min_{a,b\in\mathcal{A}, a\neq b}|a-b|$ denotes the minimal gap between two available values of the scaling factor.
+always reporting truthfully and exerting high efforts is the utility-maximizing strategy for any worker $i$ in the long-term if other workers all follow this strategy. Here, $G_{\mathcal{A}}=\min_{a,b\in\mathcal{A}, a\neq b}|a-b|$ denotes the minimal gap between two available values of the scaling factor.
 \end{theorem}
 \vspace{-2mm}
-In the following two subsections, we will provide the outline of the proofs of these two theorems. 
-Note that, in addition to incentive compatiblity, our mechanism can also get rid of the undesired uninformative equlibrium that most peer prediction mechanisms have.
+In the following two subsections, we outline the proofs of these two theorems. 
+Note that, in addition to incentive compatibility, our mechanism can also get rid of the undesired uninformative equilibrium that most peer prediction mechanisms have.
 See Appendix G in Supplementary for detailed discussion.
 Besides, in our proof, if we omit the superscript $t$ in an equation, we mean that this equation holds for all time steps.
 Besides, we employ the convention that $\bar{\mathbb{P}}=1-\mathbb{P}$, $\hat{\mathbb{P}}=\max \{\mathbb{P}, \bar{\mathbb{P}}\}$ and $\mathbb{P}_0=\tau_1$.
@@ -64,7 +64,7 @@ Besides, we employ the convention that $\bar{\mathbb{P}}=1-\mathbb{P}$, $\hat{\m
 
 
 \subsection{Proof for One-Step IC}
-When $M\gg 1$ and $a_t>c_H/(\mathbb{P}_H-0.5)$, if $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$, worker $i$'s utility-maximizing strategy will be reporting truthfully and exerting high efforts.\footnote{See Appendix~F in Supplementary for more details. 
+When $M\gg 1$ and $a_t>c_H/(\mathbb{P}_H-0.5)$, if $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$, worker $i$'s utility-maximizing strategy would be reporting truthfully and exerting high efforts.\footnote{See Appendix~F in Supplementary for more details. 
 %From the later analysis, we can know $\tilde{\mathbb{P}}_i\approx \mathbb{P}_i$. When $\textsf{rpt}^{t}_i=1$, $\textsf{eft}^{t}_i =|\mathbb{P}_i-0.5|/(P_H-0.5)$. When $\textsf{rpt}^{t}_i<1$, higher $\textsf{eft}^{t}_i$ is needed to reach $\mathbb{P}_i$, which will lead to more costs. However, the payment will not increase. Thus, the utility of worker $i$ willl decrease.
 }
 Thus, we can conclude Theorem~\ref{OSEqulibrium} by proving the convergence of our Bayesian inference algorithm, i.e. proving $\tilde{\mathbb{P}}^t_i\approx \mathbb{P}^t_i$.
@@ -108,7 +108,7 @@ Among the remaining $m$ tasks, $w_i$ and $z_i$ denote the number of tasks of whi
 Then, we calculate the approximation of $\mathbb{P}(m)$ based on the conditional probabilities $\mathbb{P}(x_i,y_i,w_i, z_i|m)$ and $\mathbb{P}(\mathcal{L}|\bm{L})$.
 The upper bounds of $\mathbb{E}[m/M]$ and $\mathbb{E}[m/M]^2$ can be obtained by calculating the upper bounds of $\sum_{m}m \mathbb{P}(m)$ and $\sum_{m} m^2 \mathbb{P}(m)$.
 
-\underline{\textbf{Step 2}:} In this step, we derive the upper bound of $|\tilde{\mathbb{P}}_i-\mathbb{P}_i|$ under the conditions of Theorem~\ref{OSEqulibrium}. Following the notations in Step 1, when $M\gg 1$, in Eqn. (\ref{equation:p_infer}), we can have $\tilde{\mathbb{P}}_i\approx \mathbb{E}_{\mathcal{L}}(x_i+z_i)/M$, where $\mathbb{E}_{\mathcal{L}}$ denotes the expectation against $\mathbb{P}(\mathcal{L}|\bm{L})$. Meanwhile, according to the law of large numbers, $\mathbb{P}_i\approx (x_i+w_i)/M$. Thus, we can have
+\underline{\textbf{Step 2}:} In this step, we derive the upper bound of $|\tilde{\mathbb{P}}_i-\mathbb{P}_i|$ under the conditions of Theorem~\ref{OSEqulibrium}. Following the notations in Step 1, when $M\gg 1$, in Eqn. (\ref{equation:p_infer}), we have $\tilde{\mathbb{P}}_i\approx \mathbb{E}_{\mathcal{L}}(x_i+z_i)/M$, where $\mathbb{E}_{\mathcal{L}}$ denotes the expectation of $\mathbb{P}(\mathcal{L}|\bm{L})$. Meanwhile, according to the law of large numbers, $\mathbb{P}_i\approx (x_i+w_i)/M$. Thus, we have
 \begin{equation}
 |\tilde{\mathbb{P}}_i-\mathbb{P}_i|\approx \mathbb{E}_{\mathcal{L}}|w_i-z_i|/M\leq \mathbb{E}_{\mathcal{L}}\left[m/M\right].
 \end{equation}
@@ -232,7 +232,7 @@ Actually, our RL algorithm will only increase the scaling factor when the state-
 Eqn. (\ref{equation:approx_reward}) tells us that our objective function consists of the utility obtained from the collected labels ($F(\tilde{A}^t)$) and the utility lost in the payment ($\eta {\sum}_{i=1}^{N}P^t_i$).
 Once we increase the scaling factor, we at least need to increase the payments for the other $N-1$ workers by $M(N-1)\mathbb{P}_H\cdot G_{\mathcal{A}}$, which corresponds to the left-hand side of Eqn. (\ref{Condition}).
 
-On the other hand, for the obtained utility, we can have 
+On the other hand, for the obtained utility, we have 
 \begin{lemma}
 \label{ConvBoundxx}
 In any time step $t$, if all workers except for worker $i$ report truthfully and exert high efforts,
